@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#ffffff">
 
     
-    <title>quan-1145 - Still under construction</title>
+    <title>测试模板标签转义 | quan-1145</title>
     
 
     
@@ -18,6 +18,8 @@
     <meta name="author" content="quan-1145">
     
 
+    
+    <meta name="keywords" content="test,">
     
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -59,14 +61,9 @@
     <div class="container" id="content-wrap">
         
         <main class="main-content">
-            
-
-    
-        <article class="post-card card" itemscope itemtype="http://schema.org/BlogPosting">
-    <header class="post-card-header">
-        <h2 class="post-card-title" itemprop="headline">
-            <a href="/2026/06/21/test-raw-tag/" itemprop="url">测试模板标签转义</a>
-        </h2>
+            <article class="post-card card post-single" itemscope itemtype="http://schema.org/BlogPosting">
+    <header class="post-single-header">
+        <h1 class="post-single-title" itemprop="headline">测试模板标签转义</h1>
         <div class="post-card-meta">
             <span class="meta-item">
                 <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
@@ -75,127 +72,74 @@
                 </time>
             </span>
             
-        </div>
-    </header>
-
-    <div class="post-card-body" itemprop="articleBody">
-        
-            这篇文章测试 Hexo 中的 Nunjucks 模板标签转义功能。
-原始标签示例有时候文章中会出现类似模板语法的内容，这时候需要使用 raw 标签来防止被 Nunjucks 解析：
-
-Hello {{ world }}
-
-
-其他模板语法
-{% for item in items %}
-  {{ item.name }}
-{% endfor %}
-
-
-普通内容这是一段正常的 Markdown ...
-        
-    </div>
-
-    <footer class="post-card-footer">
-        
-            <div class="post-card-tags">
-                
-                    <a href="/tags/test/" class="tag-link">#test</a>
-                
-            </div>
-        
-        <a href="/2026/06/21/test-raw-tag/" class="read-more-btn">
-            阅读全文
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-        </a>
-    </footer>
-</article>
-
-    
-        <article class="post-card card" itemscope itemtype="http://schema.org/BlogPosting">
-    <header class="post-card-header">
-        <h2 class="post-card-title" itemprop="headline">
-            <a href="/2026/06/20/hello-world/" itemprop="url">Hello World</a>
-        </h2>
-        <div class="post-card-meta">
-            <span class="meta-item">
-                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                <time datetime="2026-06-20T21:07:20+08:00" itemprop="datePublished">
-                    2026-06-20
-                </time>
-            </span>
             
-        </div>
-    </header>
-
-    <div class="post-card-body" itemprop="articleBody">
-        
-            Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Qu...
-        
-    </div>
-
-    <footer class="post-card-footer">
-        
-        <a href="/2026/06/20/hello-world/" class="read-more-btn">
-            阅读全文
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-        </a>
-    </footer>
-</article>
-
-    
-        <article class="post-card card" itemscope itemtype="http://schema.org/BlogPosting">
-    <header class="post-card-header">
-        <h2 class="post-card-title" itemprop="headline">
-            <a href="/2024/08/15/zsh-without-omz/" itemprop="url">不使用oh-my-zsh的zsh</a>
-        </h2>
-        <div class="post-card-meta">
-            <span class="meta-item">
-                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-                <time datetime="2024-08-15T21:00:00+08:00" itemprop="datePublished">
-                    2024-08-15
-                </time>
-            </span>
-            
+                
                 <span class="meta-item">
-                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                    
-                        <a href="/categories/IT/" class="meta-link">IT</a>
-                    
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                    <span>313 字</span>
+                </span>
+            
+            
+                
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+                    <span>1 分钟</span>
                 </span>
             
         </div>
     </header>
 
-    <div class="post-card-body" itemprop="articleBody">
-        
-            本文参考自：https://www.insidentally.com/articles/000002/zsh官网：https://www.zsh.org/zsh的GitHub页：https://github.com/zsh-users/zshoh-my-zsh的GitHub页：https://github.com/ohmyzsh/ohmyzsh网上一堆oh-my-zsh的配置方案都看腻了？试...
-        
+    <div class="post-single-body" itemprop="articleBody">
+        <p>这篇文章测试 Hexo 中的 Nunjucks 模板标签转义功能。</p>
+<h2 id="原始标签示例"><a href="#原始标签示例" class="headerlink" title="原始标签示例"></a>原始标签示例</h2><p>有时候文章中会出现类似模板语法的内容，这时候需要使用 <code>raw</code> 标签来防止被 Nunjucks 解析：</p>
+
+Hello {{ world }}
+
+
+<h2 id="其他模板语法"><a href="#其他模板语法" class="headerlink" title="其他模板语法"></a>其他模板语法</h2>
+{% for item in items %}
+  <li>{{ item.name }}</li>
+{% endfor %}
+
+
+<h2 id="普通内容"><a href="#普通内容" class="headerlink" title="普通内容"></a>普通内容</h2><p>这是一段正常的 Markdown 内容。</p>
+<div class="note note-info"><div class="note-header"><span class="note-icon">信息</span></div><div class="note-body"><p>提示信息：使用 <code>raw</code> 标签可以防止 Nunjucks 解析其中的模板语法。</p>
+</div></div>
+
+<div class="note note-warning"><div class="note-header"><span class="note-icon">注意</span></div><div class="note-body"><p>警告：如果内容中包含模板语法字符，请使用合适的转义方式。</p>
+</div></div>
+
+<div class="note note-success"><div class="note-header"><span class="note-icon">成功</span></div><div class="note-body"><p>成功示例：可以在文章中自由使用 note 标签，主题已内置支持。</p>
+</div></div>
+
     </div>
 
-    <footer class="post-card-footer">
-        
+    
+        <footer class="post-single-footer">
             <div class="post-card-tags">
                 
-                    <a href="/tags/zsh/" class="tag-link">#zsh</a>
-                
-                    <a href="/tags/oh-my-zsh/" class="tag-link">#oh-my-zsh</a>
-                
-                    <a href="/tags/powerlevel10k/" class="tag-link">#powerlevel10k</a>
+                    <a href="/tags/test/" class="tag-link">#test</a>
                 
             </div>
-        
-        <a href="/2024/08/15/zsh-without-omz/" class="read-more-btn">
-            阅读全文
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
-        </a>
-    </footer>
+        </footer>
+    
 </article>
 
+
+<nav class="post-nav">
     
-
-
+        <div class="post-nav-item post-nav-prev disabled">
+            <div class="post-nav-label">上一篇</div>
+            <div class="post-nav-title">没有了</div>
+        </div>
+    
+    
+        <a href="/2026/06/20/hello-world/" class="post-nav-item post-nav-next">
+            <div class="post-nav-label">下一篇</div>
+            <div class="post-nav-title">Hello World</div>
+        </a>
+    
+</nav>
 
 
         </main>
