@@ -22,6 +22,10 @@
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/css/style.css">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    
 <meta name="generator" content="Hexo 7.3.0"></head>
 <body>
     <header class="header" id="header">
@@ -32,11 +36,7 @@
                 <span class="subtitle">Still under construction</span>
             
         </div>
-        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+
         <nav class="header-nav" id="header-nav">
             
                 
@@ -51,10 +51,76 @@
                     <a href="/about" class="nav-item">About</a>
                 
             
+
+            <!-- More 下拉菜单 -->
+            <div class="nav-item nav-dropdown" id="nav-more">
+                <span class="nav-dropdown-trigger">
+                    More
+                    <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
+                </span>
+                <div class="nav-dropdown-menu">
+                    <a href="/links/" class="nav-dropdown-item">
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M10.59 13.41c-1.95-1.95-1.95-5.11 0-7.07l3.54-3.54c1.95-1.95 5.11-1.95 7.07 0 1.95 1.95 1.95 5.11 0 7.07l-1.17 1.17c-.39.39-1.02.39-1.41 0-.39-.39-.39-1.02 0-1.41l1.17-1.17c.78-.78.78-2.05 0-2.83-.78-.78-2.05-.78-2.83 0L13.41 7.76c-.78.78-2.05.78-2.83 0-.78-.78-.78-2.05 0-2.83l1.17-1.17c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0L9.17 3.49c-1.95 1.95-1.95 5.11 0 7.07l1.41 1.41c.39.39.39 1.02 0 1.41-.39.39-1.02.39-1.41 0l-1.17-1.17c-1.95-1.95-1.95-5.11 0-7.07l3.54-3.54c1.95-1.95 5.11-1.95 7.07 0 1.95 1.95 1.95 5.11 0 7.07l-2.54 2.54c-.39.39-1.02.39-1.41 0-.39-.39-.39-1.02 0-1.41L16.17 12c.78-.78 2.05-.78 2.83 0 .78.78.78 2.05 0 2.83l-3.54 3.54c-1.95 1.95-5.11 1.95-7.07 0-1.95-1.95-1.95-5.11 0-7.07l1.17-1.17c.39-.39 1.02-.39 1.41 0 .39.39.39 1.02 0 1.41l-1.17 1.17c-.78.78-.78 2.05 0 2.83.78.78 2.05.78 2.83 0l2.83-2.83c.78-.78.78-2.05 0-2.83-.78-.78-2.05-.78-2.83 0-.39.39-1.02.39-1.41 0z"/></svg>
+                        <span>Links 友链</span>
+                    </a>
+                    <a href="/lab/" class="nav-dropdown-item">
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M9.4 16.6l-3.2 3.2c-1.2 1.2-1.2 3.1 0 4.2.6.6 1.4.9 2.1.9s1.5-.3 2.1-.9l3.2-3.2L9.4 16.6zM20.7 17.3l-3.2-3.2L19.9 11.7c.8-.8 1-2 .7-3L18.3 2.7c-.3-1-1.1-1.7-2-2L9.3.7c-1-.3-2.2-.1-3 .7l-2.4 2.4c-.8.8-1 2-.7 3L4.7 8.9c.3.8 1 1.5 1.8 1.8l3.2 1.3-1.6 1.6c-.6.6-.6 1.5 0 2.1l2 2c.6.6 1.5.6 2.1 0l1.6-1.6 1.3 3.2c.3.8 1 1.5 1.8 1.8l2.4 2.4c.8.8 2 1 3 .7 1-.3 1.7-1.1 2-2l2.4-5.4c.3-1 .1-2-.7-2.8z"/></svg>
+                        <span>Lab 实验室</span>
+                    </a>
+                </div>
+            </div>
         </nav>
+
+        <div class="header-actions">
+            <!-- 主题切换 -->
+            <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme" title="切换主题">
+                <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 4V2m0 20v-2m8-8h2M2 12h2m14.95-6.95l1.41-1.41M3.64 20.36l1.41-1.41m0-12.72L3.64 4.82m16.72 16.72l-1.41-1.41M12 7a5 5 0 100 10 5 5 0 000-10z" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            </button>
+
+            <!-- 搜索 -->
+            
+            <button class="icon-btn" id="search-toggle" aria-label="Search" title="搜索">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg>
+            </button>
+            
+
+            <!-- GitHub 链接 -->
+            
+            <a href="https://github.com/" class="icon-btn" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.77.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.83.58A12.01 12.01 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+            
+
+            <!-- 移动端菜单切换 -->
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
     </div>
 </header>
 
+<!-- 搜索面板 -->
+
+<div class="search-panel" id="search-panel" role="dialog" aria-label="搜索">
+    <div class="search-panel-inner">
+        <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg>
+            <input type="text" id="search-input" placeholder="Search..." autocomplete="off">
+            <button class="search-close" id="search-close" aria-label="Close search">&times;</button>
+        </div>
+        <div class="search-results" id="search-results">
+            <div class="search-empty">开始输入搜索文章...</div>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- 首页 Banner -->
+    
 
     <div class="container" id="content-wrap">
         
@@ -116,7 +182,7 @@
             <img src="/images/avatar.png" alt="avatar" class="avatar">
         </div>
     
-    <div class="profile-name">quan-1145</div>
+    <div class="profile-name">quan-114514</div>
     
         <div class="profile-title">Web Developer (Starter)</div>
     
@@ -300,7 +366,7 @@
         <div class="footer-info">
             
                 <span class="footer-author">
-                    quan-1145
+                    quan-114514
                 </span>
             
 
@@ -319,11 +385,33 @@
 </footer>
 
 
+    <!-- 回到顶部 -->
     <button class="back-to-top" id="back-to-top" aria-label="Back to top">
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            <path fill="currentColor" d="M12 4l-8 8h5v8h6v-8h5z"/>
+            <path fill="currentColor" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
         </svg>
     </button>
+
+    <!-- Waline 评论库 -->
+    
+
+    <!-- KaTeX 数学公式 -->
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}], throwOnError: false});"></script>
+    
+
+    <!-- Mermaid 流程图 -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        if (typeof mermaid !== 'undefined') {
+            mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+        }
+        window.__MERMAID_ENABLED__ = true;
+    </script>
+    
 
     <script src="/js/main.js"></script>
 </body>
