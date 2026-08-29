@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>About | quan-1145 — Still under construction</title>
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link rel="alternate" type="application/atom+xml" title="quan-1145" href="/atom.xml">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <script>
+      document.documentElement.setAttribute('data-theme', 'green');
+    </script>
+  
+
+  
+  
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="terminal-header">
+  <div class="terminal-header__inner">
+    <nav class="terminal-nav">
+      <div class="terminal-nav__prompt">
+        <span class="terminal-user">guest@hexo-blog</span>
+        <span class="terminal-separator">:</span>
+        <span class="terminal-path">~</span>
+        <span class="terminal-prompt-mark">$</span>
+      </div>
+      <ul class="terminal-menu">
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/">
+              [Home]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/archives">
+              [Archives]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/tags">
+              [Tags]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/categories">
+              [Categories]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/more">
+              [More]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/about">
+              [About]
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+    <div class="terminal-header__actions">
+      <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
+      <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
+    </div>
+  </div>
+</header>
+  <div class="terminal-container">
+    <div class="terminal-body">
+      <main class="terminal-main">
+        <article class="terminal-page terminal-page--post">
+  <header class="terminal-post-header">
+    
+      <div class="terminal-post-header__prompt">
+        <span class="terminal-prompt-mark">$</span> cat archwsl_inst.md
+      </div>
+    
+    <h1 class="terminal-post-header__title">ArchLinux WSL 手动安装指南（初步）</h1>
+    <div class="terminal-post-header__meta">
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">date:</span>
+        <span class="terminal-meta__value">2026-08-29</span>
+      </span>
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">updated:</span>
+          <span class="terminal-meta__value">2026-08-29</span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">cat:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/categories/archlinux/">archlinux</a>, 
+            
+              <a href="/categories/archlinux/wsl/">wsl</a>
+            
+          </span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">tags:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/tags/archlinux/">#archlinux</a> 
+            
+              <a href="/tags/wsl/">#wsl</a> 
+            
+              <a href="/tags/installation/">#installation</a>
+            
+          </span>
+        </span>
+      
+    </div>
+  </header>
+
+  <div class="terminal-post-content">
+    <blockquote>
+<p>[!IMPORTANT]</p>
+<ul>
+<li><strong>本文为快速入门，但是 YMMV，要获取更多信息请自行 STFW 或 RTFM；</strong></li>
+<li><strong>默认你安装了 WSL 2；</strong></li>
+<li><strong>在安装文本编辑器之前，可以使用记事本编辑文本</strong></li>
+</ul>
+</blockquote>
+<blockquote>
+<p>[!NOTE]<br>本文仅展示自定义&#x2F;手动安装方法，若希望简单方便些，有两种方法可供选择：</p>
+<ul>
+<li><p>在 Microsoft Store 上搜索（搜不到官方 ArchLinux WSL，但有非官方的 Winch WSL）；</p>
+</li>
+<li><p>cmd 或 powershell 命令输入：</p>
+</li>
+</ul>
+<figure class="highlight pwsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--install</span> archlinux</span><br></pre></td></tr></table></figure>
+
+<p>嫌下载速度太慢可以加<code>--web-download</code>参数，如果还嫌慢就可以试试本文的手动安装方法<br>注：可用 <code>--location</code> 指定安装路径（比如 D:\WSL\Arch），这样虚拟磁盘文件就不会存储在 C 盘。要获得更多信息：<code>wsl --help</code></p>
+</blockquote>
+<h2 id="一、在-WSL-上安装-ArchLinux"><a href="#一、在-WSL-上安装-ArchLinux" class="headerlink" title="一、在 WSL 上安装 ArchLinux"></a>一、在 WSL 上安装 ArchLinux</h2><p>下载 ArchLinux 的 wsl 镜像（国内镜像站&#x2F;archlinux&#x2F;wsl&#x2F;latest，如 <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/archlinux/wsl/latest/">https://mirrors.tuna.tsinghua.edu.cn/archlinux/wsl/latest/</a> ），然后双击安装，也可以在 cmd 或 powershell 中以管理员身份执行以下命令（假设下载了 archlinux-2025.04.01.121271.wsl）：</p>
+<p>直接安装：</p>
+<figure class="highlight pwsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--install</span> <span class="literal">--from-file</span> D:\Download\archlinux<span class="literal">-2025</span>.<span class="number">04.01</span>.<span class="number">121271</span>.wsl</span><br></pre></td></tr></table></figure>
+
+<p>导入式安装（可自定义位置）：</p>
+<figure class="highlight pwsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl <span class="literal">--import</span> archlinux D:\WSL\Arch D:\Download\archlinux<span class="literal">-2025</span>.<span class="number">04.01</span>.<span class="number">121271</span>.wsl</span><br></pre></td></tr></table></figure>
+
+<p>安装好之后，开始菜单的程序列表中会出现刚刚安装的“Archlinux”（若使用<code>--name</code>设置了发行版的名称，则会显示设置的名称，下同）。若安装了 Windows Terminal，标签页右侧下拉菜单中也会出现“ArchLinux”</p>
+<h2 id="二、安装后基础配置"><a href="#二、安装后基础配置" class="headerlink" title="二、安装后基础配置"></a>二、安装后基础配置</h2><h3 id="1-设置用户"><a href="#1-设置用户" class="headerlink" title="1. 设置用户"></a>1. 设置用户</h3><p>安装完成后默认登录 root 用户，存在安全风险，需要设置密码：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">passwd</span><br></pre></td></tr></table></figure>
+
+<p>同时设置 root 以外的默认用户：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 普通账户，创建后归入与用户名相同的群组</span></span><br><span class="line">useradd -m username</span><br><span class="line"><span class="comment"># 管理员账户，创建后归入 wheel 群组</span></span><br><span class="line">useradd -m -G wheel username</span><br></pre></td></tr></table></figure>
+
+<p>将以下行添加到 &#x2F;etc&#x2F;wsl.conf：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[user]</span><br><span class="line">default=username</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[!TIP]<br>快速配置：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span> <span class="string">&#x27;%s&#x27;</span> <span class="string">&#x27;[user]</span></span><br><span class="line"><span class="string">default=username</span></span><br><span class="line"><span class="string">&#x27;</span> | <span class="built_in">tee</span> -a /etc/wsl.conf</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>[!TIP]<br>在 Windows Terminal 中，也可以通过修改 ArchLinux 的配置文件来设置默认登录用户，进入设置&gt;选择 ArchLinux 的配置文件&gt;在命令行末尾添加<code>-u username</code>即可</p>
+</blockquote>
+<h3 id="2-密钥信任修复"><a href="#2-密钥信任修复" class="headerlink" title="2. 密钥信任修复"></a>2. 密钥信任修复</h3><p>初次安装&#x2F;更新软件包时，可能遇到错误：</p>
+<blockquote>
+<p>error: archlinuxcn-keyring: signature from <a href="mailto:&#102;&#97;&#x72;&#115;&#x65;&#101;&#114;&#x66;&#99;&#x40;&#x61;&#114;&#99;&#x68;&#x6c;&#105;&#110;&#x75;&#x78;&#46;&#111;&#114;&#x67;">&#102;&#97;&#x72;&#115;&#x65;&#101;&#114;&#x66;&#99;&#x40;&#x61;&#114;&#99;&#x68;&#x6c;&#105;&#110;&#x75;&#x78;&#46;&#111;&#114;&#x67;</a> is unknown trust</p>
+</blockquote>
+<p>这个问题通常出现在新安装的 Arch Linux 系统上。根本原因是 Arch Linux 官方 archlinux-keyring 包在 2023 年 12 月进行了一次更新，移除了一个已退休的 Master Key。这个变动导致 archlinuxcn-keyring 包的维护者 farseerfc 的密钥，在 GnuPG 的“信任网络”（Web of Trust）中，从原本可被自动信任的状态，降低为了“勉强信任”（marginal trust）。因此，在新系统上安装时，pacman 会因无法确认其可信度而报错</p>
+<p><strong>Solution：</strong></p>
+<blockquote>
+<p>[!IMPORTANT]<br><strong>以下命令均以 root 身份执行</strong>（提示符为<code>root@hostname #</code>）！因为现在还没有安装<code>sudo</code>，所以直接执行就好，等设置好 sudo 后再用 sudo</p>
+</blockquote>
+<ul>
+<li>重新初始化并填充密钥环</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pacman-key --init</span><br><span class="line">pacman-key --populate archlinux</span><br></pre></td></tr></table></figure>
+
+<p>–init：会重新创建 pacman 的 GPG 配置</p>
+<p>–populate archlinux：会从 &#x2F;usr&#x2F;share&#x2F;pacman&#x2F;keyrings&#x2F; 导入官方维护者的密钥</p>
+<ul>
+<li>信任 farseerfc 的 GPG 密钥</li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman-key --lsign-key <span class="string">&quot;farseerfc@archlinux.org&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-更换软件源"><a href="#3-更换软件源" class="headerlink" title="3. 更换软件源"></a>3. 更换软件源</h3><p>软件源文件位于<code>/etc/pacman.d/mirrorlist</code></p>
+<p>推荐 cernet 校园网联合镜像站，它可以自动选择合适的镜像站：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Server = https://mirrors.cernet.edu.cn/archlinux/$repo/os/$arch</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-添加-archlinux-cn-源"><a href="#4-添加-archlinux-cn-源" class="headerlink" title="4. 添加 archlinux-cn 源"></a>4. 添加 archlinux-cn 源</h3><p>在 <code>/etc/pacman.conf</code> 文件末尾添加以下两行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[archlinuxcn]</span><br><span class="line">Server = https://mirrors.cernet.edu.cn/archlinuxcn/$arch</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[!TIP]<br>快速配置：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span> <span class="string">&#x27;%s&#x27;</span> <span class="string">&#x27;[archlinuxcn]</span></span><br><span class="line"><span class="string">Server = https://mirrors.cernet.edu.cn/archlinuxcn/$arch</span></span><br><span class="line"><span class="string">&#x27;</span> | <span class="built_in">tee</span> -a /etc/pacman.conf</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>之后通过以下命令安装<code>archlinuxcn-keyring</code>包导入 GPG key：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -Sy archlinuxcn-keyring</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-配置-sudoers"><a href="#5-配置-sudoers" class="headerlink" title="5. 配置 sudoers"></a>5. 配置 sudoers</h3><p>安装<code>vim, sudo</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S vim <span class="built_in">sudo</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[!IMPORTANT]<br><strong>必须确保<code>sudoers</code>没有语法问题，任何错误都会导致 sudo 不可用</strong><br>官方要求使用 visudo（需安装<code>vi</code>）来编辑<code>sudoers</code>文件，但实测<code>vim</code>也没问题</p>
+</blockquote>
+<p>用 vim 编辑<code>/etc/sudoers</code>文件，按<code>i</code>编辑文本</p>
+<p>取消<code>%wheel ALL=(ALL:ALL) ALL</code>（管理员）或者<code>%ALL ALL=(ALL:ALL) ALL</code>（所有用户）行首的注释（井号）</p>
+<p>退出时，先按<code>esc</code>退出编辑模式，再输入<code>:wq!</code>强制写入并退出</p>
+<blockquote>
+<p>[!NOTE]<br><code>sudoers</code>文件的属主和属组 ID 必须都是 0，文件权限位是 0440（-r–r—–）（具体含义请 STFW 或 RTFM），因此常规模式下不能写入</p>
+</blockquote>
+<h2 id="三、安装软件包"><a href="#三、安装软件包" class="headerlink" title="三、安装软件包"></a>三、安装软件包</h2><p>先补齐缺失的软件包：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pacman -S --needed base-devel</span><br></pre></td></tr></table></figure>
+
+<p>再根据需要自行安装，常用命令，欢迎补充：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 帮助</span></span><br><span class="line">pacman -h</span><br><span class="line"><span class="comment"># 安装软件包</span></span><br><span class="line">pacman -S package</span><br><span class="line"><span class="comment"># 更新系统</span></span><br><span class="line">pacman -Syu</span><br><span class="line"><span class="comment"># 卸载软件包</span></span><br><span class="line">pacman -R package</span><br><span class="line"><span class="comment"># 清理缓存</span></span><br><span class="line">pacman -Scc</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、区域和本地化设置"><a href="#四、区域和本地化设置" class="headerlink" title="四、区域和本地化设置"></a>四、区域和本地化设置</h2><p>WSL 默认会尝试将区域设置调整为与 Windows 相匹配，但不一定生效。所以，编辑 &#x2F;etc&#x2F;locale.gen，然后取消掉<code>en_US.UTF-8 UTF-8</code>和其他需要的 UTF-8 区域设置前的注释。接着执行<code>locale-gen</code>以生成 locale 信息：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">locale-gen</span><br></pre></td></tr></table></figure>
+
+<p>然后创建 locale.conf 文件，并编辑设定 LANG 变量，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LANG=en_US.UTF-8</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>后面的还在鸽，敬请谅解</p>
+<hr>
+<p><strong>References:</strong></p>
+<p>[1] <a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/%E5%9C%A8_WSL_%E4%B8%8A%E5%AE%89%E8%A3%85_Arch_Linux">https://wiki.archlinuxcn.org/wiki/%E5%9C%A8_WSL_%E4%B8%8A%E5%AE%89%E8%A3%85_Arch_Linux</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/%E7%94%A8%E6%88%B7%E5%92%8C%E7%94%A8%E6%88%B7%E7%BB%84">https://wiki.archlinuxcn.org/wiki/%E7%94%A8%E6%88%B7%E5%92%8C%E7%94%A8%E6%88%B7%E7%BB%84</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/Sudo/">https://wiki.archlinuxcn.org/wiki/Sudo/</a></p>
+<p>[4] <a target="_blank" rel="noopener" href="https://wiki.archlinuxcn.org/wiki/%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97">https://wiki.archlinuxcn.org/wiki/%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97</a></p>
+<p>[5] <a target="_blank" rel="noopener" href="https://help.mirrors.cernet.edu.cn/archlinux/">https://help.mirrors.cernet.edu.cn/archlinux/</a></p>
+<p>[6] <a target="_blank" rel="noopener" href="https://help.mirrors.cernet.edu.cn/archlinuxcn/">https://help.mirrors.cernet.edu.cn/archlinuxcn/</a></p>
+
+  </div>
+
+  <div class="terminal-post-footer">
+    <div class="terminal-post-nav">
+      
+      
+        <a class="terminal-post-nav__next" href="/2026/07/17/via-clock/">
+          [Via 主页显示时间及秒速进度条 &gt;]
+        </a>
+      
+    </div>
+
+    
+
+  </div>
+</article>
+
+      </main>
+      
+        <aside class="terminal-sidebar">
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> whoami
+    </div>
+    <div class="terminal-sidebar__content">
+      <p>quan-1145</p>
+      
+        <p>It may have much potential</p>
+      
+    </div>
+  </div>
+
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> ls posts/
+    </div>
+    <div class="terminal-sidebar__content">
+      total 3
+    </div>
+  </div>
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls categories/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/">[archlinux]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/wsl/">[wsl]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls tags/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list terminal-list--inline">
+          
+            <li class="terminal-list__item">
+              <a href="/tags/HTML/">#HTML</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/archlinux/">#archlinux</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/css/">#css</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/oh-my-zsh/">#oh-my-zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/powerlevel10k/">#powerlevel10k</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/wsl/">#wsl</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/zsh/">#zsh</a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> env
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-env">
+          
+            
+          
+            
+          
+            
+          
+        </ul>
+      </div>
+    </div>
+  
+</aside>
+
+      
+    </div>
+    <footer class="terminal-footer">
+  <div class="terminal-footer__line">
+    <span class="terminal-user">guest@hexo-blog</span>
+    <span class="terminal-separator">:</span>
+    <span class="terminal-path">~</span>
+    <span class="terminal-prompt-mark">$</span>
+    <span class="terminal-cmd">exit</span>
+  </div>
+  <div class="terminal-footer__content">
+    
+      <p class="terminal-footer__text">
+        &copy; 2026 quan-1145
+      </p>
+    
+    
+      <p class="terminal-footer__text">Powered by Hexo | Terminal Theme</p>
+    
+  </div>
+</footer>
+  </div>
+  <button id="back-to-top" class="terminal-back-to-top" aria-label="Back to top">[▲]</button>
+  
+<div class="terminal-search" id="terminal-search" aria-hidden="true">
+  <div class="terminal-search__dialog">
+    <div class="terminal-search__header">
+      <span class="terminal-prompt-mark">$</span> grep -r "" posts/
+    </div>
+    <div class="terminal-search__input-wrap">
+      <input type="text" class="terminal-search__input" id="search-input" placeholder="type to search..." autocomplete="off" aria-label="Search input">
+    </div>
+    <div class="terminal-search__results" id="search-results">
+      <p class="terminal-search__empty">type keywords to search...</p>
+    </div>
+    <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
+  </div>
+</div>
+<script src="/search.js"></script>
+
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>
