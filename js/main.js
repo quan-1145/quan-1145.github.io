@@ -258,6 +258,76 @@
     toggleVisibility();
   }
 
+  // Global typewriter: scramble random ASCII chars, then reveal real text
+  function initTypewriter() {
+    var reduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var skipSelector = 'pre, code, script, style, noscript, textarea, svg, ' +
+      '.katex, .MathJax, .mermaid, [data-no-typewriter]';
+
+    var nodes = [];
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    var node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      var parent = node.parentElement;
+      if (!parent || parent.closest(skipSelector)) continue;
+      nodes.push(node);
+    }
+    if (!nodes.length || reduceMotion) return;
+
+    var POOL = '!<>-_\\/[]{}=+*^?#%&@$~';
+    var items = nodes.map(function (textNode, index) {
+      var text = textNode.nodeValue;
+      var span = document.createElement('span');
+      span.setAttribute('data-typewriter', '');
+      span.textContent = text;
+      textNode.parentNode.replaceChild(span, textNode);
+      return {
+        el: span,
+        text: text,
+        delay: Math.min(index * 12, 1200),
+        started: false,
+        done: false
+      };
+    });
+
+    var start = null;
+    function frame(now) {
+      if (start === null) start = now;
+      var elapsed = now - start;
+      var pending = false;
+
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        if (it.done) continue;
+        if (elapsed < it.delay) {
+          pending = true;
+          continue;
+        }
+        if (!it.started) {
+          it.started = true;
+          it.el.setAttribute('data-typed', '');
+        }
+        var revealed = Math.floor((elapsed - it.delay) / 10);
+        if (revealed >= it.text.length) {
+          it.el.textContent = it.text;
+          it.done = true;
+          continue;
+        }
+        var out = it.text.slice(0, revealed);
+        for (var j = revealed; j < it.text.length; j++) {
+          out += it.text[j] === ' ' ? ' ' : POOL[(Math.random() * POOL.length) | 0];
+        }
+        it.el.textContent = out;
+        pending = true;
+      }
+
+      if (pending) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   // Initialize all
   document.addEventListener('DOMContentLoaded', function () {
     initLazyload();
@@ -269,5 +339,6 @@
     initScanlineToggle();
     initClock();
     initBackToTop();
+    initTypewriter();
   });
 })();

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <title>About | quan-1145 — Still under construction</title>
+  <title>归档 | quan-1145 — Still under construction</title>
   
     <link rel="icon" href="/favicon.ico">
   
@@ -47,7 +47,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link" href="/archives">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/archives">
               [Archives]
             </a>
           </li>
@@ -71,7 +71,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link terminal-menu__link--active" href="/about">
+            <a class="terminal-menu__link" href="/about">
               [About]
             </a>
           </li>
@@ -182,7 +182,7 @@
 </blockquote>
 <h3 id="2-密钥信任修复"><a href="#2-密钥信任修复" class="headerlink" title="2. 密钥信任修复"></a>2. 密钥信任修复</h3><p>初次安装&#x2F;更新软件包时，可能遇到错误：</p>
 <blockquote>
-<p>error: archlinuxcn-keyring: signature from <a href="mailto:&#102;&#97;&#x72;&#115;&#x65;&#101;&#114;&#x66;&#99;&#x40;&#x61;&#114;&#99;&#x68;&#x6c;&#105;&#110;&#x75;&#x78;&#46;&#111;&#114;&#x67;">&#102;&#97;&#x72;&#115;&#x65;&#101;&#114;&#x66;&#99;&#x40;&#x61;&#114;&#99;&#x68;&#x6c;&#105;&#110;&#x75;&#x78;&#46;&#111;&#114;&#x67;</a> is unknown trust</p>
+<p>error: archlinuxcn-keyring: signature from <a href="mailto:&#x66;&#97;&#x72;&#115;&#x65;&#101;&#x72;&#102;&#x63;&#64;&#97;&#x72;&#99;&#x68;&#x6c;&#x69;&#110;&#117;&#120;&#x2e;&#x6f;&#114;&#x67;">&#x66;&#97;&#x72;&#115;&#x65;&#101;&#x72;&#102;&#x63;&#64;&#97;&#x72;&#99;&#x68;&#x6c;&#x69;&#110;&#117;&#120;&#x2e;&#x6f;&#114;&#x67;</a> is unknown trust</p>
 </blockquote>
 <p>这个问题通常出现在新安装的 Arch Linux 系统上。根本原因是 Arch Linux 官方 archlinux-keyring 包在 2023 年 12 月进行了一次更新，移除了一个已退休的 Master Key。这个变动导致 archlinuxcn-keyring 包的维护者 farseerfc 的密钥，在 GnuPG 的“信任网络”（Web of Trust）中，从原本可被自动信任的状态，降低为了“勉强信任”（marginal trust）。因此，在新系统上安装时，pacman 会因无法确认其可信度而报错</p>
 <p><strong>Solution：</strong></p>
