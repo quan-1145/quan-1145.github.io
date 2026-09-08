@@ -1434,9 +1434,93 @@ mjx-container[display="false"] {
 .terminal-search__close:hover {
   color: var(--accent);
 }
+.terminal-toc {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 220px;
+  max-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  z-index: 50;
+  transition: width 0.25s ease;
+}
+.terminal-toc[data-collapsed="true"] {
+  width: auto;
+}
+.terminal-toc[data-collapsed="true"] .terminal-toc__nav,
+.terminal-toc[data-collapsed="true"] .terminal-toc__label {
+  display: none;
+}
+.terminal-toc__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Ubuntu Mono', 'Consolas', 'Monaco', monospace;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+.terminal-toc__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.75rem;
+}
+.terminal-toc__toggle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'Ubuntu Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 0.8rem;
+  padding: 0;
+}
+.terminal-toc__toggle:hover {
+  color: var(--accent);
+}
+.terminal-toc__nav {
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.terminal-toc__nav ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.terminal-toc__nav li {
+  margin: 0;
+}
+.terminal-toc__nav a {
+  display: block;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  border-left: 2px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.terminal-toc__nav a:hover {
+  color: var(--text-primary);
+}
+.terminal-toc__nav a.is-active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.terminal-toc__nav ol ol {
+  padding-left: 8px;
+}
 figure.highlight {
   background: var(--bg-secondary);
   margin: 16px 0;
+  padding-top: 1.5em;
   position: relative;
 }
 figure.highlight table {
@@ -1482,7 +1566,7 @@ figure.highlight .code pre {
 }
 .terminal-code-lang {
   position: absolute;
-  top: 4px;
+  top: 0.3em;
   right: 70px;
   font-family: 'Ubuntu Mono', 'Consolas', 'Monaco', monospace;
   font-size: 0.7rem;
@@ -1494,7 +1578,7 @@ figure.highlight .code pre {
 }
 .terminal-copy-btn {
   position: absolute;
-  top: 4px;
+  top: 0.3em;
   right: 4px;
   padding: 2px 8px;
   font-size: 0.7rem;
@@ -1519,6 +1603,7 @@ code {
 }
 .highlight {
   background: var(--bg-secondary);
+  padding-top: 1.5em;
   position: relative;
 }
 .highlight table {
@@ -1864,6 +1949,11 @@ figure.highlight .markdown .link_label {
 figure.highlight .markdown .link_url {
   color: var(--info);
   text-decoration: underline;
+}
+@media (max-width: 1200px) {
+  .terminal-toc {
+    display: none;
+  }
 }
 @media (max-width: 600px) {
   .terminal-container {

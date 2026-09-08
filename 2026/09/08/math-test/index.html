@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <title>归档 | quan-1145 — Still under construction</title>
+  <title>Math Formula Test | quan-1145 — Still under construction</title>
   
     <link rel="icon" href="/favicon.ico">
   
@@ -24,13 +24,10 @@
   
   
     
-      <script>
-        window.MathJax = {
-          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-          svg: { fontCache: 'global' }
-        };
-      </script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
     
   
 
@@ -162,6 +159,18 @@ $$</p>
 <p>All formulas above should render normally with light-colored text.</p>
 
   </div>
+
+  
+  <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
+    <div class="terminal-toc__header">
+      <span class="terminal-toc__label">目录</span>
+      <button class="terminal-toc__toggle" id="toc-toggle" aria-label="Toggle TOC">[-]</button>
+    </div>
+    <nav class="terminal-toc__nav" id="toc-nav">
+      
+    </nav>
+  </aside>
+  
 
   <div class="terminal-post-footer">
     <div class="terminal-post-nav">
@@ -360,7 +369,7 @@ $$</p>
     <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
   </div>
 </div>
-<script src="/search.js"></script>
+<script src="/js/search.js"></script>
 
   
 <script src="/js/main.js"></script>

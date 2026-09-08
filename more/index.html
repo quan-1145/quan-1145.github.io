@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <title>归档 | quan-1145 — Still under construction</title>
+  <title>More | quan-1145 — Still under construction</title>
   
     <link rel="icon" href="/favicon.ico">
   
@@ -24,13 +24,10 @@
   
   
     
-      <script>
-        window.MathJax = {
-          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-          svg: { fontCache: 'global' }
-        };
-      </script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
     
   
 
@@ -139,15 +136,15 @@
           
             <a class="terminal-more-link" href="/tags/latex/">[latex]</a>
           
+            <a class="terminal-more-link" href="/tags/HTML/">[HTML]</a>
+          
+            <a class="terminal-more-link" href="/tags/css/">[css]</a>
+          
             <a class="terminal-more-link" href="/tags/zsh/">[zsh]</a>
           
             <a class="terminal-more-link" href="/tags/oh-my-zsh/">[oh-my-zsh]</a>
           
             <a class="terminal-more-link" href="/tags/powerlevel10k/">[powerlevel10k]</a>
-          
-            <a class="terminal-more-link" href="/tags/HTML/">[HTML]</a>
-          
-            <a class="terminal-more-link" href="/tags/css/">[css]</a>
           
         </div>
       </section>
@@ -164,13 +161,13 @@
           
             <a class="terminal-more-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
           
-            <a class="terminal-more-link" href="/categories/Test/">[Test]</a>
-          
-            <a class="terminal-more-link" href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
-          
             <a class="terminal-more-link" href="/categories/archlinux/wsl/">[wsl]</a>
           
+            <a class="terminal-more-link" href="/categories/Test/">[Test]</a>
+          
             <a class="terminal-more-link" href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+          
+            <a class="terminal-more-link" href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
           
         </div>
       </section>
@@ -183,21 +180,21 @@
       <div class="terminal-more-section__content">
         
           
-            <a class="terminal-more-link" href="/archives/index.html">[Archives]</a>
-          
-        
-          
-            <a class="terminal-more-link" href="/about/index.html">[About]</a>
-          
-        
-          
             <a class="terminal-more-link" href="/categories/index.html">[Categories]</a>
+          
+        
+          
+            <a class="terminal-more-link" href="/archives/index.html">[Archives]</a>
           
         
           
         
           
             <a class="terminal-more-link" href="/tags/index.html">[Tags]</a>
+          
+        
+          
+            <a class="terminal-more-link" href="/about/index.html">[About]</a>
           
         
       </div>
@@ -387,7 +384,7 @@
     <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
   </div>
 </div>
-<script src="/search.js"></script>
+<script src="/js/search.js"></script>
 
   
 <script src="/js/main.js"></script>

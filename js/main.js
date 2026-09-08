@@ -258,6 +258,62 @@
     toggleVisibility();
   }
 
+  // TOC: collapsible + scroll spy
+  function initToc() {
+    var toc = document.getElementById('terminal-toc');
+    if (!toc) return;
+
+    // Toggle collapse/expand
+    var toggle = document.getElementById('toc-toggle');
+    if (toggle) {
+      // Restore saved state
+      var saved = localStorage.getItem('toc-collapsed') === 'true';
+      if (saved) {
+        toc.setAttribute('data-collapsed', 'true');
+        toggle.textContent = '[+]';
+      }
+
+      toggle.addEventListener('click', function () {
+        var collapsed = toc.getAttribute('data-collapsed') === 'true';
+        toc.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+        toggle.textContent = collapsed ? '[-]' : '[+]';
+        localStorage.setItem('toc-collapsed', !collapsed);
+      });
+    }
+
+    // Scroll spy: highlight current heading
+    var headings = document.querySelectorAll('.terminal-post-content h2, .terminal-post-content h3');
+    if (!headings.length) return;
+
+    var tocLinks = toc.querySelectorAll('a');
+    var linkMap = {};
+    tocLinks.forEach(function (link) {
+      var href = link.getAttribute('href');
+      if (href && href.charAt(0) === '#') {
+        linkMap[decodeURIComponent(href.slice(1))] = link;
+      }
+    });
+
+    function updateActiveToc() {
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var current = null;
+      for (var i = 0; i < headings.length; i++) {
+        if (headings[i].offsetTop - 80 <= scrollTop) {
+          current = headings[i];
+        } else {
+          break;
+        }
+      }
+      tocLinks.forEach(function (l) { l.classList.remove('is-active'); });
+      if (current && linkMap[current.id]) {
+        linkMap[current.id].classList.add('is-active');
+      }
+    }
+
+    window.addEventListener('scroll', updateActiveToc, { passive: true });
+    updateActiveToc();
+  }
+
   // Global typewriter: scramble random ASCII chars, then reveal real text
   function initTypewriter() {
     var reduceMotion = window.matchMedia &&
@@ -341,6 +397,7 @@
     initScanlineToggle();
     initClock();
     initBackToTop();
+    initToc();
     initTypewriter();
   });
 })();

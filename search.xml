@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>ArchLinux WSL 手动安装指南（初步）</title>
+    <url>/2026/08/29/archwsl_inst/</url>
+    <content><![CDATA[
+[!IMPORTANT]
+
+本文为快速入门，但是 YMMV，要获取更多信息请自行 STFW 或 RTFM；
+默认你安装了 WSL 2；
+在安装文本编辑器之前，可以使用记事本编辑文本
+
+
+
+[!NOTE]本文仅展示自定义&#x2F;手动安装方法，若希望简单方便些，有两种方法可供选择：
+
+在 Microsoft Store 上搜索（搜不到官方 ArchLinux WSL，但有非官方的 Winch WSL）；
+
+cmd 或 powershell 命令输入：
+
+
+wsl --install archlinux
+
+嫌下载速度太慢可以加--web-download参数，如果还嫌慢就可以试试本文的手动安装方法注：可用 --location 指定安装路径（比如 D:\WSL\Arch），这样虚拟磁盘文件就不会存储在 C 盘。要获得更多信息：wsl --help
+
+一、在 WSL 上安装 ArchLinux下载 ArchLinux 的 wsl 镜像（国内镜像站&#x2F;archlinux&#x2F;wsl&#x2F;latest，如 https://mirrors.tuna.tsinghua.edu.cn/archlinux/wsl/latest/ ），然后双击安装，也可以在 cmd 或 powershell 中以管理员身份执行以下命令（假设下载了 archlinux-2025.04.01.121271.wsl）：
+直接安装：
+wsl --install --from-file D:\Download\archlinux-2025.04.01.121271.wsl
+
+导入式安装（可自定义位置）：
+wsl --import archlinux D:\WSL\Arch D:\Download\archlinux-2025.04.01.121271.wsl
+
+安装好之后，开始菜单的程序列表中会出现刚刚安装的“Archlinux”（若使用--name设置了发行版的名称，则会显示设置的名称，下同）。若安装了 Windows Terminal，标签页右侧下拉菜单中也会出现“ArchLinux”
+二、安装后基础配置1. 设置用户安装完成后默认登录 root 用户，存在安全风险，需要设置密码：
+passwd
+
+同时设置 root 以外的默认用户：
+# 普通账户，创建后归入与用户名相同的群组useradd -m username# 管理员账户，创建后归入 wheel 群组useradd -m -G wheel username
+
+将以下行添加到 &#x2F;etc&#x2F;wsl.conf：
+[user]default=username
+
+
+[!TIP]快速配置：
+printf &#x27;%s&#x27; &#x27;[user]default=username&#x27; | tee -a /etc/wsl.conf
+
+
+[!TIP]在 Windows Terminal 中，也可以通过修改 ArchLinux 的配置文件来设置默认登录用户，进入设置&gt;选择 ArchLinux 的配置文件&gt;在命令行末尾添加-u username即可
+
+2. 密钥信任修复初次安装&#x2F;更新软件包时，可能遇到错误：
+
+error: archlinuxcn-keyring: signature from &#102;&#x61;&#114;&#x73;&#101;&#101;&#x72;&#x66;&#x63;&#64;&#97;&#x72;&#99;&#104;&#108;&#x69;&#110;&#x75;&#120;&#x2e;&#x6f;&#x72;&#103; is unknown trust
+
+这个问题通常出现在新安装的 Arch Linux 系统上。根本原因是 Arch Linux 官方 archlinux-keyring 包在 2023 年 12 月进行了一次更新，移除了一个已退休的 Master Key。这个变动导致 archlinuxcn-keyring 包的维护者 farseerfc 的密钥，在 GnuPG 的“信任网络”（Web of Trust）中，从原本可被自动信任的状态，降低为了“勉强信任”（marginal trust）。因此，在新系统上安装时，pacman 会因无法确认其可信度而报错
+Solution：
+
+[!IMPORTANT]以下命令均以 root 身份执行（提示符为root@hostname #）！因为现在还没有安装sudo，所以直接执行就好，等设置好 sudo 后再用 sudo
+
+
+重新初始化并填充密钥环
+
+pacman-key --initpacman-key --populate archlinux
+
+–init：会重新创建 pacman 的 GPG 配置
+–populate archlinux：会从 &#x2F;usr&#x2F;share&#x2F;pacman&#x2F;keyrings&#x2F; 导入官方维护者的密钥
+
+信任 farseerfc 的 GPG 密钥
+
+pacman-key --lsign-key &quot;farseerfc@archlinux.org&quot;
+
+3. 更换软件源软件源文件位于/etc/pacman.d/mirrorlist
+推荐 cernet 校园网联合镜像站，它可以自动选择合适的镜像站：
+Server = https://mirrors.cernet.edu.cn/archlinux/$repo/os/$arch
+
+4. 添加 archlinux-cn 源在 /etc/pacman.conf 文件末尾添加以下两行：
+[archlinuxcn]Server = https://mirrors.cernet.edu.cn/archlinuxcn/$arch
+
+
+[!TIP]快速配置：
+printf &#x27;%s&#x27; &#x27;[archlinuxcn]Server = https://mirrors.cernet.edu.cn/archlinuxcn/$arch&#x27; | tee -a /etc/pacman.conf
+
+之后通过以下命令安装archlinuxcn-keyring包导入 GPG key：
+pacman -Sy archlinuxcn-keyring
+
+5. 配置 sudoers安装vim, sudo：
+pacman -S vim sudo
+
+
+[!IMPORTANT]必须确保sudoers没有语法问题，任何错误都会导致 sudo 不可用官方要求使用 visudo（需安装vi）来编辑sudoers文件，但实测vim也没问题
+
+用 vim 编辑/etc/sudoers文件，按i编辑文本
+取消%wheel ALL=(ALL:ALL) ALL（管理员）或者%ALL ALL=(ALL:ALL) ALL（所有用户）行首的注释（井号）
+退出时，先按esc退出编辑模式，再输入:wq!强制写入并退出
+
+[!NOTE]sudoers文件的属主和属组 ID 必须都是 0，文件权限位是 0440（-r–r—–）（具体含义请 STFW 或 RTFM），因此常规模式下不能写入
+
+三、安装软件包先补齐缺失的软件包：
+pacman -S --needed base-devel
+
+再根据需要自行安装，常用命令，欢迎补充：
+# 帮助pacman -h# 安装软件包pacman -S package# 更新系统pacman -Syu# 卸载软件包pacman -R package# 清理缓存pacman -Scc
+
+四、区域和本地化设置WSL 默认会尝试将区域设置调整为与 Windows 相匹配，但不一定生效。所以，编辑 &#x2F;etc&#x2F;locale.gen，然后取消掉en_US.UTF-8 UTF-8和其他需要的 UTF-8 区域设置前的注释。接着执行locale-gen以生成 locale 信息：
+locale-gen
+
+然后创建 locale.conf 文件，并编辑设定 LANG 变量，比如：
+LANG=en_US.UTF-8
+
+
+后面的还在鸽，敬请谅解
+
+References:
+[1] https://wiki.archlinuxcn.org/wiki/%E5%9C%A8_WSL_%E4%B8%8A%E5%AE%89%E8%A3%85_Arch_Linux
+[2] https://wiki.archlinuxcn.org/wiki/%E7%94%A8%E6%88%B7%E5%92%8C%E7%94%A8%E6%88%B7%E7%BB%84
+[3] https://wiki.archlinuxcn.org/wiki/Sudo/
+[4] https://wiki.archlinuxcn.org/wiki/%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97
+[5] https://help.mirrors.cernet.edu.cn/archlinux/
+[6] https://help.mirrors.cernet.edu.cn/archlinuxcn/
+]]></content>
+      <categories>
+        <category>archlinux</category>
+        <category>wsl</category>
+      </categories>
+      <tags>
+        <tag>archlinux</tag>
+        <tag>wsl</tag>
+        <tag>installation</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机基础问答</title>
+    <url>/2026/09/07/csbriefing/</url>
+    <content><![CDATA[计算机基础问答 20 题
+1. BIOS一般集成在哪种芯片中？简述BIOS的基本功能。
+芯片：BIOS（基本输入输出系统）一般集成在主板上的ROM芯片（具体为Flash ROM或EEPROM）中。
+基本功能：
+开机自检（POST）：检测CPU、内存、键盘等关键硬件是否存在并正常工作。
+硬件初始化：对主板芯片组、显卡、硬盘等设备进行初始化和参数设置。
+引导操作系统：根据CMOS中设定的启动顺序，从硬盘、光盘或USB设备加载操作系统引导程序。
+提供基本I&#x2F;O服务：为操作系统提供底层硬件访问的例程（如键盘输入、屏幕显示）。
+
+
+
+
+2. CPU内部主要有哪几部分组成？简述每部分的基本功能。CPU主要由以下几部分组成：
+
+算术逻辑单元（ALU）：负责执行所有算术运算（加、减、乘、除）和逻辑运算（与、或、非、异或）。
+控制单元（CU）：负责从内存取指令，对指令进行译码，并产生控制信号，协调各部件完成指令规定的操作。
+寄存器组（Registers）：CPU内部高速存储单元，用于临时暂存指令、数据和内存地址，减少CPU访问内存的频率。
+高速缓存（Cache）：位于CPU内部或封装附近，用于缓存频繁使用的数据和指令，弥合CPU与主存之间的速度差异。
+
+
+3. 简述内存的基本功能。内存（主存）的基本功能是临时存储正在运行的程序代码和程序处理的数据。CPU直接从内存中读取指令和数据，运算结果也暂存在内存中。其特点是读写速度快（相对于外存），但断电后数据会丢失（易失性）。
+
+4. 简述显卡的基本功能。显卡（图形处理卡）的基本功能是将CPU送来的图像数据转换成显示器可以显示的模拟或数字信号，控制显示器的正确显示。现代显卡还包含GPU（图形处理器），能够并行处理大量图形渲染计算（如3D场景、纹理映射），大幅减轻CPU的负担。
+
+5. 图灵模型最重要的贡献是什么？图灵模型（图灵机）最重要的贡献是提出了通用计算机的数学逻辑模型，证明了任何可计算的问题都可以用一台具有无限存储带的简单机器来求解。它奠定了“存储程序”概念的理论基础，是现代计算机体系结构（冯·诺依曼架构）的先驱，并定义了计算的极限（可判定性理论）。
+
+6. 位置化数字系统转换(1) 已知 \(K, L, S_i, b\)，该数的十进制值为：\[
+D = \pm \left( \sum_{i=0}^{K-1} S_i \cdot b^i + \sum_{j=1}^{L} S_{-j} \cdot b^{-j} \right)
+\]即：\[
+D = \pm (S_{K-1}b^{K-1} + \cdots + S_1 b^1 + S_0 b^0 + S_{-1}b^{-1} + S_{-2}b^{-2} + \cdots + S_{-L}b^{-L})
+\]
+(2) 若 \(b=2, K=7, L=8\)，最大正数意味着所有位（包括整数和小数位）均为1。整数部分最大值：\(2^{7} - 1 = 127\)小数部分最大值：\(1 - 2^{-8} = 1 - \frac{1}{256} = 0.99609375\)所以最大十进制数值为：\(\mathbf{127.99609375}\)
+
+7. 十进制正数转二进制的UML图与正确性证明UML活动图（文本描述流程）：
+
+开始
+将数分为整数部分 \(N\) 和小数部分 \(F\)。
+整数部分循环（直到 \(N=0\)）：
+将 \(N\) 除以 2，记录余数（0或1）。
+更新 \(N = \lfloor N/2 \rfloor\)。
+将余数依次压入栈（最后出栈即为二进制整数高位到低位）。
+
+
+小数部分循环（直到 \(F=0\) 或达到精度）：
+将 \(F\) 乘以 2，记录整数位（0或1）。
+更新 \(F = F \times 2 - \text{整数位}\)。
+顺序输出整数位（即为二进制小数位）。
+
+
+合并整数部分和小数部分，结束。
+
+正确性证明：设十进制正数 \(X\)，其二进制展开为 \(X = \sum_{i=-\infty}^{n} d_i 2^i\)，其中 \(d_i \in \{0,1\}\)。
+
+整数部分：对 \(X\) 取整，除以2。由于 \(d_0\) 决定奇偶性，\(X \mod 2 = d_0\)，余数即最低位。反复除以2并取余，每次分离出 \(d_0, d_1, ...\)，根据多项式展开的唯一性，此过程穷举了所有系数。
+小数部分：乘以2，得到 \(2F = d_{-1} + \sum_{i=-\infty}^{-2} d_i 2^{i+1}\)，整数部分恰好是 \(d_{-1}\)。反复乘2取整，依次分离出 \(d_{-1}, d_{-2}, ...\)。根据基展开的唯一性，算法收敛于正确值。
+
+
+8. 十进制数178.2转十六进制（精确到1位小数）
+整数部分 178：
+\(178 \div 16 = 11\) 余 \(2\) （最低位）
+\(11 \div 16 = 0\) 余 \(11\)（即十六进制 \(B\)）
+整数结果：\(B2\)
+
+
+小数部分 0.2：
+\(0.2 \times 16 = 3.2\) → 取整数位 \(3\)，剩余 \(0.2\)
+因为只需精确到1位小数，此时已得到第一位小数 \(3\)。
+
+
+转换结果：\(\mathbf{(178.2)_{10} \approx (B2.3)_{16}}\)
+
+
+9. 证明正整数N所需二进制位数设二进制位数为 \(K\)，则能表示的最大值为 \(2^K - 1\)，最小值为 \(2^{K-1}\)（K位二进制中，最高位为1，其余为0）。要表示 \(N\)，必须满足：\[
+2^{K-1} \le N \le 2^K - 1
+\]取以2为底的对数：\[
+K-1 \le \log_2 N &lt; K
+\]因为 \(\log_2 N &lt; K\)，且 \(\log_2 N \ge K-1\)，所以小于等于 \(\log_2 N\) 的最大整数为 \(K-1\)，即：\[
+\lfloor \log_2 N \rfloor = K-1
+\]移项得：\[
+K = \lfloor \log_2 N \rfloor + 1
+\]得证。
+
+10. 十六进制数 A.C 转二进制十六进制每位对应4位二进制：
+
+\(A = 10_{10} = (1010)_2\)
+\(C = 12_{10} = (1100)_2\)
+小数点是分隔符。所以：\[
+(A.C)_{16} = (1010.1100)_2
+\]可省略末尾零：\(\mathbf{(1010.11)_2}\)
+
+
+11. 多媒体数据类型及存储形式多媒体数据类型包含：文本（Text）、图形&#x2F;图像（Image&#x2F;Graphics）、音频（Audio）、视频（Video）和动画（Animation）。它们在计算机中都以二进制位模式（0和1的序列） 的形式存储，即经过采样、量化、编码（压缩）后转化为数字信号。
+
+12. 什么是位模式？指令和数据都以位模式储存吗？
+位模式：指由固定数量的二进制位（0和1）组成的特定排列序列，是计算机内部表示所有信息的基本单位。
+储存形式：是的。在冯·诺依曼体系结构中，指令和数据都以二进制位模式存储在内存中。计算机依靠程序计数器（PC）和指令周期的不同阶段（取指 vs 执行）来区分当前读取的是指令还是数据。
+
+
+13. 符号加绝对值法复原十进制数位模式：\((10011111)_2\)
+
+第1位（符号位）为 1，表示负数。
+剩余7位为绝对值：\(0011111)_2 = 0\times2^6 + 0\times2^5 + 1\times2^4 + 1\times2^3 + 1\times2^2 + 1\times2^1 + 1\times2^0 = 16+8+4+2+1 = 31\)
+复原结果：\(\mathbf{-31}\)
+
+
+14. 8位二进制补码表示法的最小十进制数值最小值是 -128。原因：8位补码的表示范围为 \(-2^{7} \sim 2^{7}-1\)，即 -128 到 127。补码中，最高位（符号位）的权值为 \(-2^{7} = -128\)。要得到最小数，将最高位设为1（贡献-128），其余所有位设为0，即二进制 \((10000000)_2\) 表示 \(-128\)。若其余位有任何1，数值会变大（如10000001 &#x3D; -127）。
+
+15. XOR（异或）运算对位模式 \(10011001\) 和 \(10101110\) 逐位进行异或（相同为0，不同为1）：
+  1 0 0 1 1 0 0 1^ 1 0 1 0 1 1 1 0--------------------  0 0 1 1 0 1 1 1
+结果为：\(\mathbf{(00110111)_2}\)
+
+16. 补码带来减法简便的原因及正确性证明原因：补码将减法统一为加法运算，因此CPU内部只需设计加法器即可完成加减法，无需独立的减法器硬件。
+证明（模 \(2^n\) 系统下）：对于 \(n\) 位补码，模数为 \(2^n\)。负数 \(X\) 的补码定义为 \([X]_{\text{补}} = 2^n + X\)（当 \(X&lt;0\) 时，实际为 \(2^n - |X|\)）。
+设要计算 \(A - B\)，其中 \(A, B\) 在表示范围内。因为 \(-B\) 的补码为 \([-B]_{\text{补}} = 2^n - B\)（若B&gt;0）。于是：\[
+[A - B]_{\text{补}} \equiv 2^n + A - B \pmod{2^n}
+\]而：\[
+[A]_{\text{补}} + [-B]_{\text{补}} = (2^n + A) + (2^n - B) = 2^n + (2^n + A - B) \equiv 2^n + A - B \pmod{2^n}
+\]两者同余，即补码加法结果正是 \(A-B\) 的补码。证毕。
+
+17. 补码格式减法运算A &#x3D; \((00011001)_2\) &#x3D; \(25_{10}\)B &#x3D; \((11101111)_2\)，首位为1，是负数。求B的真值：
+
+取反：\(00010000\)
+加1：\(00010001\) &#x3D; \(17_{10}\)
+所以 B &#x3D; \(-17_{10}\)
+
+计算 \(A - B = 25 - (-17) = 42_{10}\)
+补码运算步骤（\(A - B = A + (-B)\)）：
+
+求 \(-B\) 的补码：对B的位模式取反加1。
+B取反：\(00010000\)
+加1：\(00010001\)（即 \(+17\) 的补码）
+
+
+A加上 \(-B\)：  00011001+ 00010001-----------  00101010
+结果 \((00101010)_2 = 2^5 + 2^3 + 2^1 = 32+8+2 = 42_{10}\)，与预期一致。
+
+
+18. 程序计数器的功能程序计数器（PC，Program Counter）是CPU内部的一个寄存器，其功能是存放下一条将要执行的指令在内存中的地址。在顺序执行时，每取出一条指令，PC自动增加（指向下一条指令）；当遇到跳转、循环或子程序调用时，PC会被修改为目标地址，从而控制程序的执行流。
+
+19. RAM和ROM的区别；“随机”的含义
+区别：
+RAM（随机存取存储器）：可读可写，断电后数据丢失（易失性），速度快，用于存储运行中的程序和数据。
+ROM（只读存储器）：只能读取（通常不能随意写入），断电后数据保留（非易失性），用于存储固件（如BIOS）。
+
+
+“随机”的含义：指存取时间与数据存储的物理位置无关。CPU可以在任意时刻以相同的速度访问任意地址单元，而不必像磁带等顺序介质那样按顺序查找。
+
+
+20. SRAM 和 DRAM 的优缺点
+SRAM（静态随机存取存储器）：
+优点：速度快（不需要定期刷新），功耗较低（静态电流）。
+缺点：集成度低（每个单元需要6个晶体管），成本高，容量小。
+
+
+DRAM（动态随机存取存储器）：
+优点：集成度高（每个单元只需1个晶体管和1个电容），成本低，容量大。
+缺点：速度较慢（相对SRAM），需要周期性刷新（因电容会漏电），功耗略高。
+
+
+
+
+Note:
+
+内容由 AI 生成，请注意甄别；
+《计算机科学导论》（第 5 版）中，认为 CPU 由算术逻辑单元、控制单元和寄存器组三个部分组成。
+
+]]></content>
+      <categories>
+        <category>计算机基础</category>
+      </categories>
+      <tags>
+        <tag>计算机科学概论</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Math Formula Test</title>
+    <url>/2026/09/08/math-test/</url>
+    <content><![CDATA[Euler’s identity (inline math): $e^{i\pi} + 1 = 0$.
+Subscripts and fractions (inline math): $a_i + b_j = c_k$, $\frac{1}{1+x^2}$, $\sqrt{x^2 + y^2}$.
+Gaussian integral (display math):
+$$
+\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+$$
+Matrix (display math, contains \ line breaks and &amp; alignment):
+$$
+A = \begin{pmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{pmatrix}
+$$
+Multi-line derivation (aligned environment, contains \ line breaks):
+$$
+\begin{aligned}
+\nabla \cdot \mathbf{E} &amp;= \frac{\rho}{\varepsilon_0} \\
+\nabla \cdot \mathbf{B} &amp;= 0
+\end{aligned}
+$$
+All formulas above should render normally with light-colored text.
+]]></content>
+      <categories>
+        <category>Test</category>
+      </categories>
+      <tags>
+        <tag>math</tag>
+        <tag>latex</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Via 主页显示时间及秒速进度条</title>
+    <url>/2026/07/17/via-clock/</url>
+    <content><![CDATA[
+html
+
+&lt;div id=&quot;time&quot;&gt;-- --&lt;/div&gt;&lt;div id=&quot;timeprobg&quot;&gt;    &lt;div id=&quot;timepro&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;script&gt;    (function() &#123;        const timeElement = document.getElementById(&#x27;time&#x27;);        const progressFill = document.getElementById(&#x27;timepro&#x27;);        function padZero(num) &#123;            return num &lt; 10 ? &#x27;0&#x27; + num : &#x27;&#x27; + num;        &#125;        let lastMinutes = -1;        function updateTimeText(now) &#123;            const hours = now.getHours();            const minutes = now.getMinutes();            if (minutes !== lastMinutes) &#123;                timeElement.textContent = padZero(hours) + &#x27;:&#x27; + padZero(minutes);                lastMinutes = minutes;            &#125;        &#125;        function updateProgress(now) &#123;            const seconds = now.getSeconds();            const ms = now.getMilliseconds();            let percent = ((seconds + ms / 1000) / 60) * 100;            percent = Math.min(100, Math.max(0, percent));            progressFill.style.width = percent + &#x27;%&#x27;;        &#125;        let rafId = null;        let lastTimestamp = 0;        function tick() &#123;            const now = new Date();            updateTimeText(now);            updateProgress(now);            rafId = requestAnimationFrame(tick);        &#125;        tick();        window.cleanupTimeWidget = function() &#123;            if (rafId) cancelAnimationFrame(rafId);        &#125;;    &#125;)();&lt;/script&gt;
+
+
+css
+
+#time &#123;    font-size: 57px;    font-weight: 600;    color: #39c5bb;&#125;#timeprobg &#123;    margin: auto;    width: 180px;    height: 6px;    background: #d1d1d1;    border-radius: 10px;    overflow: hidden;&#125;#timepro &#123;    position: relative;    width: 0%;    border-radius: 10px;    height: 100%;    background: #66ccff;    transition: width 0.05s linear;&#125;#timepro::after &#123;    content: &#x27;&#x27;;    position: absolute;    right: 0;    top: 0;    width: 6px;    height: 100%;    background: #ffffff;    border-radius: 50%;    box-shadow: 0 0 8px 3px rgba(200, 180, 255, 0.8);    opacity: 0.8;    transition: opacity 0.3s;&#125;#timepro[style*=&quot;width:0%&quot;]::after,#timepro[style*=&quot;width:0%&quot;]::after &#123;    opacity: 0;&#125;
+]]></content>
+      <categories>
+        <category>网页组件</category>
+      </categories>
+      <tags>
+        <tag>HTML</tag>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>zsh 美化方案</title>
+    <url>/2024/08/15/zsh-customization/</url>
+    <content><![CDATA[安装 zshsudo &lt;PackageManager&gt; install zsh
+
+系统的包管理器Linux: apt, dnf, pacman 等
+macOS: brew
+（注：现在 Mac 使用 zsh 作为默认 Shell）
+Windows：用 git-bashgit-bash 下载
+Windows 版 zsh 下载
+把解压两次后得到的文件放在 git 安装目录下：
+zsh-&lt;version&gt;-x86_64/	etc/	usr/	.BUILDINFO	.INSTALL	.MTREE	.PKGINFO
+
+打开 git bash，先输入 zsh 检验是否安装成功，自动出现一个配置界面则安装成功，输入 0 退出并创建 .zshrc 配置文件，将文末的配置文件粘贴进 .zshrc
+要配置默认启动 zsh，执行：
+vim ~/.bashrcif [ -t 1 ]; then	exec zshfi
+
+安装插件和主题包名：git ttf-font-awesome zsh-autosuggestions zsh-syntax-highlighting zsh-theme-powerlevel10k，如果没有 10k 则安装 zsh-theme-powerlevel9k
+将 Powerlevel10k git 存储库克隆到相应的目录：
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+
+完成后，将 Powerlevel10k 添加到配置文件中：
+echo &#x27;source ~/powerlevel10k/powerlevel10k.zsh-theme&#x27; &gt;&gt;~/.zshrc
+
+最后，使用以下命令获取文件：
+source ~/.zshrc
+
+更改默认的shell终端输入命令：
+chsh -s /usr/bin/zsh
+
+然后注销并重新登录，就启用了zsh
+配置配置zsh首次进入zsh会自动出现一个配置界面，这个界面可以根据需要自定义zsh，输入1进入配置界面
+
+[!NOTE]配置界面中各个菜单代表的意思分别是：1：设置命令历史记录相关的选项2：设置命令补全系统3：设置热键4：选择各种常见的选项，只需要选择“开”或者“关”0：退出，并使用空白（默认）配置a：终止设置并退出q：退出
+
+这里根据提示，然后按照个人喜好配置。配置好后，会在用户目录下生成 .zshrc 文件。若需再次配置，则：
+p10k configure
+
+配置插件和主题（~&#x2F;.zshrc）powerlevel10k 主题：
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zshsource /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zshsource /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+
+powerlevel9k 主题：
+source /usr/share/powerlevel9k/powerlevel9k.zsh-themesource /usr/share/zsh-autosuggestions/zsh-autosuggestions.zshsource /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+也可以看结尾的配置文件，复制所有内容到~&#x2F;.zshrc，然后按需修改。powerlevel10k 主题在首次进入时，会触发一个配置界面，可以根据提示进行相应的选择，配置完成后即可使用。
+（可选）Oh my zshsh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+是否改变默认 shell: Y
+
+克隆 powerlevel10k 主题：
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $&amp;#123;ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom&#125;/themes/powerlevel10k
+
+修改~/.zshrc中的ZSH_THEME=&quot;powerlevel10k/powerlevel10k&quot;
+建议下载并安装 MesloLGS NF 字体，否则图标会显示乱码
+
+插件：
+
+自动建议：
+git clone https://github.com/zsh-users/zsh-autosuggestions.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions
+
+语法高亮：
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting
+
+在~/.zshrc的plugins数组中添加插件名，执行source ~/.zshrc生效
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor root line)ZSH_HIGHLIGHT_PATTERNS=(&#x27;rm -rf *&#x27; &#x27;fg=white,bold,bg=red&#x27;)plugins=(    adb    command-not-found    extract    deno    docker    git    github    gitignore    history-substring-search    node    npm    nvm    yarn    volta    vscode    sudo    web-search    z    zsh-autosuggestions    zsh-syntax-highlighting    ohmyzsh-full-autoupdate)
+
+配置文件复制所有内容到~&#x2F;.zshrc，然后按需修改，主要修改 alias 部分，以及删去ibus输入法相关配置。
+
+[!NOTE]若使用 powerlevel9k 主题，请把开头 source 部分改为：
+source /usr/share/powerlevel9k/powerlevel9k.zsh-themesource /usr/share/zsh-autosuggestions/zsh-autosuggestions.zshsource /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+配置如下：
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zshsource /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zshsource /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme#color&#123;&#123;&#123;autoload colors &amp;&amp; colors#命令别名 &#123;&#123;&#123;alias cp=&#x27;cp -i&#x27;alias mv=&#x27;mv -i&#x27;alias rm=&#x27;rm -i&#x27;alias ls=&#x27;ls -a --color=auto&#x27;alias grep=&#x27;grep --color=auto&#x27;#终端代理function proxy_on() &#123;    export http_proxy=http://127.0.0.1:7890    export https_proxy=$http_proxy&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    &lt;span class="built_in"&gt;print&lt;/span&gt; &lt;span class="string"&gt;&amp;quot;终端代理已开启。&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;function&lt;/span&gt; &lt;span class="function"&gt;&lt;span class="title"&gt;proxy_off&lt;/span&gt;&lt;/span&gt;()&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    &lt;span class="built_in"&gt;unset&lt;/span&gt; http_proxy https_proxy&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    &lt;span class="built_in"&gt;print&lt;/span&gt; &lt;span class="string"&gt;&amp;quot;终端代理已关闭。&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;for&lt;/span&gt; color &lt;span class="keyword"&gt;in&lt;/span&gt; RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; &lt;span class="keyword"&gt;do&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	&lt;span class="built_in"&gt;eval&lt;/span&gt; _&lt;span class="variable"&gt;$color=&#x27;%&#123;$terminfo[bold]$fg[$&amp;#123;(L)color&amp;#125;]%&amp;#125;&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	&lt;span class="built_in"&gt;eval&lt;/span&gt; &lt;span class="variable"&gt;$color=&#x27;%&#123;$fg[$&#123;(L)color&#125;]%&#125;&#x27;	(( count = $count&lt;/span&gt; + &lt;span class="number"&gt;1&lt;/span&gt; ))&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;done&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;FINISH=&lt;span class="string"&gt;&amp;quot;%&amp;#123;&lt;span class="variable"&gt;$terminfo[sgr0]%&#125;&quot;#&#125;&#125;&#125;#命令提示符RPROMPT=$(&lt;span class="built_in"&gt;echo&lt;/span&gt; &lt;span class="string"&gt;&amp;quot;&lt;span class="variable"&gt;$RED%D %T$FINISH&lt;/span&gt;&amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;PROMPT=$(echo &quot;$CYAN&lt;/span&gt;%n@&lt;span class="variable"&gt;$YELLOW%M:$GREEN&lt;/span&gt;%/&lt;span class="variable"&gt;$_YELLOW&gt;$FINISH&lt;/span&gt; &amp;quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#PROMPT=$(echo &quot;$BLUE%M$GREEN%/#$CYAN%n@$BLUE%M:$GREEN%/$_YELLOW&gt;&gt;&gt;$FINISH &amp;quot;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#标题栏、任务栏样式&amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;case&lt;/span&gt; &lt;span class="variable"&gt;$TERM in (*xterm*|*rxvt*|(dt|k|E)term)	precmd () &#123; print -Pn &quot;\e]0;%n@%M//%/\a&quot; &#125;	preexec () &#123; print -Pn &quot;\e]0;%n@%M//%/\ $1&lt;/span&gt;\a&amp;quot;&lt;/span&gt; &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;esac&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#编辑器&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;export&lt;/span&gt; EDITOR=vim&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#关于历史记录的配置 &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#历史记录条目数量&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;export&lt;/span&gt; HISTSIZE=10000&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#注销后保存的历史记录条目数量&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;export&lt;/span&gt; SAVEHIST=10000&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#历史记录文件&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;export&lt;/span&gt; HISTFILE=~/.zhistory&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#以附加的方式写入历史记录&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; INC_APPEND_HISTORY&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#如果连续输入的命令相同，历史记录中只保留一个&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; HIST_IGNORE_DUPS&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#为历史记录中的命令添加时间戳&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; EXTENDED_HISTORY      &lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#启用 cd 命令的历史记录，cd -[TAB]进入历史路径&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; AUTO_PUSHD&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#相同的历史路径只保留一个&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; PUSHD_IGNORE_DUPS&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#在命令前添加空格，不将此命令添加到记录文件中&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#setopt HIST_IGNORE_SPACE&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;# 每个目录独立历史&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="function"&gt;&lt;span class="title"&gt;cd&lt;/span&gt;&lt;/span&gt;() &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    &lt;span class="built_in"&gt;builtin&lt;/span&gt; &lt;span class="built_in"&gt;cd&lt;/span&gt; &lt;span class="string"&gt;&amp;quot;&lt;span class="variable"&gt;$@&quot;    fc -W    local HISTDIR=&quot;$HOME&lt;/span&gt;/.zsh_history&lt;span class="variable"&gt;$PWD&quot;    [[ -d &quot;$HISTDIR&lt;/span&gt;&amp;quot;&lt;/span&gt; ]] || &lt;span class="built_in"&gt;mkdir&lt;/span&gt; -p &lt;span class="string"&gt;&amp;quot;&lt;span class="variable"&gt;$HISTDIR&quot;    export HISTFILE=&quot;$HISTDIR&lt;/span&gt;/zhistory&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    &lt;span class="built_in"&gt;touch&lt;/span&gt; &lt;span class="variable"&gt;$HISTFILE    local ohistsize=$HISTSIZE&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    HISTSIZE=0&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    HISTSIZE=&lt;span class="variable"&gt;$ohistsize    fc -R&#125;mkdir -p $HOME&lt;/span&gt;/.zsh_history&lt;span class="variable"&gt;$PWDexport HISTFILE=&quot;$HOME&lt;/span&gt;/.zsh_history&lt;span class="variable"&gt;$PWD/zhistory&quot;function allhistory &#123; cat $(find &lt;span class="variable"&gt;$HOME/.zsh_history -name zhistory) &#125;function convhistory &#123;	sort $1&lt;/span&gt; | &lt;span class="built_in"&gt;uniq&lt;/span&gt; |&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;		sed &lt;span class="string"&gt;&amp;#x27;s/^:\([0-9]*\):[0-9]*;\(.*\)/\1::::::\2/&amp;#x27;&lt;/span&gt; |&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;		awk -F&lt;span class="string"&gt;&amp;quot;::::::&amp;quot;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;&amp;#123; $1=strftime(&quot;%Y-%m-%d %T&quot;,$1) &amp;quot;|&amp;quot;; print &amp;#125;&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#使用 histall 命令查看全部历史记录&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;function&lt;/span&gt; histall &amp;#123; convhistory =(allhistory) | sed &lt;span class="string"&gt;&amp;#x27;/^.\&amp;#123;20\&amp;#125; *cd/i\\&amp;#x27;&lt;/span&gt; &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#使用 hist 查看当前目录历史记录&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;function&lt;/span&gt; hist &amp;#123; convhistory &lt;span class="variable"&gt;$HISTFILE &#125;#全部历史记录 top50function top50 &#123; allhistory | awk -F&#x27;:[ 0-9]*:[0-9]*;&#x27; &#x27;&#123; $1=&amp;quot;&amp;quot; ; print &amp;#125;&amp;#x27;&lt;/span&gt; | sed &lt;span class="string"&gt;&amp;#x27;s/ /\n/g&amp;#x27;&lt;/span&gt; | sed &lt;span class="string"&gt;&amp;#x27;/^$/d&#x27; | sort | uniq -c | sort -nr | head -n 50 &#125;#&#125;&#125;&#125;#杂项 &#123;&#123;&#123;#允许在交互模式中使用注释  例如：#cmd #这是注释setopt INTERACTIVE_COMMENTS      #启用自动 cd，输入目录名回车进入目录#稍微有点混乱，不如 cd 补全实用setopt AUTO_CD#扩展路径#/v/c/p/p =&gt; /var/cache/pacman/pkgsetopt complete_in_word#禁用 core dumpslimit coredumpsize 0#Emacs风格 键绑定bindkey -e#bindkey -v#设置 [DEL]键 为向后删除#bindkey &quot;\e[3~&quot; delete-char#以下字符视为单词的一部分WORDCHARS=&#x27;*?_-[]~=&amp;;!#$%^()&amp;#123;&amp;#125;&amp;lt;&amp;gt;&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#自动补全功能 &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; AUTO_LIST&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; AUTO_MENU&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#开启此选项，补全时会直接选中菜单项&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#setopt MENU_COMPLETE&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;autoload&lt;/span&gt; -U compinit&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;compinit&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#自动补全缓存&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#zstyle &amp;#x27;:completion::complete:*&amp;#x27; use-cache on&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#zstyle &amp;#x27;:completion::complete:*&amp;#x27; cache-path .zcache&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#zstyle &amp;#x27;:completion:*:cd:*&amp;#x27; ignore-parents parent pwd&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#自动补全选项&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; verbose &lt;span class="built_in"&gt;yes&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; menu &lt;span class="keyword"&gt;select&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:*:default&amp;#x27;&lt;/span&gt; force-list always&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; select-prompt &lt;span class="string"&gt;&amp;#x27;%SSelect:  lines: %L  matches: %M  [%p]&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:match:*&amp;#x27;&lt;/span&gt; original only&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion::prefix-1:*&amp;#x27;&lt;/span&gt; completer _complete&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:predict:*&amp;#x27;&lt;/span&gt; completer _complete&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:incremental:*&amp;#x27;&lt;/span&gt; completer _complete _correct&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; completer _complete _prefix _correct _prefix _match _approximate&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#路径补全&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; &lt;span class="built_in"&gt;expand&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;yes&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; squeeze-shlashes &lt;span class="string"&gt;&amp;#x27;yes&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion::complete:*&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;\\&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#彩色补全菜单&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;eval&lt;/span&gt; $(dircolors -b)export ZLSCOLORS=&quot;$&amp;#123;LS_COLORS&amp;#125;&lt;/span&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zmodload&lt;/span&gt; zsh/complist&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; list-colors &lt;span class="variable"&gt;$&#123;(s.:.)LS_COLORS&#125;zstyle &#x27;:completion:*:*:kill:*:processes&#x27; list-colors &#x27;=(#b) #([0-9]#)*=0=01;31&#x27;#修正大小写zstyle &#x27;:completion:*&#x27; matcher-list &#x27;&#x27; &#x27;m:&#123;a-zA-Z&#125;=&#123;A-Za-z&#125;&#x27;#错误校正zstyle &#x27;:completion:*&#x27; completer _complete _match _approximatezstyle &#x27;:completion:*:match:*&#x27; original onlyzstyle &#x27;:completion:*:approximate:*&#x27; max-errors 1 numeric#kill 命令补全compdef pkill=killcompdef pkill=killallzstyle &#x27;:completion:*:*:kill:*&#x27; menu yes selectzstyle &#x27;:completion:*:*:*:*:processes&#x27; force-list alwayszstyle &#x27;:completion:*:processes&#x27; command &#x27;ps -au$USER&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#补全类型提示分组&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:matches&amp;#x27;&lt;/span&gt; group &lt;span class="string"&gt;&amp;#x27;yes&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*&amp;#x27;&lt;/span&gt; group-name &lt;span class="string"&gt;&amp;#x27;&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:options&amp;#x27;&lt;/span&gt; description &lt;span class="string"&gt;&amp;#x27;yes&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:options&amp;#x27;&lt;/span&gt; auto-description &lt;span class="string"&gt;&amp;#x27;%d&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:descriptions&amp;#x27;&lt;/span&gt; format $&#x27;\e[01;33m -- %d --\e[0m&#x27;zstyle &#x27;:completion:*:messages&#x27; format $&lt;span class="string"&gt;&amp;#x27;\e[01;35m -- %d --\e[0m&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:warnings&amp;#x27;&lt;/span&gt; format $&#x27;\e[01;31m -- No Matches Found --\e[0m&#x27;zstyle &#x27;:completion:*:corrections&#x27; format $&lt;span class="string"&gt;&amp;#x27;\e[01;32m -- %d (errors: %e) --\e[0m&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;# cd ~ 补全顺序&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:-tilde-:*&amp;#x27;&lt;/span&gt; group-order &lt;span class="string"&gt;&amp;#x27;named-directories&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;path-directories&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;users&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;expand&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;##行编辑高亮模式 &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;# Ctrl+@ 设置标记，标记和光标点之间为 region&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;# 选中区域、特殊字符、搜索关键字&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;zle_highlight=(&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    region:&lt;span class="built_in"&gt;bg&lt;/span&gt;=magenta&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    special:bold&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;    isearch:underline&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;##空行(光标在行首)补全 &amp;quot;cd &amp;quot; &amp;#123;&amp;#123;&amp;#123;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;user-&lt;span class="function"&gt;&lt;span class="title"&gt;complete&lt;/span&gt;&lt;/span&gt;()&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;case&lt;/span&gt; &lt;span class="variable"&gt;$BUFFER in	&quot;&quot; )                       # 空行填入 &quot;cd &quot;		BUFFER=&quot;cd &quot;		zle end-of-line		zle expand-or-complete		;;	&quot;cd --&quot; )                  # &quot;cd --&quot; 替换为 &quot;cd +&quot;		BUFFER=&quot;cd +&quot;		zle end-of-line		zle expand-or-complete		;;	&quot;cd +-&quot; )                  # &quot;cd +-&quot; 替换为 &quot;cd -&quot;		BUFFER=&quot;cd -&quot;		zle end-of-line		zle expand-or-complete		;;	* )		zle expand-or-complete		;;esac&#125;zle -N user-completebindkey &quot;\t&quot; user-complete#&#125;&#125;&#125;##在命令前插入 sudo &#123;&#123;&#123;#定义功能sudo-command-line() &#123;[[ -z $BUFFER&lt;/span&gt; ]] &amp;amp;&amp;amp; &lt;span class="built_in"&gt;zle&lt;/span&gt; up-history&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;[[ &lt;span class="variable"&gt;$BUFFER != sudo\ * ]] &amp;&amp; BUFFER=&quot;sudo $BUFFER&lt;/span&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zle&lt;/span&gt; end-of-line                 &lt;span class="comment"&gt;#光标移动到行末&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zle&lt;/span&gt; -N sudo-command-line&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#定义快捷键为： [Esc] [Esc]&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;bindkey&lt;/span&gt; &lt;span class="string"&gt;&amp;quot;\e\e&amp;quot;&lt;/span&gt; sudo-command-line&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#[Esc][h] man 当前命令时，显示简短说明&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;unalias&lt;/span&gt; run-help 2&amp;gt;/dev/null&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;autoload&lt;/span&gt; run-help&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#历史命令 top10&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;alias&lt;/span&gt; top10=&lt;span class="string"&gt;&amp;#x27;print -l  $&#123;(o)history%% *&#125; | uniq -c | sort -nr | head -n 10&#x27;#&#125;&#125;&#125;#路径别名 &#123;&#123;&#123;#进入相应的路径时只要 cd ~xxxhash -d A=&quot;/media/ayu/dearest&quot;hash -d H=&quot;/media/data/backup/ayu&quot;hash -d E=&quot;/etc/&quot;hash -d D=&quot;/home/ayumi/Documents&quot;#&#125;&#125;&#125;##for Emacs &#123;&#123;&#123;#在 Emacs终端 中使用 Zsh 的一些设置 不推荐在 Emacs 中使用它#if [[ &quot;$TERM&amp;quot; == &amp;quot;dumb&amp;quot; ]]; then&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#setopt No_zle&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#PROMPT=&amp;#x27;%n@%M %/&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;gt;&amp;gt;&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#alias ls=&amp;#x27;ls -F&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#fi&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#123;&amp;#123;&amp;#123;自定义补全&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#补全 ping&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zstyle&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;:completion:*:ping:*&amp;#x27;&lt;/span&gt; hosts 192.168.1.&amp;#123;1,50,51,100,101&amp;#125; www.google.com&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#补全 ssh scp sftp 等&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#zstyle -e &amp;#x27;:completion::*:*:*:hosts&amp;#x27; hosts &amp;#x27;reply=($&#123;=$&amp;#123;$&#123;(f)&quot;$(cat &amp;#123;/etc/ssh_,~/.ssh/known_&amp;#125;hosts(|2)(N) /dev/null)&amp;quot;&amp;#125;%%[# ]*&amp;#125;//,/ &amp;#125;)&amp;#x27;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#&amp;#123;&amp;#123;&amp;#123; F1 计算器&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;arith-eval-&lt;span class="function"&gt;&lt;span class="title"&gt;echo&lt;/span&gt;&lt;/span&gt;() &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;LBUFFER=&lt;span class="string"&gt;&amp;quot;&lt;span class="variable"&gt;$&#123;LBUFFER&#125;echo \$(( &amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;RBUFFER=&lt;span class="string"&gt;&amp;quot; ))&lt;span class="variable"&gt;$RBUFFER&quot;&#125;zle -N arith-eval-echobindkey &quot;^[[11~&quot; arith-eval-echo#&#125;&#125;&#125;####&#123;&#123;&#123;function timeconv &#123; date -d @$1&lt;/span&gt; +&lt;span class="string"&gt;&amp;quot;%Y-%m-%d %T&amp;quot;&lt;/span&gt; &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;# &amp;#125;&amp;#125;&amp;#125;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;zmodload&lt;/span&gt; zsh/mathfunc&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;autoload&lt;/span&gt; -U zsh-mime-setup&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;zsh-mime-setup&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; EXTENDED_GLOB&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#autoload -U promptinit&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#promptinit&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#prompt redhat&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; correctall&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;autoload&lt;/span&gt; compinstall&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="comment"&gt;#漂亮又实用的命令高亮界面&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="built_in"&gt;setopt&lt;/span&gt; extended_glob&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;TOKENS_FOLLOWED_BY_COMMANDS=(&lt;span class="string"&gt;&amp;#x27;|&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;||&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;;&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;&amp;amp;&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;&amp;amp;&amp;amp;&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;sudo&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;do&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;time&amp;#x27;&lt;/span&gt; &lt;span class="string"&gt;&amp;#x27;strace&amp;#x27;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;() &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;region_highlight=()&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;colorize=&lt;span class="literal"&gt;true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;start_pos=0&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;&lt;span class="keyword"&gt;for&lt;/span&gt; arg &lt;span class="keyword"&gt;in&lt;/span&gt; &lt;span class="variable"&gt;$&#123;(z)BUFFER&#125;; do	((start_pos+=$&amp;#123;#BUFFER[$start_pos+1,-1]&#125;-$&amp;#123;#&lt;span class="variable"&gt;$&#123;BUFFER[$start_pos+1,-1]## #&amp;#125;&lt;/span&gt;&amp;#125;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	((end_pos=&lt;span class="variable"&gt;$start_pos+$&amp;#123;#arg&amp;#125;&lt;/span&gt;))&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	&lt;span class="keyword"&gt;if&lt;/span&gt; &lt;span class="variable"&gt;$colorize; then		colorize=false		res=$(LC_ALL=C &lt;span class="built_in"&gt;builtin&lt;/span&gt; &lt;span class="built_in"&gt;type&lt;/span&gt; &lt;span class="variable"&gt;$arg 2&gt;/dev/null)		case $res&lt;/span&gt; &lt;span class="keyword"&gt;in&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;			*&lt;span class="string"&gt;&amp;#x27;reservrecolor-cmded word&amp;#x27;&lt;/span&gt;*)   style=&lt;span class="string"&gt;&amp;quot;fg=magenta,bold&amp;quot;&lt;/span&gt;;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;			*&lt;span class="string"&gt;&amp;#x27;alias for&amp;#x27;&lt;/span&gt;*)       style=&lt;span class="string"&gt;&amp;quot;fg=cyan,bold&amp;quot;&lt;/span&gt;;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;			*&lt;span class="string"&gt;&amp;#x27;shell builtin&amp;#x27;&lt;/span&gt;*)   style=&lt;span class="string"&gt;&amp;quot;fg=yellow,bold&amp;quot;&lt;/span&gt;;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;			*&lt;span class="string"&gt;&amp;#x27;shell function&amp;#x27;&lt;/span&gt;*)  style=&lt;span class="string"&gt;&amp;#x27;fg=green,bold&amp;#x27;&lt;/span&gt;;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;			*&lt;span class="string"&gt;&amp;quot;&lt;span class="variable"&gt;$arg is&quot;*)				[[ $arg&lt;/span&gt; = &lt;span class="string"&gt;&amp;#x27;sudo&amp;#x27;&lt;/span&gt; ]] &amp;amp;&amp;amp; style=&lt;span class="string"&gt;&amp;quot;fg=red,bold&amp;quot;&lt;/span&gt; || style=&lt;span class="string"&gt;&amp;quot;fg=blue,bold&amp;quot;&lt;/span&gt;;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;			*)                   style=&lt;span class="string"&gt;&amp;#x27;none,bold&amp;#x27;&lt;/span&gt;;;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;		&lt;span class="keyword"&gt;esac&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;		region_highlight+=(&lt;span class="string"&gt;&amp;quot;&lt;span class="variable"&gt;$start_pos $end_pos&lt;/span&gt; &lt;span class="variable"&gt;$style&quot;)	fi	[[ $&amp;#123;&lt;span class="variable"&gt;$&#123;TOKENS_FOLLOWED_BY_COMMANDS[(r)$&amp;#123;arg//|/\|&amp;#125;&lt;/span&gt;]&amp;#125;&lt;/span&gt;:+yes&amp;#125;&lt;/span&gt; = &lt;span class="string"&gt;&amp;#x27;yes&amp;#x27;&lt;/span&gt; ]] &amp;amp;&amp;amp; colorize=&lt;span class="literal"&gt;true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class="line"&gt;	start_pos=&lt;span class="variable"&gt;$end_posdone&#125;# 若已加载 zsh-syntax-highlighting，可删除以下代码块及其相关的 zle -N 绑定：check-cmd-self-insert() &#123; zle .self-insert &amp;&amp; recolor-cmd &#125;check-cmd-backward-delete-char() &#123; zle .backward-delete-char &amp;&amp; recolor-cmd &#125;zle -N self-insert check-cmd-self-insertzle -N backward-delete-char check-cmd-backward-delete-char
+
+
+Note: 
+
+部分内容含 AI 生成，请注意甄别；
+
+本次修改了大量格式问题和语法问题，增添了一些必要的说明
+
+
+References:
+[1] https://blog.csdn.net/u013566722/article/details/51231818
+]]></content>
+      <categories>
+        <category>终端美化</category>
+      </categories>
+      <tags>
+        <tag>zsh</tag>
+        <tag>oh-my-zsh</tag>
+        <tag>powerlevel10k</tag>
+      </tags>
+  </entry>
+</search>

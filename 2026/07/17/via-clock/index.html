@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <title>归档 | quan-1145 — Still under construction</title>
+  <title>Via 主页显示时间及秒速进度条 | quan-1145 — Still under construction</title>
   
     <link rel="icon" href="/favicon.ico">
   
@@ -24,13 +24,10 @@
   
   
     
-      <script>
-        window.MathJax = {
-          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-          svg: { fontCache: 'global' }
-        };
-      </script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
     
   
 
@@ -153,6 +150,18 @@
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#time</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">57px</span>;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">600</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#39c5bb</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#timeprobg</span> &#123;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">180px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">6px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#d1d1d1</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">overflow</span>: hidden;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#timepro</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">0%</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#66ccff</span>;</span><br><span class="line">    <span class="attribute">transition</span>: width <span class="number">0.05s</span> linear;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#timepro</span><span class="selector-pseudo">::after</span> &#123;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">6px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#ffffff</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">0</span> <span class="number">8px</span> <span class="number">3px</span> <span class="built_in">rgba</span>(<span class="number">200</span>, <span class="number">180</span>, <span class="number">255</span>, <span class="number">0.8</span>);</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0.8</span>;</span><br><span class="line">    <span class="attribute">transition</span>: opacity <span class="number">0.3s</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#timepro</span><span class="selector-attr">[style*=<span class="string">&quot;width:0%&quot;</span>]</span><span class="selector-pseudo">::after</span>,</span><br><span class="line"><span class="selector-id">#timepro</span><span class="selector-attr">[style*=<span class="string">&quot;width:0%&quot;</span>]</span><span class="selector-pseudo">::after</span> &#123;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
   </div>
+
+  
+  <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
+    <div class="terminal-toc__header">
+      <span class="terminal-toc__label">目录</span>
+      <button class="terminal-toc__toggle" id="toc-toggle" aria-label="Toggle TOC">[-]</button>
+    </div>
+    <nav class="terminal-toc__nav" id="toc-nav">
+      
+    </nav>
+  </aside>
+  
 
   <div class="terminal-post-footer">
     <div class="terminal-post-nav">
@@ -355,7 +364,7 @@
     <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
   </div>
 </div>
-<script src="/search.js"></script>
+<script src="/js/search.js"></script>
 
   
 <script src="/js/main.js"></script>

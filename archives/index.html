@@ -24,13 +24,10 @@
   
   
     
-      <script>
-        window.MathJax = {
-          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-          svg: { fontCache: 'global' }
-        };
-      </script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
     
   
 
@@ -354,7 +351,7 @@
     <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
   </div>
 </div>
-<script src="/search.js"></script>
+<script src="/js/search.js"></script>
 
   
 <script src="/js/main.js"></script>
