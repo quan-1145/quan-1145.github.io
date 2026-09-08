@@ -1305,7 +1305,8 @@ button:hover {
   overflow-x: auto;
 }
 .MathJax,
-mjx-container {
+mjx-container,
+.katex {
   color: var(--text-primary) !important;
 }
 mjx-container[display="true"] {

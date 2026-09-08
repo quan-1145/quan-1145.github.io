@@ -263,13 +263,15 @@
     var reduceMotion = window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var skipSelector = 'pre, code, script, style, noscript, textarea, svg, ' +
-      '.katex, .MathJax, .mermaid, [data-no-typewriter]';
+      '.katex, .MathJax, mjx-container, .mermaid, [data-no-typewriter]';
+    var mathRe = /\$\$|\$[^$\n]+\$|\\\(|\\\[|\\begin\{/;
 
     var nodes = [];
     var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     var node;
     while ((node = walker.nextNode())) {
       if (!node.nodeValue || !node.nodeValue.trim()) continue;
+      if (mathRe.test(node.nodeValue)) continue;
       var parent = node.parentElement;
       if (!parent || parent.closest(skipSelector)) continue;
       nodes.push(node);

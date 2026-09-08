@@ -23,6 +23,16 @@
 
   
   
+    
+      <script>
+        window.MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+          svg: { fontCache: 'global' }
+        };
+      </script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  
 
   
   
@@ -156,55 +166,69 @@
 <hr>
 <h3 id="5-图灵模型最重要的贡献是什么？"><a href="#5-图灵模型最重要的贡献是什么？" class="headerlink" title="5. 图灵模型最重要的贡献是什么？"></a>5. 图灵模型最重要的贡献是什么？</h3><p>图灵模型（图灵机）最重要的贡献是<strong>提出了通用计算机的数学逻辑模型</strong>，证明了<strong>任何可计算的问题都可以用一台具有无限存储带的简单机器来求解</strong>。它奠定了“存储程序”概念的理论基础，是现代计算机体系结构（冯·诺依曼架构）的先驱，并定义了计算的极限（可判定性理论）。</p>
 <hr>
-<h3 id="6-位置化数字系统转换"><a href="#6-位置化数字系统转换" class="headerlink" title="6. 位置化数字系统转换"></a>6. 位置化数字系统转换</h3><p><strong>(1)</strong> 已知 (K, L, S_i, b)，该数的十进制值为：<br>[<br>D &#x3D; \pm \left( \sum_{i&#x3D;0}^{K-1} S_i \cdot b^i + \sum_{j&#x3D;1}^{L} S_{-j} \cdot b^{-j} \right)<br>]<br>即：<br>[<br>D &#x3D; \pm (S_{K-1}b^{K-1} + \cdots + S_1 b^1 + S_0 b^0 + S_{-1}b^{-1} + S_{-2}b^{-2} + \cdots + S_{-L}b^{-L})<br>]</p>
-<p><strong>(2)</strong> 若 (b&#x3D;2, K&#x3D;7, L&#x3D;8)，最大正数意味着所有位（包括整数和小数位）均为1。<br>整数部分最大值：(2^{7} - 1 &#x3D; 127)<br>小数部分最大值：(1 - 2^{-8} &#x3D; 1 - \frac{1}{256} &#x3D; 0.99609375)<br>所以最大十进制数值为：(\mathbf{127.99609375})</p>
+<h3 id="6-位置化数字系统转换"><a href="#6-位置化数字系统转换" class="headerlink" title="6. 位置化数字系统转换"></a>6. 位置化数字系统转换</h3><p><strong>(1)</strong> 已知 \(K, L, S_i, b\)，该数的十进制值为：<br>\[
+D = \pm \left( \sum_{i=0}^{K-1} S_i \cdot b^i + \sum_{j=1}^{L} S_{-j} \cdot b^{-j} \right)
+\]<br>即：<br>\[
+D = \pm (S_{K-1}b^{K-1} + \cdots + S_1 b^1 + S_0 b^0 + S_{-1}b^{-1} + S_{-2}b^{-2} + \cdots + S_{-L}b^{-L})
+\]</p>
+<p><strong>(2)</strong> 若 \(b=2, K=7, L=8\)，最大正数意味着所有位（包括整数和小数位）均为1。<br>整数部分最大值：\(2^{7} - 1 = 127\)<br>小数部分最大值：\(1 - 2^{-8} = 1 - \frac{1}{256} = 0.99609375\)<br>所以最大十进制数值为：\(\mathbf{127.99609375}\)</p>
 <hr>
 <h3 id="7-十进制正数转二进制的UML图与正确性证明"><a href="#7-十进制正数转二进制的UML图与正确性证明" class="headerlink" title="7. 十进制正数转二进制的UML图与正确性证明"></a>7. 十进制正数转二进制的UML图与正确性证明</h3><p><strong>UML活动图（文本描述流程）</strong>：</p>
 <ol>
 <li>开始</li>
-<li>将数分为整数部分 (N) 和小数部分 (F)。</li>
-<li><strong>整数部分循环（直到 (N&#x3D;0)）</strong>：<ul>
-<li>将 (N) 除以 2，记录余数（0或1）。</li>
-<li>更新 (N &#x3D; \lfloor N&#x2F;2 \rfloor)。</li>
+<li>将数分为整数部分 \(N\) 和小数部分 \(F\)。</li>
+<li><strong>整数部分循环（直到 \(N=0\)）</strong>：<ul>
+<li>将 \(N\) 除以 2，记录余数（0或1）。</li>
+<li>更新 \(N = \lfloor N/2 \rfloor\)。</li>
 <li>将余数依次压入栈（最后出栈即为二进制整数高位到低位）。</li>
 </ul>
 </li>
-<li><strong>小数部分循环（直到 (F&#x3D;0) 或达到精度）</strong>：<ul>
-<li>将 (F) 乘以 2，记录整数位（0或1）。</li>
-<li>更新 (F &#x3D; F \times 2 - \text{整数位})。</li>
+<li><strong>小数部分循环（直到 \(F=0\) 或达到精度）</strong>：<ul>
+<li>将 \(F\) 乘以 2，记录整数位（0或1）。</li>
+<li>更新 \(F = F \times 2 - \text{整数位}\)。</li>
 <li>顺序输出整数位（即为二进制小数位）。</li>
 </ul>
 </li>
 <li>合并整数部分和小数部分，结束。</li>
 </ol>
-<p><strong>正确性证明</strong>：<br>设十进制正数 (X)，其二进制展开为 (X &#x3D; \sum_{i&#x3D;-\infty}^{n} d_i 2^i)，其中 (d_i \in {0,1})。</p>
+<p><strong>正确性证明</strong>：<br>设十进制正数 \(X\)，其二进制展开为 \(X = \sum_{i=-\infty}^{n} d_i 2^i\)，其中 \(d_i \in \{0,1\}\)。</p>
 <ul>
-<li><strong>整数部分</strong>：对 (X) 取整，除以2。由于 (d_0) 决定奇偶性，(X \mod 2 &#x3D; d_0)，余数即最低位。反复除以2并取余，每次分离出 (d_0, d_1, …)，根据多项式展开的唯一性，此过程穷举了所有系数。</li>
-<li><strong>小数部分</strong>：乘以2，得到 (2F &#x3D; d_{-1} + \sum_{i&#x3D;-\infty}^{-2} d_i 2^{i+1})，整数部分恰好是 (d_{-1})。反复乘2取整，依次分离出 (d_{-1}, d_{-2}, …)。根据基展开的唯一性，算法收敛于正确值。</li>
+<li><strong>整数部分</strong>：对 \(X\) 取整，除以2。由于 \(d_0\) 决定奇偶性，\(X \mod 2 = d_0\)，余数即最低位。反复除以2并取余，每次分离出 \(d_0, d_1, ...\)，根据多项式展开的唯一性，此过程穷举了所有系数。</li>
+<li><strong>小数部分</strong>：乘以2，得到 \(2F = d_{-1} + \sum_{i=-\infty}^{-2} d_i 2^{i+1}\)，整数部分恰好是 \(d_{-1}\)。反复乘2取整，依次分离出 \(d_{-1}, d_{-2}, ...\)。根据基展开的唯一性，算法收敛于正确值。</li>
 </ul>
 <hr>
 <h3 id="8-十进制数178-2转十六进制（精确到1位小数）"><a href="#8-十进制数178-2转十六进制（精确到1位小数）" class="headerlink" title="8. 十进制数178.2转十六进制（精确到1位小数）"></a>8. 十进制数178.2转十六进制（精确到1位小数）</h3><ul>
 <li><strong>整数部分 178</strong>：<ul>
-<li>(178 \div 16 &#x3D; 11) 余 (2) （最低位）</li>
-<li>(11 \div 16 &#x3D; 0) 余 (11)（即十六进制 (B)）</li>
-<li>整数结果：(B2)</li>
+<li>\(178 \div 16 = 11\) 余 \(2\) （最低位）</li>
+<li>\(11 \div 16 = 0\) 余 \(11\)（即十六进制 \(B\)）</li>
+<li>整数结果：\(B2\)</li>
 </ul>
 </li>
 <li><strong>小数部分 0.2</strong>：<ul>
-<li>(0.2 \times 16 &#x3D; 3.2) → 取整数位 (3)，剩余 (0.2)</li>
-<li>因为只需精确到1位小数，此时已得到第一位小数 (3)。</li>
+<li>\(0.2 \times 16 = 3.2\) → 取整数位 \(3\)，剩余 \(0.2\)</li>
+<li>因为只需精确到1位小数，此时已得到第一位小数 \(3\)。</li>
 </ul>
 </li>
-<li>转换结果：(\mathbf{(178.2)<em>{10} \approx (B2.3)</em>{16}})</li>
+<li>转换结果：\(\mathbf{(178.2)_{10} \approx (B2.3)_{16}}\)</li>
 </ul>
 <hr>
-<h3 id="9-证明正整数N所需二进制位数"><a href="#9-证明正整数N所需二进制位数" class="headerlink" title="9. 证明正整数N所需二进制位数"></a>9. 证明正整数N所需二进制位数</h3><p>设二进制位数为 (K)，则能表示的最大值为 (2^K - 1)，最小值为 (2^{K-1})（K位二进制中，最高位为1，其余为0）。<br>要表示 (N)，必须满足：<br>[<br>2^{K-1} \le N \le 2^K - 1<br>]<br>取以2为底的对数：<br>[<br>K-1 \le \log_2 N &lt; K<br>]<br>因为 (\log_2 N &lt; K)，且 (\log_2 N \ge K-1)，所以小于等于 (\log_2 N) 的最大整数为 (K-1)，即：<br>[<br>\lfloor \log_2 N \rfloor &#x3D; K-1<br>]<br>移项得：<br>[<br>K &#x3D; \lfloor \log_2 N \rfloor + 1<br>]<br><strong>得证</strong>。</p>
+<h3 id="9-证明正整数N所需二进制位数"><a href="#9-证明正整数N所需二进制位数" class="headerlink" title="9. 证明正整数N所需二进制位数"></a>9. 证明正整数N所需二进制位数</h3><p>设二进制位数为 \(K\)，则能表示的最大值为 \(2^K - 1\)，最小值为 \(2^{K-1}\)（K位二进制中，最高位为1，其余为0）。<br>要表示 \(N\)，必须满足：<br>\[
+2^{K-1} \le N \le 2^K - 1
+\]<br>取以2为底的对数：<br>\[
+K-1 \le \log_2 N &lt; K
+\]<br>因为 \(\log_2 N &lt; K\)，且 \(\log_2 N \ge K-1\)，所以小于等于 \(\log_2 N\) 的最大整数为 \(K-1\)，即：<br>\[
+\lfloor \log_2 N \rfloor = K-1
+\]<br>移项得：<br>\[
+K = \lfloor \log_2 N \rfloor + 1
+\]<br><strong>得证</strong>。</p>
 <hr>
 <h3 id="10-十六进制数-A-C-转二进制"><a href="#10-十六进制数-A-C-转二进制" class="headerlink" title="10. 十六进制数 A.C 转二进制"></a>10. 十六进制数 A.C 转二进制</h3><p>十六进制每位对应4位二进制：</p>
 <ul>
-<li>(A &#x3D; 10_{10} &#x3D; (1010)_2)</li>
-<li>(C &#x3D; 12_{10} &#x3D; (1100)_2)</li>
-<li>小数点是分隔符。<br>所以：<br>[<br>(A.C)_{16} &#x3D; (1010.1100)_2<br>]<br>可省略末尾零：(\mathbf{(1010.11)_2})</li>
+<li>\(A = 10_{10} = (1010)_2\)</li>
+<li>\(C = 12_{10} = (1100)_2\)</li>
+<li>小数点是分隔符。<br>所以：<br>\[
+(A.C)_{16} = (1010.1100)_2
+\]<br>可省略末尾零：\(\mathbf{(1010.11)_2}\)</li>
 </ul>
 <hr>
 <h3 id="11-多媒体数据类型及存储形式"><a href="#11-多媒体数据类型及存储形式" class="headerlink" title="11. 多媒体数据类型及存储形式"></a>11. 多媒体数据类型及存储形式</h3><p>多媒体数据类型包含：<strong>文本（Text）、图形&#x2F;图像（Image&#x2F;Graphics）、音频（Audio）、视频（Video）和动画（Animation）</strong>。<br>它们在计算机中都以<strong>二进制位模式（0和1的序列）</strong> 的形式存储，即经过采样、量化、编码（压缩）后转化为数字信号。</p>
@@ -214,39 +238,43 @@
 <li><strong>储存形式</strong>：是的。在冯·诺依曼体系结构中，<strong>指令和数据都以二进制位模式存储在内存中</strong>。计算机依靠程序计数器（PC）和指令周期的不同阶段（取指 vs 执行）来区分当前读取的是指令还是数据。</li>
 </ul>
 <hr>
-<h3 id="13-符号加绝对值法复原十进制数"><a href="#13-符号加绝对值法复原十进制数" class="headerlink" title="13. 符号加绝对值法复原十进制数"></a>13. 符号加绝对值法复原十进制数</h3><p>位模式：((10011111)_2)</p>
+<h3 id="13-符号加绝对值法复原十进制数"><a href="#13-符号加绝对值法复原十进制数" class="headerlink" title="13. 符号加绝对值法复原十进制数"></a>13. 符号加绝对值法复原十进制数</h3><p>位模式：\((10011111)_2\)</p>
 <ul>
 <li>第1位（符号位）为 <strong>1</strong>，表示负数。</li>
-<li>剩余7位为绝对值：(0011111)_2 &#x3D; 0\times2^6 + 0\times2^5 + 1\times2^4 + 1\times2^3 + 1\times2^2 + 1\times2^1 + 1\times2^0 &#x3D; 16+8+4+2+1 &#x3D; 31)</li>
-<li>复原结果：(\mathbf{-31})</li>
+<li>剩余7位为绝对值：\(0011111)_2 = 0\times2^6 + 0\times2^5 + 1\times2^4 + 1\times2^3 + 1\times2^2 + 1\times2^1 + 1\times2^0 = 16+8+4+2+1 = 31\)</li>
+<li>复原结果：\(\mathbf{-31}\)</li>
 </ul>
 <hr>
-<h3 id="14-8位二进制补码表示法的最小十进制数值"><a href="#14-8位二进制补码表示法的最小十进制数值" class="headerlink" title="14. 8位二进制补码表示法的最小十进制数值"></a>14. 8位二进制补码表示法的最小十进制数值</h3><p>最小值是 <strong>-128</strong>。<br><strong>原因</strong>：8位补码的表示范围为 (-2^{7} \sim 2^{7}-1)，即 -128 到 127。补码中，最高位（符号位）的权值为 (-2^{7} &#x3D; -128)。要得到最小数，将最高位设为1（贡献-128），其余所有位设为0，即二进制 ((10000000)_2) 表示 (-128)。若其余位有任何1，数值会变大（如10000001 &#x3D; -127）。</p>
+<h3 id="14-8位二进制补码表示法的最小十进制数值"><a href="#14-8位二进制补码表示法的最小十进制数值" class="headerlink" title="14. 8位二进制补码表示法的最小十进制数值"></a>14. 8位二进制补码表示法的最小十进制数值</h3><p>最小值是 <strong>-128</strong>。<br><strong>原因</strong>：8位补码的表示范围为 \(-2^{7} \sim 2^{7}-1\)，即 -128 到 127。补码中，最高位（符号位）的权值为 \(-2^{7} = -128\)。要得到最小数，将最高位设为1（贡献-128），其余所有位设为0，即二进制 \((10000000)_2\) 表示 \(-128\)。若其余位有任何1，数值会变大（如10000001 &#x3D; -127）。</p>
 <hr>
-<h3 id="15-XOR（异或）运算"><a href="#15-XOR（异或）运算" class="headerlink" title="15. XOR（异或）运算"></a>15. XOR（异或）运算</h3><p>对位模式 (10011001) 和 (10101110) 逐位进行异或（相同为0，不同为1）：</p>
+<h3 id="15-XOR（异或）运算"><a href="#15-XOR（异或）运算" class="headerlink" title="15. XOR（异或）运算"></a>15. XOR（异或）运算</h3><p>对位模式 \(10011001\) 和 \(10101110\) 逐位进行异或（相同为0，不同为1）：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  1 0 0 1 1 0 0 1</span><br><span class="line">^ 1 0 1 0 1 1 1 0</span><br><span class="line">--------------------</span><br><span class="line">  0 0 1 1 0 1 1 1</span><br></pre></td></tr></table></figure>
-<p>结果为：(\mathbf{(00110111)_2})</p>
+<p>结果为：\(\mathbf{(00110111)_2}\)</p>
 <hr>
 <h3 id="16-补码带来减法简便的原因及正确性证明"><a href="#16-补码带来减法简便的原因及正确性证明" class="headerlink" title="16. 补码带来减法简便的原因及正确性证明"></a>16. 补码带来减法简便的原因及正确性证明</h3><p><strong>原因</strong>：补码将减法统一为加法运算，因此CPU内部只需设计加法器即可完成加减法，无需独立的减法器硬件。</p>
-<p><strong>证明</strong>（模 (2^n) 系统下）：<br>对于 (n) 位补码，模数为 (2^n)。负数 (X) 的补码定义为 ([X]_{\text{补}} &#x3D; 2^n + X)（当 (X&lt;0) 时，实际为 (2^n - |X|)）。</p>
-<p>设要计算 (A - B)，其中 (A, B) 在表示范围内。<br>因为 (-B) 的补码为 ([-B]<em>{\text{补}} &#x3D; 2^n - B)（若B&gt;0）。<br>于是：<br>[<br>[A - B]</em>{\text{补}} \equiv 2^n + A - B \pmod{2^n}<br>]<br>而：<br>[<br>[A]<em>{\text{补}} + [-B]</em>{\text{补}} &#x3D; (2^n + A) + (2^n - B) &#x3D; 2^n + (2^n + A - B) \equiv 2^n + A - B \pmod{2^n}<br>]<br>两者同余，即补码加法结果正是 (A-B) 的补码。<strong>证毕</strong>。</p>
+<p><strong>证明</strong>（模 \(2^n\) 系统下）：<br>对于 \(n\) 位补码，模数为 \(2^n\)。负数 \(X\) 的补码定义为 \([X]_{\text{补}} = 2^n + X\)（当 \(X&lt;0\) 时，实际为 \(2^n - |X|\)）。</p>
+<p>设要计算 \(A - B\)，其中 \(A, B\) 在表示范围内。<br>因为 \(-B\) 的补码为 \([-B]_{\text{补}} = 2^n - B\)（若B&gt;0）。<br>于是：<br>\[
+[A - B]_{\text{补}} \equiv 2^n + A - B \pmod{2^n}
+\]<br>而：<br>\[
+[A]_{\text{补}} + [-B]_{\text{补}} = (2^n + A) + (2^n - B) = 2^n + (2^n + A - B) \equiv 2^n + A - B \pmod{2^n}
+\]<br>两者同余，即补码加法结果正是 \(A-B\) 的补码。<strong>证毕</strong>。</p>
 <hr>
-<h3 id="17-补码格式减法运算"><a href="#17-补码格式减法运算" class="headerlink" title="17. 补码格式减法运算"></a>17. 补码格式减法运算</h3><p>A &#x3D; ((00011001)<em>2) &#x3D; (25</em>{10})<br>B &#x3D; ((11101111)_2)，首位为1，是负数。求B的真值：</p>
+<h3 id="17-补码格式减法运算"><a href="#17-补码格式减法运算" class="headerlink" title="17. 补码格式减法运算"></a>17. 补码格式减法运算</h3><p>A &#x3D; \((00011001)_2\) &#x3D; \(25_{10}\)<br>B &#x3D; \((11101111)_2\)，首位为1，是负数。求B的真值：</p>
 <ul>
-<li>取反：(00010000)</li>
-<li>加1：(00010001) &#x3D; (17_{10})</li>
-<li>所以 B &#x3D; (-17_{10})</li>
+<li>取反：\(00010000\)</li>
+<li>加1：\(00010001\) &#x3D; \(17_{10}\)</li>
+<li>所以 B &#x3D; \(-17_{10}\)</li>
 </ul>
-<p>计算 (A - B &#x3D; 25 - (-17) &#x3D; 42_{10})</p>
-<p><strong>补码运算步骤</strong>（(A - B &#x3D; A + (-B))）：</p>
+<p>计算 \(A - B = 25 - (-17) = 42_{10}\)</p>
+<p><strong>补码运算步骤</strong>（\(A - B = A + (-B)\)）：</p>
 <ol>
-<li>求 (-B) 的补码：对B的位模式取反加1。<ul>
-<li>B取反：(00010000)</li>
-<li>加1：(00010001)（即 (+17) 的补码）</li>
+<li>求 \(-B\) 的补码：对B的位模式取反加1。<ul>
+<li>B取反：\(00010000\)</li>
+<li>加1：\(00010001\)（即 \(+17\) 的补码）</li>
 </ul>
 </li>
-<li>A加上 (-B)：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  00011001</span><br><span class="line">+ 00010001</span><br><span class="line">-----------</span><br><span class="line">  00101010</span><br></pre></td></tr></table></figure></li>
-<li>结果 ((00101010)<em>2 &#x3D; 2^5 + 2^3 + 2^1 &#x3D; 32+8+2 &#x3D; 42</em>{10})，与预期一致。</li>
+<li>A加上 \(-B\)：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  00011001</span><br><span class="line">+ 00010001</span><br><span class="line">-----------</span><br><span class="line">  00101010</span><br></pre></td></tr></table></figure></li>
+<li>结果 \((00101010)_2 = 2^5 + 2^3 + 2^1 = 32+8+2 = 42_{10}\)，与预期一致。</li>
 </ol>
 <hr>
 <h3 id="18-程序计数器的功能"><a href="#18-程序计数器的功能" class="headerlink" title="18. 程序计数器的功能"></a>18. 程序计数器的功能</h3><p>程序计数器（PC，Program Counter）是CPU内部的一个寄存器，其功能是<strong>存放下一条将要执行的指令在内存中的地址</strong>。在顺序执行时，每取出一条指令，PC自动增加（指向下一条指令）；当遇到跳转、循环或子程序调用时，PC会被修改为目标地址，从而控制程序的执行流。</p>
@@ -284,6 +312,10 @@
   <div class="terminal-post-footer">
     <div class="terminal-post-nav">
       
+        <a class="terminal-post-nav__prev" href="/2026/09/08/math-test/">
+          [&lt; Math Formula Test]
+        </a>
+      
       
         <a class="terminal-post-nav__next" href="/2026/08/29/archwsl_inst/">
           [ArchLinux WSL 手动安装指南（初步） &gt;]
@@ -316,7 +348,7 @@
       <span class="terminal-prompt-mark">$</span> ls posts/
     </div>
     <div class="terminal-sidebar__content">
-      total 4
+      total 5
     </div>
   </div>
 
@@ -327,6 +359,11 @@
       </div>
       <div class="terminal-sidebar__content">
         <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
           
             <li class="terminal-list__item">
               <a href="/categories/archlinux/">[archlinux]</a>
@@ -380,6 +417,14 @@
           
             <li class="terminal-list__item">
               <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
             </li>
           
             <li class="terminal-list__item">

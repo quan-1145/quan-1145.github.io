@@ -23,6 +23,16 @@
 
   
   
+    
+      <script>
+        window.MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+          svg: { fontCache: 'global' }
+        };
+      </script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  
 
   
   
@@ -122,7 +132,7 @@
       <span class="terminal-prompt-mark">$</span> ls posts/
     </div>
     <div class="terminal-sidebar__content">
-      total 4
+      total 5
     </div>
   </div>
 
@@ -133,6 +143,11 @@
       </div>
       <div class="terminal-sidebar__content">
         <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
           
             <li class="terminal-list__item">
               <a href="/categories/archlinux/">[archlinux]</a>
@@ -186,6 +201,14 @@
           
             <li class="terminal-list__item">
               <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
             </li>
           
             <li class="terminal-list__item">

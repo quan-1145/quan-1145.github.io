@@ -23,6 +23,16 @@
 
   
   
+    
+      <script>
+        window.MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+          svg: { fontCache: 'global' }
+        };
+      </script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  
 
   
   
@@ -110,6 +120,59 @@
       <span class="terminal-prompt-mark">$</span> ls -lt posts/
     </div>
     <div class="terminal-section__content">
+      
+        <article class="terminal-post-item">
+  <header class="terminal-post-item__header">
+    
+      <div class="terminal-post-item__prompt">
+        <span class="terminal-prompt-mark">$</span> cat math-test.md
+      </div>
+    
+    <h2 class="terminal-post-item__title">
+      <a href="/2026/09/08/math-test/">Math Formula Test</a>
+    </h2>
+  </header>
+  <div class="terminal-post-item__meta">
+    <span class="terminal-meta__item">
+      <span class="terminal-meta__label">date:</span>
+      <span class="terminal-meta__value">2026-09-08</span>
+    </span>
+    
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">cat:</span>
+        <span class="terminal-meta__value">
+          
+            <a href="/categories/Test/">Test</a>
+          
+        </span>
+      </span>
+    
+    
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">tags:</span>
+        <span class="terminal-meta__value">
+          
+            <a href="/tags/math/">#math</a> 
+          
+            <a href="/tags/latex/">#latex</a>
+          
+        </span>
+      </span>
+    
+  </div>
+  <div class="terminal-post-item__excerpt">
+    
+      <p>Euler’s identity (inline math): $e^{i\pi} + 1 = 0$.
+Subscripts and fractions (inline math): $a_i + b_j = c_k$, $\frac{1}{1+x^2}$, $\sqrt{x^2 + y^2}$.
+Gaussian integral (display math):
+$$
+\int_{-\in...</p>
+    
+  </div>
+  <div class="terminal-post-item__footer">
+    <a class="terminal-post-item__read-more" href="/2026/09/08/math-test/">[read more]</a>
+  </div>
+</article>
       
         <article class="terminal-post-item">
   <header class="terminal-post-item__header">
@@ -364,7 +427,7 @@ Windows 版 zsh 下载
       <span class="terminal-prompt-mark">$</span> ls posts/
     </div>
     <div class="terminal-sidebar__content">
-      total 4
+      total 5
     </div>
   </div>
 
@@ -375,6 +438,11 @@ Windows 版 zsh 下载
       </div>
       <div class="terminal-sidebar__content">
         <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
           
             <li class="terminal-list__item">
               <a href="/categories/archlinux/">[archlinux]</a>
@@ -428,6 +496,14 @@ Windows 版 zsh 下载
           
             <li class="terminal-list__item">
               <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
             </li>
           
             <li class="terminal-list__item">

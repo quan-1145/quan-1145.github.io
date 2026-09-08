@@ -97,45 +97,87 @@
   <div class="terminal-container">
     <div class="terminal-body">
       <main class="terminal-main">
-        <div class="terminal-page terminal-page--archive">
-  <header class="terminal-archive-header">
-    <div class="terminal-archive-header__prompt">
-      <span class="terminal-prompt-mark">$</span> find posts/ -type f
-    </div>
-    <h1 class="terminal-archive-header__title">
-      
-        归档: 2024
-      
-    </h1>
-    <p class="terminal-archive-header__count">total 1</p>
-  </header>
-
-  <div class="terminal-archive-content">
+        <article class="terminal-page terminal-page--post">
+  <header class="terminal-post-header">
     
-    
-      
-      
-        
-        <div class="terminal-archive-year">
-          <h2 class="terminal-archive-year__title">
-            <span class="terminal-prompt-mark">$</span> ls 2024/
-          </h2>
-          <div class="terminal-archive-year__posts">
-        
-      
-      <div class="terminal-archive-item">
-        <span class="terminal-archive-item__date">08-15</span>
-        <a class="terminal-archive-item__title" href="/2024/08/15/zsh-customization/">zsh 美化方案</a>
+      <div class="terminal-post-header__prompt">
+        <span class="terminal-prompt-mark">$</span> cat math-test.md
       </div>
     
-    
-          </div>
-        </div>
-    
+    <h1 class="terminal-post-header__title">Math Formula Test</h1>
+    <div class="terminal-post-header__meta">
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">date:</span>
+        <span class="terminal-meta__value">2026-09-08</span>
+      </span>
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">updated:</span>
+          <span class="terminal-meta__value">2026-09-08</span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">cat:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/categories/Test/">Test</a>
+            
+          </span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">tags:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/tags/math/">#math</a> 
+            
+              <a href="/tags/latex/">#latex</a>
+            
+          </span>
+        </span>
+      
+    </div>
+  </header>
+
+  <div class="terminal-post-content">
+    <p>Euler’s identity (inline math): $e^{i\pi} + 1 = 0$.</p>
+<p>Subscripts and fractions (inline math): $a_i + b_j = c_k$, $\frac{1}{1+x^2}$, $\sqrt{x^2 + y^2}$.</p>
+<p>Gaussian integral (display math):</p>
+<p>$$
+\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+$$</p>
+<p>Matrix (display math, contains \ line breaks and &amp; alignment):</p>
+<p>$$
+A = \begin{pmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{pmatrix}
+$$</p>
+<p>Multi-line derivation (aligned environment, contains \ line breaks):</p>
+<p>$$
+\begin{aligned}
+\nabla \cdot \mathbf{E} &amp;= \frac{\rho}{\varepsilon_0} \\
+\nabla \cdot \mathbf{B} &amp;= 0
+\end{aligned}
+$$</p>
+<p>All formulas above should render normally with light-colored text.</p>
+
   </div>
 
-  
-</div>
+  <div class="terminal-post-footer">
+    <div class="terminal-post-nav">
+      
+      
+        <a class="terminal-post-nav__next" href="/2026/09/07/csbriefing/">
+          [计算机基础问答 &gt;]
+        </a>
+      
+    </div>
+
+    
+
+  </div>
+</article>
+
       </main>
       
         <aside class="terminal-sidebar">

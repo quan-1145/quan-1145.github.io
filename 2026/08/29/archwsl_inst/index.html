@@ -23,6 +23,16 @@
 
   
   
+    
+      <script>
+        window.MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+          svg: { fontCache: 'global' }
+        };
+      </script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  
 
   
   
@@ -182,7 +192,7 @@
 </blockquote>
 <h3 id="2-密钥信任修复"><a href="#2-密钥信任修复" class="headerlink" title="2. 密钥信任修复"></a>2. 密钥信任修复</h3><p>初次安装&#x2F;更新软件包时，可能遇到错误：</p>
 <blockquote>
-<p>error: archlinuxcn-keyring: signature from <a href="mailto:&#x66;&#97;&#x72;&#115;&#x65;&#101;&#x72;&#102;&#x63;&#64;&#97;&#x72;&#99;&#x68;&#x6c;&#x69;&#110;&#117;&#120;&#x2e;&#x6f;&#114;&#x67;">&#x66;&#97;&#x72;&#115;&#x65;&#101;&#x72;&#102;&#x63;&#64;&#97;&#x72;&#99;&#x68;&#x6c;&#x69;&#110;&#117;&#120;&#x2e;&#x6f;&#114;&#x67;</a> is unknown trust</p>
+<p>error: archlinuxcn-keyring: signature from <a href="mailto:&#x66;&#97;&#x72;&#115;&#101;&#x65;&#114;&#x66;&#x63;&#64;&#97;&#114;&#99;&#x68;&#108;&#x69;&#x6e;&#x75;&#120;&#x2e;&#111;&#114;&#x67;">&#x66;&#97;&#x72;&#115;&#101;&#x65;&#114;&#x66;&#x63;&#64;&#97;&#114;&#99;&#x68;&#108;&#x69;&#x6e;&#x75;&#120;&#x2e;&#111;&#114;&#x67;</a> is unknown trust</p>
 </blockquote>
 <p>这个问题通常出现在新安装的 Arch Linux 系统上。根本原因是 Arch Linux 官方 archlinux-keyring 包在 2023 年 12 月进行了一次更新，移除了一个已退休的 Master Key。这个变动导致 archlinuxcn-keyring 包的维护者 farseerfc 的密钥，在 GnuPG 的“信任网络”（Web of Trust）中，从原本可被自动信任的状态，降低为了“勉强信任”（marginal trust）。因此，在新系统上安装时，pacman 会因无法确认其可信度而报错</p>
 <p><strong>Solution：</strong></p>
@@ -291,7 +301,7 @@
       <span class="terminal-prompt-mark">$</span> ls posts/
     </div>
     <div class="terminal-sidebar__content">
-      total 4
+      total 5
     </div>
   </div>
 
@@ -302,6 +312,11 @@
       </div>
       <div class="terminal-sidebar__content">
         <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
           
             <li class="terminal-list__item">
               <a href="/categories/archlinux/">[archlinux]</a>
@@ -355,6 +370,14 @@
           
             <li class="terminal-list__item">
               <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
             </li>
           
             <li class="terminal-list__item">
