@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>引力常量测量、卡文迪许实验，以及实验思想方法的拓展 | quan-1145 — Still under construction</title>
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link rel="alternate" type="application/atom+xml" title="quan-1145" href="/atom.xml">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <script>
+      document.documentElement.setAttribute('data-theme', 'green');
+    </script>
+  
+
+  
+  
+    
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
+    
+  
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="terminal-header">
+  <div class="terminal-header__inner">
+    <nav class="terminal-nav">
+      <div class="terminal-nav__prompt">
+        <span class="terminal-user">guest@hexo-blog</span>
+        <span class="terminal-separator">:</span>
+        <span class="terminal-path">~</span>
+        <span class="terminal-prompt-mark">$</span>
+      </div>
+      <ul class="terminal-menu">
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/">
+              [Home]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/archives">
+              [Archives]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/tags">
+              [Tags]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/categories">
+              [Categories]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/more">
+              [More]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/about">
+              [About]
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+    <div class="terminal-header__actions">
+      <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
+      <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
+    </div>
+  </div>
+</header>
+  <div class="terminal-container">
+    <div class="terminal-body">
+      <main class="terminal-main">
+        <article class="terminal-page terminal-page--post">
+  <header class="terminal-post-header">
+    
+      <div class="terminal-post-header__prompt">
+        <span class="terminal-prompt-mark">$</span> cat cavendish.md
+      </div>
+    
+    <h1 class="terminal-post-header__title">引力常量测量、卡文迪许实验，以及实验思想方法的拓展</h1>
+    <div class="terminal-post-header__meta">
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">date:</span>
+        <span class="terminal-meta__value">2026-09-20</span>
+      </span>
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">updated:</span>
+          <span class="terminal-meta__value">2026-09-29</span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">cat:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/categories/%E7%89%A9%E7%90%86/">物理</a>, 
+            
+              <a href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">学习</a>
+            
+          </span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">tags:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/tags/%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%E6%B5%8B%E9%87%8F/">#引力常量测量</a> 
+            
+              <a href="/tags/%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E5%AE%9E%E9%AA%8C/">#卡文迪许实验</a> 
+            
+              <a href="/tags/%E5%AE%9E%E9%AA%8C%E6%80%9D%E6%83%B3%E6%96%B9%E6%B3%95/">#实验思想方法</a>
+            
+          </span>
+        </span>
+      
+    </div>
+  </header>
+
+  <div class="terminal-post-content">
+    <p>2026.9.20 与 DeepSeek（v4.1 flash）的讨论</p>
+<hr>
+<h2 id=""><a href="#" class="headerlink" title=""></a><a target="_blank" rel="noopener" href="https://imgchr.com/i/pnMb0Rx"><img src="https://s41.ax1x.com/2026/09/20/pnMb0Rx.png" alt="pnMb0Rx.png"></a></h2><h2 id="Q1-为什么需要测量引力常量？卡文迪许为何能想到用这个巧妙的装置测出引力常量？"><a href="#Q1-为什么需要测量引力常量？卡文迪许为何能想到用这个巧妙的装置测出引力常量？" class="headerlink" title="Q1. 为什么需要测量引力常量？卡文迪许为何能想到用这个巧妙的装置测出引力常量？"></a>Q1. 为什么需要测量引力常量？卡文迪许为何能想到用这个巧妙的装置测出引力常量？</h2><p>A: 结合您提供的图片，我们来深入探讨这两个物理学史上的经典问题。</p>
+<h3 id="一、为什么需要测量引力常量（-MATHSTORE0-）？"><a href="#一、为什么需要测量引力常量（-MATHSTORE0-）？" class="headerlink" title="一、为什么需要测量引力常量（\(G\)）？"></a>一、为什么需要测量引力常量（\(G\)）？</h3><p>牛顿在1687年提出万有引力定律 \(F = G \frac{m_1 m_2}{R^2}\)，但这仅仅是一个<strong>比例关系式</strong>。在卡文迪许之前，人类面临一个巨大的尴尬：<strong>我们知道天体之间有力的作用，也知道这个力与质量成正比、与距离的平方成反比，但不知道这个力究竟有多大。</strong></p>
+<p>测量引力常量\(G\)的必要性主要体现在三个方面：</p>
+<ol>
+<li><strong>从“定性”走向“定量”</strong>：没有确切的\(G\)值，万有引力公式只能用来计算天体之间的引力比例（比如太阳对地球的引力是地球对月球的多少倍），无法计算出具体的牛顿数值。有了\(G\)，万有引力定律才真正成为一个可以用来精确计算的物理定律。</li>
+<li><strong>“称”出地球的质量（核心动机）</strong>：在当时，人类已经通过大地测量知道了地球的半径\(R\)，通过伽利略等人的实验知道了重力加速度\(g\)。根据地球表面物体受到的重力近似等于万有引力（\(mg = G \frac{Mm}{R^2}\)），可以推导出地球质量 \(M = \frac{gR^2}{G}\)。因为\(G\)未知，所以地球质量\(M\)也无从得知。一旦测出\(G\)，代入公式就能算出地球的质量。这就是图片底部红字“卡文迪许成为第一个‘称’出地球质量的人”的由来。</li>
+<li><strong>推开宇宙的大门</strong>：测出\(G\)后，结合天文学观测数据，人类不仅可以算出地球的质量，还能算出太阳、木星等所有天体的质量，真正开启了现代天体物理学的大门。</li>
+</ol>
+<hr>
+<h3 id="二、卡文迪许为何能想到用这个巧妙的装置？"><a href="#二、卡文迪许为何能想到用这个巧妙的装置？" class="headerlink" title="二、卡文迪许为何能想到用这个巧妙的装置？"></a>二、卡文迪许为何能想到用这个巧妙的装置？</h3><p>要理解卡文迪许的伟大，首先要明白测量万有引力有多难。两个质量为1千克的铅球相距1米时，它们之间的引力大约只有 \(6.67 \times 10^{-11}\) 牛顿——这相当于一粒尘埃的重量！<strong>用当时的任何弹簧秤或天平都绝对不可能直接测出这么微小的力。</strong></p>
+<p>卡文迪许能设计出图中这个装置，核心在于他极其天才地运用了<strong>“放大法”</strong>。他的巧妙构思可以分为以下几个维度：</p>
+<ol>
+<li><strong>“扭转”代替“拉伸”（机械放大）</strong><br>如图中所示，他没有试图直接去“拉”一个秤，而是用一根坚韧的金属悬丝，吊起一个带有两个小铅球的轻质木杆（T型架）。当两个大铅球靠近小铅球时，微弱的引力会对木杆产生一个极其微小的力矩，使悬丝发生<strong>极其微小的扭转</strong>。悬丝的扭转比弹簧的拉伸对微小力敏感得多。</li>
+<li><strong>“光杠杆”放大微小形变（光学放大）</strong><br>这是整个实验最神来之笔的地方。肉眼根本无法察觉悬丝的微小扭转。卡文迪许在木杆中间固定了一面小镜子，用一束光照射镜子。根据反射定律，当镜子转动一个微小的角度\(\theta\)时，反射光线会转动\(2\theta\)。如果把这束反射光投射到几米外的刻度尺上，光点就会移动一个很大的距离。这就相当于把极其微小的机械形变，放大成了肉眼极其容易测量的光点位移。</li>
+<li><strong>巧妙的“两次吸引法”（消除系统误差）</strong><br>为了确保测到的确实是小球与大球之间的引力，而不是环境干扰，卡文迪许没有只测一次。他将大铅球放在木杆的一侧，测出平衡位置；然后把大铅球移到另一侧，再测出平衡位置。这两个平衡位置之间的中点，就是真正的“零点”。这种方法巧妙地抵消了悬丝本身的弹性滞后和外界环境带来的误差。</li>
+<li><strong>精确的“标定”（转换计算）</strong><br>在正式实验前，卡文迪许还做了一件重要的事：他先轻轻拨动木杆，测量它自由扭动的<strong>振动周期</strong>。通过振动周期，结合木杆的转动惯量，他可以精确计算出这根悬丝的<strong>扭转系数</strong>（即扭转一个角度需要多大的力矩）。这样，只要测出光点的位移（转化为扭转角度），乘以扭转系数，就能计算出引力的大小。</li>
+</ol>
+<p><strong>总结来说：</strong><br>卡文迪许之所以能成功，得益于他超乎常人的耐心、极其严谨的实验素养（防震、防风、恒温的密室），以及将<strong>机械微小形变转化为光学大位移</strong>的天才物理直觉。他不仅验证了万有引力定律在实验室尺度的普适性，更用这个装置“称”出了整个地球的质量，成为了物理学史上无可替代的丰碑。</p>
+<h2 id="Q2-能否具体展开说明这个实验？做这个实验的重难点是什么？"><a href="#Q2-能否具体展开说明这个实验？做这个实验的重难点是什么？" class="headerlink" title="Q2. 能否具体展开说明这个实验？做这个实验的重难点是什么？"></a>Q2. 能否具体展开说明这个实验？做这个实验的重难点是什么？</h2><p>A: 卡文迪许扭秤实验被誉为物理学史上最精妙的实验之一。要真正理解它的伟大，我们需要把这个实验“拆解”开来，看看它具体是如何运作的，以及在这个过程中，卡文迪许究竟克服了哪些常人难以想象的困难。</p>
+<hr>
+<h3 id="一、-实验的具体展开（物理原理与操作流程）"><a href="#一、-实验的具体展开（物理原理与操作流程）" class="headerlink" title="一、 实验的具体展开（物理原理与操作流程）"></a>一、 实验的具体展开（物理原理与操作流程）</h3><p>结合您提供的图片，我们可以把这个实验分为<strong>装置结构</strong>、<strong>物理原理</strong>和<strong>操作步骤</strong>三个部分来详细展开。</p>
+<h4 id="1-核心装置结构（如图中所示）"><a href="#1-核心装置结构（如图中所示）" class="headerlink" title="1. 核心装置结构（如图中所示）"></a>1. 核心装置结构（如图中所示）</h4><ul>
+<li><strong>T型扭秤</strong>：一根轻质木杆（T型架）水平悬挂在一条坚韧的金属悬丝（通常是镀银铜丝）上。</li>
+<li><strong>小铅球（m）</strong>：固定在木杆的两端。</li>
+<li><strong>大铅球（M）</strong>：图中标注的“大铅球”，放置在可以旋转的支架上。它们的作用是提供引力源。</li>
+<li><strong>光学系统（光杠杆）</strong>：木杆正中央固定着一面小镜子（图中未直接画出，但实际存在）。一束光照射到镜子上，反射到几米外带有刻度的标尺上。</li>
+</ul>
+<h4 id="2-物理原理：两次放大"><a href="#2-物理原理：两次放大" class="headerlink" title="2. 物理原理：两次放大"></a>2. 物理原理：两次放大</h4><p>实验的核心公式是万有引力定律 \(F = G \frac{Mm}{R^2}\)。要测出\(G\)，必须先测出微小的引力\(F\)。卡文迪许利用了两个放大机制：</p>
+<ul>
+<li><strong>机械放大（扭秤）</strong>：引力\(F\)作用在小球\(m\)上，产生力矩 \(M_1 = F \times L\)（L为木杆半长）。这个力矩使悬丝扭转一个角度\(\theta\)。悬丝的反抗力矩为 \(M_2 = \kappa \times \theta\)（\(\kappa\)为悬丝的扭转系数）。平衡时 \(F \times L = \kappa \times \theta\)。</li>
+<li><strong>光学放大（光杠杆）</strong>：悬丝扭转\(\theta\)角，镜子就转动\(\theta\)角。根据反射定律，反射光线会转动\(2\theta\)角。在几米外的标尺上，光点移动的距离 \(S = D \times 2\theta\)（D为镜子到标尺的距离）。这样一来，极其微小的\(\theta\)就被放大成了肉眼清晰可见的光点位移\(S\)。</li>
+</ul>
+<h4 id="3-具体操作步骤"><a href="#3-具体操作步骤" class="headerlink" title="3. 具体操作步骤"></a>3. 具体操作步骤</h4><ol>
+<li><strong>测定零点</strong>：在没有大铅球靠近时，记录光点在标尺上的自然平衡位置。</li>
+<li><strong>正向测量</strong>：将两个大铅球（M）分别放在两个小铅球（m）的<strong>同一侧</strong>。引力使木杆扭转，光点移动到新的平衡位置。</li>
+<li><strong>反向测量</strong>：将大铅球移到小铅球的<strong>另一侧</strong>，引力反向，光点向相反方向移动，达到另一个平衡位置。</li>
+<li><strong>取中点</strong>：由于悬丝存在弹性滞后和外界微小干扰，卡文迪许取正向和反向平衡位置的<strong>中点</strong>作为真正的“零点”。</li>
+<li><strong>标定悬丝（最关键的步骤）</strong>：为了知道扭转角\(\theta\)对应多大的力，必须知道悬丝的\(\kappa\)值。卡文迪许轻轻拨动木杆，让它自由扭动，测量其**振动周期 \(T\)**。根据转动定律，\(T = 2\pi\sqrt{I/\kappa}\)（\(I\)为木杆系统的转动惯量，可通过几何尺寸和质量算出）。由此反推出\(\kappa\)。</li>
+<li>**计算得出\(G\)**：将测得的力\(F\)、大球质量\(M\)、小球质量\(m\)、球心距离\(R\)代入万有引力公式，算出\(G\)。</li>
+</ol>
+<hr>
+<h3 id="二、-做这个实验的重难点是什么？"><a href="#二、-做这个实验的重难点是什么？" class="headerlink" title="二、 做这个实验的重难点是什么？"></a>二、 做这个实验的重难点是什么？</h3><p>卡文迪许的实验在物理学史上被称为“<strong>称量地球</strong>”，其难度堪称“在针尖上跳舞”。重难点主要体现在以下几个方面：</p>
+<h4 id="难点1：引力极其微小（探测难）"><a href="#难点1：引力极其微小（探测难）" class="headerlink" title="难点1：引力极其微小（探测难）"></a>难点1：引力极其微小（探测难）</h4><p>这是最大的天然障碍。两个质量为1千克的铅球，相距10厘米时，它们之间的引力大约只有 \(6.67 \times 10^{-9}\) 牛顿。<br><strong>这是什么概念？</strong> 这大约相当于<strong>一个细菌的重量</strong>，或者<strong>一颗尘埃下落时受到的空气阻力</strong>。用任何传统的弹簧秤或天平都绝对测不出来。必须依靠扭秤的机械放大和光杠杆的光学放大，才能让这“微不足道”的力显形。</p>
+<h4 id="难点2：扭转系数-MATHSTORE45-的标定（转换难）——-天才之举"><a href="#难点2：扭转系数-MATHSTORE45-的标定（转换难）——-天才之举" class="headerlink" title="难点2：扭转系数 \(\kappa\) 的标定（转换难）—— 天才之举"></a>难点2：扭转系数 \(\kappa\) 的标定（转换难）—— <em>天才之举</em></h4><p>这是卡文迪许实验中最核心的物理思想。我们可以测出光点移动了多远，算出扭转角\(\theta\)，但怎么知道扭转\(\theta\)角需要多大的力矩？悬丝太细了，没法直接标定。<br>卡文迪许采用<strong>动态法</strong>：先测量木杆自由扭动的周期，利用振动周期公式反推\(\kappa\)。这相当于把“测微小静态力”的难题，巧妙地转换成了“测时间（周期）”的难题。时间相对容易测量得多，且精度极高。</p>
+<h4 id="难点3：极其严苛的环境干扰（防干扰难）"><a href="#难点3：极其严苛的环境干扰（防干扰难）" class="headerlink" title="难点3：极其严苛的环境干扰（防干扰难）"></a>难点3：极其严苛的环境干扰（防干扰难）</h4><p>微弱的引力极易被外界干扰掩盖：</p>
+<ul>
+<li><strong>气流</strong>：人呼吸产生的气流、房间里的微小温差导致的空气对流，都会吹动木杆。</li>
+<li><strong>震动</strong>：实验者在地面走动、甚至远处的马车驶过引起的微小震动，都会让悬丝晃动。</li>
+<li><strong>静电与磁力</strong>：铅球之间、铅球与木杆之间极易产生静电，静电引力比万有引力大得多；此外，地球磁场也可能干扰。</li>
+<li><strong>对策</strong>：卡文迪许将整个装置放在一个<strong>密闭的厚壁房间里</strong>，实验者<strong>躲在房间外</strong>，只用望远镜通过墙壁上的小孔观察标尺。他使用了非磁性材料（如木杆），并小心地消除静电。</li>
+</ul>
+<h4 id="难点4：消除系统误差（系统误差消除难）"><a href="#难点4：消除系统误差（系统误差消除难）" class="headerlink" title="难点4：消除系统误差（系统误差消除难）"></a>难点4：消除系统误差（系统误差消除难）</h4><p>悬丝在扭转后不会立刻停在平衡位置，而是会来回摆动，且有弹性滞后。此外，大铅球放置的位置也会引入误差。</p>
+<ul>
+<li><strong>对策</strong>：卡文迪许采用了<strong>“两次吸引法”</strong>（大球在小球两侧分别测量），取两个平衡位置的中点作为真实零点。这完美地抵消了悬丝弹性滞后、空气阻力造成的对称误差。</li>
+</ul>
+<h4 id="难点5：极高精度的测量（工艺与耐心难）"><a href="#难点5：极高精度的测量（工艺与耐心难）" class="headerlink" title="难点5：极高精度的测量（工艺与耐心难）"></a>难点5：极高精度的测量（工艺与耐心难）</h4><p>要算出\(G\)，需要极其精确地知道：</p>
+<ul>
+<li>大球和小球的质量（当时称重技术有限）。</li>
+<li>球心之间的距离\(R\)（因为铅球有一定体积，引力是积分效果，球心距需精确到毫米级）。</li>
+<li>悬丝的转动惯量和木杆的转动惯量（需要精密测量几何尺寸）。</li>
+</ul>
+<p><strong>总结：</strong><br>卡文迪许的实验，重难点不在于原理多高深，而在于<strong>如何将理论上的“微小”转化为实验上的“可测”</strong>。他用“扭秤”放大力，用“光杠杆”放大形变，用“周期法”标定系数，用“两次测量”消除误差。这套实验方法论，至今仍在精密物理测量中被广泛使用。也正因如此，他才真正用人类的双手，在实验室里“称”出了地球的质量。</p>
+<h2 id="Q3-如果现在要在实验室里做这个实验，是否有精度更高的方法？"><a href="#Q3-如果现在要在实验室里做这个实验，是否有精度更高的方法？" class="headerlink" title="Q3. 如果现在要在实验室里做这个实验，是否有精度更高的方法？"></a>Q3. 如果现在要在实验室里做这个实验，是否有精度更高的方法？</h2><p>是的，现代实验室中测量引力常量 \(G\) 的方法在精度和原理上都有了革命性的进步。尽管 \(G\) 仍然是所有基本物理常数中测量精度最低的一个（当前相对不确定度约 <strong>22 ppm</strong>），但多种前沿技术正在竞相突破这一瓶颈。</p>
+<p>现代高精度测量主要沿着两个方向展开：一是对卡文迪许扭秤法的深度改良，二是利用量子技术开辟全新路径。</p>
+<h3 id="扭秤法的现代化改良"><a href="#扭秤法的现代化改良" class="headerlink" title="扭秤法的现代化改良"></a>扭秤法的现代化改良</h3><p>现代扭秤法不再直接测量微小的扭转角度，而是通过测量<strong>周期</strong>或利用<strong>反馈控制</strong>来间接获得 \(G\) 值，精度和抗干扰能力都大幅提升。</p>
+<ul>
+<li><p>**周期法 (Time-of-Swing, ToS)**：这是当前主流的高精度方法之一。其原理是，扭秤的振动周期会因源质量与检验质量之间引力大小的变化而改变。通过精确测量周期的变化，就可以反推出引力的大小和 \(G\) 值。这种方法有效规避了测量微小静态角度的难题。例如，一项发表在《Nature》上的合作研究就同时使用了周期法和另一种方法，两者结果在三个标准差内吻合，增强了结果的可靠性。现代周期法已将地球自转、局部磁场等系统误差的影响控制在 <strong>1 ppm</strong> 甚至更低水平。</p>
+</li>
+<li><p><strong>角加速度反馈法 (Angular Acceleration Feedback, AAF)<strong>：这种方法更为精巧。它通过一个反馈控制系统，让扭秤的悬丝在测量过程中</strong>始终不发生扭转</strong>（或扭转角度极小，如 \(7.3\times10^{-7}\) 弧度）。系统会施加一个已知的补偿力矩来精确抵消引力力矩，通过测量这个反馈力矩来直接得到引力大小。这从根本上避免了悬丝非线性效应带来的误差。该方法目前的综合相对不确定度可达到 <strong>11.61 ppm</strong> 的水平。</p>
+</li>
+<li><p><strong>最新进展</strong>：即使在传统扭秤领域，精度仍在刷新。美国国家标准与技术研究院（NIST）在2026年报告了一项基于BIPM（国际计量局）原始扭秤的复现实验，将 \(G\) 的测量相对标准不确定度做到了 <strong>3.0 ppm</strong>（即 \(3.0\times10^{-6}\)），这代表了当前扭秤法所能达到的顶尖水平。</p>
+</li>
+</ul>
+<h3 id="基于量子技术的新一代方法"><a href="#基于量子技术的新一代方法" class="headerlink" title="基于量子技术的新一代方法"></a>基于量子技术的新一代方法</h3><p>这些方法利用量子相干性和极低的噪声环境，有望将测量精度提升数个数量级。</p>
+<ul>
+<li><p><strong>原子干涉法</strong>：这种方法利用激光操控原子物质波，使其像光波一样发生干涉。当原子经过大质量源附近时，引力会使其干涉相位发生改变，通过测量相位差即可确定引力加速度，进而计算出 \(G\)。其优势在于原子本身是理想的“检验质量”，不受机械悬挂系统的束缚和材料特性影响。目前，原子干涉法测量 \(G\) 的精度正在向 <strong>100 ppm</strong> 级别迈进，并有理论预测未来有望达到 <strong>200 ppb</strong>（即 \(2\times10^{-7}\)）的惊人精度。</p>
+</li>
+<li><p><strong>磁悬浮与光悬浮系统</strong>：为了彻底摆脱扭秤悬丝的机械束缚和热噪声，研究人员开始利用<strong>磁悬浮</strong>或<strong>光镊</strong>技术在真空中悬浮微米至毫米级的检验质量。这些悬浮系统在近真空环境中能提供极高的稳定性，力灵敏度可达<strong>阿牛顿（\(10^{-18}\) N）</strong> 量级。通过测量悬浮粒子在源质量引力作用下振动频率的微小变化，就可以确定 \(G\) 值。一项基于超导磁悬浮的方案，其潜在精度目标优于 <strong>10 ppm</strong>。</p>
+</li>
+<li><p><strong>基于玻色-爱因斯坦凝聚（BEC）的方案</strong>：这是更具前瞻性的构想。利用处于量子基态的BEC作为探测器，通过测量其声子（量子化振动）模式在引力场中的频率干涉效应来提取 \(G\)。理论预测，这种方法有望将 \(G\) 的测量精度提升至 <strong>\(10^{-17}\)</strong> 的相对精度级别，比当前水平高出<strong>2个数量级</strong>以上。当然，这仍处于理论提议和早期探索阶段。</p>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>当前，对引力常量 \(G\) 的精密测量已从单纯的“称量地球”，演变为对基础物理极限的探索。</p>
+<table>
+<thead>
+<tr>
+<th align="left">方法类别</th>
+<th align="left">代表技术</th>
+<th align="left">当前&#x2F;近期精度</th>
+<th align="left">核心优势</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>改良扭秤</strong></td>
+<td align="left">周期法 (ToS)</td>
+<td align="left">~ ppm 量级</td>
+<td align="left">技术成熟，系统误差研究深入</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">角加速度反馈 (AAF)</td>
+<td align="left">~ 10 ppm</td>
+<td align="left">避免悬丝非线性，精度高</td>
+</tr>
+<tr>
+<td align="left"><strong>量子技术</strong></td>
+<td align="left">原子干涉法</td>
+<td align="left">~ 100 ppm，理论可达 ppb</td>
+<td align="left">原子为理想检验质量，无机械束缚</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">磁&#x2F;光悬浮系统</td>
+<td align="left">阿牛顿力灵敏度，目标 &lt; 10 ppm</td>
+<td align="left">环境稳定，噪声极低</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">BEC频率干涉 (理论)</td>
+<td align="left">理论目标 \(10^{-17}\)</td>
+<td align="left">量子增强，潜力巨大</td>
+</tr>
+</tbody></table>
+<p>这些方法从不同角度逼近测量极限，它们的相互验证对于最终确定一个无系统偏差的 \(G\) 值至关重要。</p>
+<h2 id="Q4-传统扭秤实验中用到的机械放大和光学放大机制，在其他物理实验中应用的实例？可以选择几个并具体说明。"><a href="#Q4-传统扭秤实验中用到的机械放大和光学放大机制，在其他物理实验中应用的实例？可以选择几个并具体说明。" class="headerlink" title="Q4. 传统扭秤实验中用到的机械放大和光学放大机制，在其他物理实验中应用的实例？可以选择几个并具体说明。"></a>Q4. 传统扭秤实验中用到的机械放大和光学放大机制，在其他物理实验中应用的实例？可以选择几个并具体说明。</h2><p>A: 卡文迪许扭秤实验中最核心的智慧——“将极其微小的物理量放大到肉眼可观测的程度”，在近代物理实验中得到了极其广泛的应用。其中，<strong>机械放大</strong>和<strong>光学放大</strong>（尤其是光杠杆）已成为精密测量的两大基石。</p>
+<p>以下挑选五个经典且不同领域的物理实验，具体说明这两种放大机制的应用：</p>
+<h3 id="1-杨氏模量测量实验（光杠杆的直接传承）"><a href="#1-杨氏模量测量实验（光杠杆的直接传承）" class="headerlink" title="1. 杨氏模量测量实验（光杠杆的直接传承）"></a>1. 杨氏模量测量实验（光杠杆的直接传承）</h3><p>这是大学物理中最经典的实验，其装置几乎是卡文迪许扭秤的“简化版”。</p>
+<ul>
+<li><strong>测量对象</strong>：一根金属丝受力后产生的微小伸长量 \(\Delta L\)（通常只有零点几毫米，肉眼无法分辨）。</li>
+<li><strong>机械放大</strong>：金属丝下端连接一个平面镜支架（三个足，后足踩在金属丝上）。当金属丝伸长 \(\Delta L\) 时，后足下降，导致平面镜发生微小倾斜（角度 \(\theta = \Delta L / b\)，b为后足到前两足连线的距离）。</li>
+<li><strong>光学放大</strong>：用望远镜和标尺组成的“光杠杆”系统，远处标尺上的光斑会移动距离 \(S = 2\theta D = 2D\Delta L / b\)。通过测量放大了几十倍的S，就能计算出微小的\(\Delta L\)。</li>
+<li><strong>意义</strong>：完美复现了卡文迪许“机械转角度，光学放位移”的核心思想，是现代材料力学测试的基础。</li>
+</ul>
+<h3 id="2-镜式灵敏电流计（电磁力与光杠杆的完美结合）"><a href="#2-镜式灵敏电流计（电磁力与光杠杆的完美结合）" class="headerlink" title="2. 镜式灵敏电流计（电磁力与光杠杆的完美结合）"></a>2. 镜式灵敏电流计（电磁力与光杠杆的完美结合）</h3><p>用于测量 \(10^{-9}\) A 甚至更微弱的电流。</p>
+<ul>
+<li><strong>测量对象</strong>：极其微小的电流产生的微小电磁力矩。</li>
+<li><strong>机械放大</strong>：电流通过线圈时，在磁场中受到安培力产生微小力矩。这个力矩被一根极细的金属悬丝（或张丝）的反扭矩平衡，线圈随之发生微小的扭转（通常只有零点几度）。</li>
+<li><strong>光学放大</strong>：在线圈上固定一面小镜子，用一束光照射，反射光投射到几米外的标尺上。线圈转动 \(\theta\)，光点移动 \(2\theta D\)。通过光点的巨大位移，可以精确读出微小电流。</li>
+<li><strong>意义</strong>：将卡文迪许的扭秤原理与电磁学结合，至今仍是高精度电测仪器的核心原理。</li>
+</ul>
+<h3 id="3-原子力显微镜-AFM-（微观世界的“光杠杆”）"><a href="#3-原子力显微镜-AFM-（微观世界的“光杠杆”）" class="headerlink" title="3. 原子力显微镜 (AFM)（微观世界的“光杠杆”）"></a>3. 原子力显微镜 (AFM)（微观世界的“光杠杆”）</h3><p>用于探测纳米级表面形貌，甚至可以操纵单个原子。</p>
+<ul>
+<li><strong>测量对象</strong>：探针与样品表面原子间极其微弱的相互作用力（\(10^{-12}\) N 级别，即皮牛顿）。</li>
+<li><strong>机械放大</strong>：这些微弱的力作用在极其微小的硅微悬臂梁上，导致悬臂梁发生纳米级（\(10^{-9}\) m）的弯曲。</li>
+<li><strong>光学放大</strong>：一束激光聚焦在悬臂梁的背面，反射到由光电二极管组成的<strong>位置敏感探测器 (PSD)</strong> 上。悬臂梁的纳米级弯曲会导致反射光斑在PSD上产生微米级的位移。这种光杠杆效应将不可见的原子间作用力，转化成了可精确测量的电信号。</li>
+<li><strong>意义</strong>：将光杠杆技术从宏观尺度的“米”，推进到了微观尺度的“纳米”，是表面科学和纳米技术的基石。</li>
+</ul>
+<h3 id="4-迈克尔逊干涉仪（纯光学干涉放大）"><a href="#4-迈克尔逊干涉仪（纯光学干涉放大）" class="headerlink" title="4. 迈克尔逊干涉仪（纯光学干涉放大）"></a>4. 迈克尔逊干涉仪（纯光学干涉放大）</h3><p>不再依赖机械杠杆，而是利用光的波动性实现极限放大。</p>
+<ul>
+<li><strong>测量对象</strong>：微小位移（如压电陶瓷的形变）、微小折射率变化或光波长。</li>
+<li><strong>光学放大</strong>：利用分振幅法将一束光分为两束，分别经过不同路径后汇合发生干涉。当一臂的反射镜移动半个波长（约几百纳米）时，干涉条纹就会移动一个完整的周期。</li>
+<li><strong>意义</strong>：这本质上是一种“光学杠杆”。它将不易测量的空间位移，转化为了极易观察的干涉条纹的移动。在现代光学中，配合激光光源，其测量精度可以达到光波长的百分之一甚至千分之一。</li>
+</ul>
+<h3 id="5-激光干涉引力波天文台-LIGO-（终极放大）"><a href="#5-激光干涉引力波天文台-LIGO-（终极放大）" class="headerlink" title="5. 激光干涉引力波天文台 (LIGO)（终极放大）"></a>5. 激光干涉引力波天文台 (LIGO)（终极放大）</h3><p>这是人类现有最精密的测量装置，是机械放大与光学放大的集大成者。</p>
+<ul>
+<li><strong>测量对象</strong>：引力波经过地球时引起的空间形变（在4公里的臂长上，变化量仅为 \(10^{-19}\) 米，比质子直径还要小上千倍）。</li>
+<li><strong>机械放大</strong>：虽然不转角度，但使用了4公里长的干涉臂作为“巨型杠杆”。</li>
+<li><strong>光学放大</strong>：结合了<strong>法布里-珀罗腔</strong>（让光在两个镜子间往返数百次，将4公里的有效臂长放大到上千公里）和<strong>光杠杆</strong>原理。当引力波引起臂长微小变化时，干涉条纹发生移动。此外，还使用了“功率回收”等技术，将光功率放大数百倍。</li>
+<li><strong>意义</strong>：卡文迪许为了测一粒灰尘的力，LIGO为了测时空的涟漪。其核心仍然是“将极其微小的长度变化，通过光学的干涉和反射，放大到可以探测的电信号”。</li>
+</ul>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p>从卡文迪许的扭秤，到杨氏模量的光杠杆，再到AFM和LIGO，物理学的发展史，某种程度上就是一部<strong>“不断突破测量极限”</strong>的历史。</p>
+<ul>
+<li><strong>机械放大</strong>的核心是“转换”：把微小的力或位移，转换成易于测量的角度、周期或电信号。</li>
+<li><strong>光学放大</strong>的核心是“杠杆”：利用光沿直线传播（反射定律）或光的波动性（干涉），把微小的空间变化，转换为宏观可见的光斑位移或条纹移动。</li>
+</ul>
+<p>这些方法至今仍活跃在物理、材料、生物和天文等各个前沿领域。</p>
+
+  </div>
+
+  
+  <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
+    <div class="terminal-toc__header">
+      <span class="terminal-toc__label">目录</span>
+      <button class="terminal-toc__toggle" id="toc-toggle" aria-label="Toggle TOC">[-]</button>
+    </div>
+    <nav class="terminal-toc__nav" id="toc-nav">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%B5%8B%E9%87%8F%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%EF%BC%9F%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E4%B8%BA%E4%BD%95%E8%83%BD%E6%83%B3%E5%88%B0%E7%94%A8%E8%BF%99%E4%B8%AA%E5%B7%A7%E5%A6%99%E7%9A%84%E8%A3%85%E7%BD%AE%E6%B5%8B%E5%87%BA%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%EF%BC%9F"><span class="toc-text">Q1. 为什么需要测量引力常量？卡文迪许为何能想到用这个巧妙的装置测出引力常量？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%B5%8B%E9%87%8F%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%EF%BC%88-MATHSTORE0-%EF%BC%89%EF%BC%9F"><span class="toc-text">一、为什么需要测量引力常量（\(G\)）？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E4%B8%BA%E4%BD%95%E8%83%BD%E6%83%B3%E5%88%B0%E7%94%A8%E8%BF%99%E4%B8%AA%E5%B7%A7%E5%A6%99%E7%9A%84%E8%A3%85%E7%BD%AE%EF%BC%9F"><span class="toc-text">二、卡文迪许为何能想到用这个巧妙的装置？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q2-%E8%83%BD%E5%90%A6%E5%85%B7%E4%BD%93%E5%B1%95%E5%BC%80%E8%AF%B4%E6%98%8E%E8%BF%99%E4%B8%AA%E5%AE%9E%E9%AA%8C%EF%BC%9F%E5%81%9A%E8%BF%99%E4%B8%AA%E5%AE%9E%E9%AA%8C%E7%9A%84%E9%87%8D%E9%9A%BE%E7%82%B9%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">Q2. 能否具体展开说明这个实验？做这个实验的重难点是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E5%AE%9E%E9%AA%8C%E7%9A%84%E5%85%B7%E4%BD%93%E5%B1%95%E5%BC%80%EF%BC%88%E7%89%A9%E7%90%86%E5%8E%9F%E7%90%86%E4%B8%8E%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%89"><span class="toc-text">一、 实验的具体展开（物理原理与操作流程）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E5%81%9A%E8%BF%99%E4%B8%AA%E5%AE%9E%E9%AA%8C%E7%9A%84%E9%87%8D%E9%9A%BE%E7%82%B9%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-text">二、 做这个实验的重难点是什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q3-%E5%A6%82%E6%9E%9C%E7%8E%B0%E5%9C%A8%E8%A6%81%E5%9C%A8%E5%AE%9E%E9%AA%8C%E5%AE%A4%E9%87%8C%E5%81%9A%E8%BF%99%E4%B8%AA%E5%AE%9E%E9%AA%8C%EF%BC%8C%E6%98%AF%E5%90%A6%E6%9C%89%E7%B2%BE%E5%BA%A6%E6%9B%B4%E9%AB%98%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9F"><span class="toc-text">Q3. 如果现在要在实验室里做这个实验，是否有精度更高的方法？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%AD%E7%A7%A4%E6%B3%95%E7%9A%84%E7%8E%B0%E4%BB%A3%E5%8C%96%E6%94%B9%E8%89%AF"><span class="toc-text">扭秤法的现代化改良</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E9%87%8F%E5%AD%90%E6%8A%80%E6%9C%AF%E7%9A%84%E6%96%B0%E4%B8%80%E4%BB%A3%E6%96%B9%E6%B3%95"><span class="toc-text">基于量子技术的新一代方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q4-%E4%BC%A0%E7%BB%9F%E6%89%AD%E7%A7%A4%E5%AE%9E%E9%AA%8C%E4%B8%AD%E7%94%A8%E5%88%B0%E7%9A%84%E6%9C%BA%E6%A2%B0%E6%94%BE%E5%A4%A7%E5%92%8C%E5%85%89%E5%AD%A6%E6%94%BE%E5%A4%A7%E6%9C%BA%E5%88%B6%EF%BC%8C%E5%9C%A8%E5%85%B6%E4%BB%96%E7%89%A9%E7%90%86%E5%AE%9E%E9%AA%8C%E4%B8%AD%E5%BA%94%E7%94%A8%E7%9A%84%E5%AE%9E%E4%BE%8B%EF%BC%9F%E5%8F%AF%E4%BB%A5%E9%80%89%E6%8B%A9%E5%87%A0%E4%B8%AA%E5%B9%B6%E5%85%B7%E4%BD%93%E8%AF%B4%E6%98%8E%E3%80%82"><span class="toc-text">Q4. 传统扭秤实验中用到的机械放大和光学放大机制，在其他物理实验中应用的实例？可以选择几个并具体说明。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9D%A8%E6%B0%8F%E6%A8%A1%E9%87%8F%E6%B5%8B%E9%87%8F%E5%AE%9E%E9%AA%8C%EF%BC%88%E5%85%89%E6%9D%A0%E6%9D%86%E7%9A%84%E7%9B%B4%E6%8E%A5%E4%BC%A0%E6%89%BF%EF%BC%89"><span class="toc-text">1. 杨氏模量测量实验（光杠杆的直接传承）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%95%9C%E5%BC%8F%E7%81%B5%E6%95%8F%E7%94%B5%E6%B5%81%E8%AE%A1%EF%BC%88%E7%94%B5%E7%A3%81%E5%8A%9B%E4%B8%8E%E5%85%89%E6%9D%A0%E6%9D%86%E7%9A%84%E5%AE%8C%E7%BE%8E%E7%BB%93%E5%90%88%EF%BC%89"><span class="toc-text">2. 镜式灵敏电流计（电磁力与光杠杆的完美结合）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8E%9F%E5%AD%90%E5%8A%9B%E6%98%BE%E5%BE%AE%E9%95%9C-AFM-%EF%BC%88%E5%BE%AE%E8%A7%82%E4%B8%96%E7%95%8C%E7%9A%84%E2%80%9C%E5%85%89%E6%9D%A0%E6%9D%86%E2%80%9D%EF%BC%89"><span class="toc-text">3. 原子力显微镜 (AFM)（微观世界的“光杠杆”）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%BF%88%E5%85%8B%E5%B0%94%E9%80%8A%E5%B9%B2%E6%B6%89%E4%BB%AA%EF%BC%88%E7%BA%AF%E5%85%89%E5%AD%A6%E5%B9%B2%E6%B6%89%E6%94%BE%E5%A4%A7%EF%BC%89"><span class="toc-text">4. 迈克尔逊干涉仪（纯光学干涉放大）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%BF%80%E5%85%89%E5%B9%B2%E6%B6%89%E5%BC%95%E5%8A%9B%E6%B3%A2%E5%A4%A9%E6%96%87%E5%8F%B0-LIGO-%EF%BC%88%E7%BB%88%E6%9E%81%E6%94%BE%E5%A4%A7%EF%BC%89"><span class="toc-text">5. 激光干涉引力波天文台 (LIGO)（终极放大）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-text">总结</span></a></li></ol></li></ol>
+    </nav>
+  </aside>
+  
+
+  <div class="terminal-post-footer">
+    <div class="terminal-post-nav">
+      
+        <a class="terminal-post-nav__prev" href="/2026/09/29/construct-sqrt-2/">
+          [&lt; 从自然数构造√2]
+        </a>
+      
+      
+        <a class="terminal-post-nav__next" href="/2026/09/08/math-test/">
+          [Math Formula Test &gt;]
+        </a>
+      
+    </div>
+
+    
+
+  </div>
+</article>
+
+      </main>
+      
+        <aside class="terminal-sidebar">
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> whoami
+    </div>
+    <div class="terminal-sidebar__content">
+      <p>quan-1145</p>
+      
+        <p>It may have much potential</p>
+      
+    </div>
+  </div>
+
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> ls posts/
+    </div>
+    <div class="terminal-sidebar__content">
+      total 7
+    </div>
+  </div>
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls categories/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/">[archlinux]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/wsl/">[wsl]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">[学习]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">[探究项目]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/">[物理]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">[高等数学]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls tags/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list terminal-list--inline">
+          
+            <li class="terminal-list__item">
+              <a href="/tags/HTML/">#HTML</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/archlinux/">#archlinux</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/css/">#css</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/oh-my-zsh/">#oh-my-zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/powerlevel10k/">#powerlevel10k</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/wsl/">#wsl</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/zsh/">#zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E2%88%9A2%E4%BB%8E%E8%87%AA%E7%84%B6%E6%95%B0%E6%9E%84%E9%80%A0/">#√2从自然数构造</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">#一致性</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E5%AE%9E%E9%AA%8C/">#卡文迪许实验</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%AE%9E%E9%AA%8C%E6%80%9D%E6%83%B3%E6%96%B9%E6%B3%95/">#实验思想方法</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%E6%B5%8B%E9%87%8F/">#引力常量测量</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E6%95%B0%E7%B3%BB%E6%89%A9%E5%B1%95/">#数系扩展</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E5%BA%8F%E5%88%97%E5%92%8C%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4%E6%9E%84%E9%80%A0%E5%B9%B3%E6%96%B9%E4%B8%BA2%E7%9A%84%E6%95%B0/">#用有理数序列和缩小区间构造平方为2的数</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AD%89%E4%BB%B7%E7%B1%BB/">#等价类</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AE%97%E6%9C%AF%E5%AE%9A%E4%B9%89/">#算术定义</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%A6%82%E8%AE%BA/">#计算机科学概论</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%B4%9F%E6%95%B0%E5%88%86%E6%95%B0%E5%BB%BA%E7%AB%8B/">#负数分数建立</a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> env
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-env">
+          
+            
+          
+            
+          
+            
+          
+        </ul>
+      </div>
+    </div>
+  
+</aside>
+
+      
+    </div>
+    <footer class="terminal-footer">
+  <div class="terminal-footer__line">
+    <span class="terminal-user">guest@hexo-blog</span>
+    <span class="terminal-separator">:</span>
+    <span class="terminal-path">~</span>
+    <span class="terminal-prompt-mark">$</span>
+    <span class="terminal-cmd">exit</span>
+  </div>
+  <div class="terminal-footer__content">
+    
+      <p class="terminal-footer__text">
+        &copy; 2026 quan-1145
+      </p>
+    
+    
+      <p class="terminal-footer__text">Powered by Hexo | Terminal Theme</p>
+    
+  </div>
+</footer>
+  </div>
+  <button id="back-to-top" class="terminal-back-to-top" aria-label="Back to top">[▲]</button>
+  
+<div class="terminal-search" id="terminal-search" aria-hidden="true">
+  <div class="terminal-search__dialog">
+    <div class="terminal-search__header">
+      <span class="terminal-prompt-mark">$</span> grep -r "" posts/
+    </div>
+    <div class="terminal-search__input-wrap">
+      <input type="text" class="terminal-search__input" id="search-input" placeholder="type to search..." autocomplete="off" aria-label="Search input">
+    </div>
+    <div class="terminal-search__results" id="search-results">
+      <p class="terminal-search__empty">type keywords to search...</p>
+    </div>
+    <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
+  </div>
+</div>
+<script src="/js/search.js"></script>
+
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>

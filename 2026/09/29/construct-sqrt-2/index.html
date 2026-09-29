@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>从自然数构造√2 | quan-1145 — Still under construction</title>
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link rel="alternate" type="application/atom+xml" title="quan-1145" href="/atom.xml">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <script>
+      document.documentElement.setAttribute('data-theme', 'green');
+    </script>
+  
+
+  
+  
+    
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
+    
+  
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="terminal-header">
+  <div class="terminal-header__inner">
+    <nav class="terminal-nav">
+      <div class="terminal-nav__prompt">
+        <span class="terminal-user">guest@hexo-blog</span>
+        <span class="terminal-separator">:</span>
+        <span class="terminal-path">~</span>
+        <span class="terminal-prompt-mark">$</span>
+      </div>
+      <ul class="terminal-menu">
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/">
+              [Home]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/archives">
+              [Archives]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/tags">
+              [Tags]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/categories">
+              [Categories]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/more">
+              [More]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/about">
+              [About]
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+    <div class="terminal-header__actions">
+      <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
+      <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
+    </div>
+  </div>
+</header>
+  <div class="terminal-container">
+    <div class="terminal-body">
+      <main class="terminal-main">
+        <article class="terminal-page terminal-page--post">
+  <header class="terminal-post-header">
+    
+      <div class="terminal-post-header__prompt">
+        <span class="terminal-prompt-mark">$</span> cat construct-sqrt-2.md
+      </div>
+    
+    <h1 class="terminal-post-header__title">从自然数构造√2</h1>
+    <div class="terminal-post-header__meta">
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">date:</span>
+        <span class="terminal-meta__value">2026-09-29</span>
+      </span>
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">updated:</span>
+          <span class="terminal-meta__value">2026-09-29</span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">cat:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">高等数学</a>, 
+            
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">探究项目</a>
+            
+          </span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">tags:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/tags/%E6%95%B0%E7%B3%BB%E6%89%A9%E5%B1%95/">#数系扩展</a> 
+            
+              <a href="/tags/%E2%88%9A2%E4%BB%8E%E8%87%AA%E7%84%B6%E6%95%B0%E6%9E%84%E9%80%A0/">#√2从自然数构造</a> 
+            
+              <a href="/tags/%E8%B4%9F%E6%95%B0%E5%88%86%E6%95%B0%E5%BB%BA%E7%AB%8B/">#负数分数建立</a> 
+            
+              <a href="/tags/%E7%AE%97%E6%9C%AF%E5%AE%9A%E4%B9%89/">#算术定义</a> 
+            
+              <a href="/tags/%E7%AD%89%E4%BB%B7%E7%B1%BB/">#等价类</a> 
+            
+              <a href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">#一致性</a> 
+            
+              <a href="/tags/%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E5%BA%8F%E5%88%97%E5%92%8C%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4%E6%9E%84%E9%80%A0%E5%B9%B3%E6%96%B9%E4%B8%BA2%E7%9A%84%E6%95%B0/">#用有理数序列和缩小区间构造平方为2的数</a>
+            
+          </span>
+        </span>
+      
+    </div>
+  </header>
+
+  <div class="terminal-post-content">
+    <p>下面给出一条标准路线：<strong>自然数 → 整数 → 有理数 → 实数</strong>，而 \(\sqrt2\) 是在最后一步“完备化”有理数时被严谨造出来的．</p>
+<h2 id="1-总原则：数系扩张是为了解旧数系中无解的方程"><a href="#1-总原则：数系扩张是为了解旧数系中无解的方程" class="headerlink" title="1. 总原则：数系扩张是为了解旧数系中无解的方程"></a>1. 总原则：数系扩张是为了解旧数系中无解的方程</h2><ul>
+<li>自然数 \(\mathbb N\)：用皮亚诺公理给出 \(0,1,2,\dots\)，加法、乘法递归定义．</li>
+<li>整数 \(\mathbb Z\)：为了让 \(a+x=b\) 总有解，引入负数．</li>
+<li>有理数 \(\mathbb Q\)：为了让 \(bx=a\ (b\ne0)\) 总有解，引入分数．</li>
+<li>实数 \(\mathbb R\)：为了让 \(x^2=2\) 这类方程有解，并让“极限”总有对象，完备化有理数．</li>
+</ul>
+<p>关键手法：<strong>把“新数”定义为旧对象的等价类，再在等价类上定义运算，并证明运算不依赖代表元．</strong></p>
+<hr>
+<h2 id="2-整数：负数从有序对来"><a href="#2-整数：负数从有序对来" class="headerlink" title="2. 整数：负数从有序对来"></a>2. 整数：负数从有序对来</h2><p>从自然数 \(\mathbb N\) 出发，取有序对 \((a,b)\)，想表示 \(a-b\)．但 \((2,0)\) 和 \((3,1)\) 都表示 \(2\)，所以规定等价：</p>
+<p>\[
+(a,b)\sim(c,d)\iff a+d=c+b.
+\]</p>
+<p>整数就是等价类</p>
+<p>\[
+\mathbb Z=(\mathbb N\times\mathbb N)/\sim,\qquad [(a,b)]\text{ 表示 }a-b.
+\]</p>
+<p>定义运算：</p>
+<p>\[
+[(a,b)]+[(c,d)]=[(a+c,b+d)],
+\]</p>
+<p>\[
+[(a,b)]\cdot[(c,d)]=[(ac+bd,ad+bc)].
+\]</p>
+<p>负元是</p>
+<p>\[
+-[(a,b)]=[(b,a)].
+\]</p>
+<p>自然数 \(n\) 嵌入为 \([(n,0)]\)．于是减法 \(a-b\) 就是 \(a+(-b)\)．</p>
+<p>为什么不会矛盾？要验证“良定义”：若 \((a,b)\sim(a',b')\)，\((c,d)\sim(c',d')\)，则用定义能推出</p>
+<p>\[
+(a+c,b+d)\sim(a'+c',b'+d'),
+\]</p>
+<p>所以加法结果与代表元选择无关．乘法也类似．然后加法交换、结合、分配律等都能从自然数性质逐条验证．</p>
+<hr>
+<h2 id="3-有理数：分数从整数对来"><a href="#3-有理数：分数从整数对来" class="headerlink" title="3. 有理数：分数从整数对来"></a>3. 有理数：分数从整数对来</h2><p>想表示 \(a/b\)，取整数对 \((a,b)\)，其中 \(b\ne0\)．规定等价：</p>
+<p>\[
+(a,b)\sim(c,d)\iff ad=bc.
+\]</p>
+<p>例如 \((1,2)\sim(2,4)\)，都表示 \(\frac12\)．有理数是</p>
+<p>\[
+\mathbb Q=(\mathbb Z\times(\mathbb Z\setminus\{0\}))/\sim.
+\]</p>
+<p>运算：</p>
+<p>\[
+[(a,b)]+[(c,d)]=[(ad+bc,bd)],
+\]</p>
+<p>\[
+[(a,b)]\cdot[(c,d)]=[(ac,bd)].
+\]</p>
+<p>若 \(a\ne0\)，倒数：</p>
+<p>\[
+[(a,b)]^{-1}=[(b,a)].
+\]</p>
+<p>整数 \(z\) 嵌入为 \([(z,1)]\)．于是除法 \(a\div b\) 就是 \(a\cdot b^{-1}\)．</p>
+<p>“不同写法何时代表同一个数”在这里就是：</p>
+<p>\[
+\frac ab=\frac cd\iff ad=bc.
+\]</p>
+<p>这解释了为什么 \(\frac12=\frac24=\frac{3}{6}\)．</p>
+<hr>
+<h2 id="4-有理数中为什么没有-MATHSTORE97"><a href="#4-有理数中为什么没有-MATHSTORE97" class="headerlink" title="4. 有理数中为什么没有 \(\sqrt2\)"></a>4. 有理数中为什么没有 \(\sqrt2\)</h2><p>假设存在有理数 \(p/q\)，既约，满足</p>
+<p>\[
+\left(\frac pq\right)^2=2.
+\]</p>
+<p>则</p>
+<p>\[
+p^2=2q^2.
+\]</p>
+<p>右边含因子 \(2\) 的个数是奇数，左边含因子 \(2\) 的个数是偶数，矛盾．所以 \(\mathbb Q\) 中没有平方为 \(2\) 的数．</p>
+<p>因此需要从 \(\mathbb Q\) 出发再构造新数．</p>
+<hr>
+<h2 id="5-用有理数柯西序列构造实数，并造出-MATHSTORE104"><a href="#5-用有理数柯西序列构造实数，并造出-MATHSTORE104" class="headerlink" title="5. 用有理数柯西序列构造实数，并造出 \(\sqrt2\)"></a>5. 用有理数柯西序列构造实数，并造出 \(\sqrt2\)</h2><h3 id="5-1-实数作为有理柯西序列的等价类"><a href="#5-1-实数作为有理柯西序列的等价类" class="headerlink" title="5.1 实数作为有理柯西序列的等价类"></a>5.1 实数作为有理柯西序列的等价类</h3><p>一个有理数序列 \((a_n)\) 叫柯西序列，如果</p>
+<p>\[
+\forall \varepsilon&gt;0,\ \exists N,\ \forall m,n\ge N,\quad |a_m-a_n|&lt;\varepsilon.
+\]</p>
+<p>两个柯西序列 \((a_n),(b_n)\) 等价，如果</p>
+<p>\[
+a_n-b_n\to0.
+\]</p>
+<p>实数定义为</p>
+<p>\[
+\mathbb R=\{\text{有理柯西序列}\}/\sim.
+\]</p>
+<p>也就是说，一个实数就是“差趋于 \(0\)”的柯西序列的等价类．常数序列 \((q,q,q,\dots)\) 表示原来的有理数 \(q\)．</p>
+<p>运算逐项定义：</p>
+<p>\[
+[(a_n)]+[(b_n)]=[(a_n+b_n)],
+\]</p>
+<p>\[
+[(a_n)]\cdot[(b_n)]=[(a_nb_n)].
+\]</p>
+<p>需要验证：柯西序列相加、相乘仍是柯西序列；若换等价代表元，结果仍等价．这就是“良定义”．</p>
+<h3 id="5-2-二分法缩小区间"><a href="#5-2-二分法缩小区间" class="headerlink" title="5.2 二分法缩小区间"></a>5.2 二分法缩小区间</h3><p>从有理数区间开始：</p>
+<p>\[
+l_0=1,\qquad u_0=2.
+\]</p>
+<p>有</p>
+<p>\[
+l_0^2=1&lt;2&lt;4=u_0^2.
+\]</p>
+<p>每一步取中点</p>
+<p>\[
+m_n=\frac{l_n+u_n}{2}.
+\]</p>
+<p>若 \(m_n^2&lt;2\)，令</p>
+<p>\[
+l_{n+1}=m_n,\quad u_{n+1}=u_n;
+\]</p>
+<p>否则令</p>
+<p>\[
+l_{n+1}=l_n,\quad u_{n+1}=m_n.
+\]</p>
+<p>于是始终有</p>
+<p>\[
+l_n^2&lt;2&lt;u_n^2,
+\]</p>
+<p>并且区间长度</p>
+<p>\[
+u_n-l_n=\frac1{2^n}\to0.
+\]</p>
+<p>所以 \(l_n\) 单调不减，\(u_n\) 单调不增，二者夹住同一个位置．</p>
+<h3 id="5-3-定义-MATHSTORE113-，证明-MATHSTORE114"><a href="#5-3-定义-MATHSTORE113-，证明-MATHSTORE114" class="headerlink" title="5.3 定义 \(x=[(l_n)]\)，证明 \(x^2=2\)"></a>5.3 定义 \(x=[(l_n)]\)，证明 \(x^2=2\)</h3><p>令</p>
+<p>\[
+x=[(l_n)]
+\]</p>
+<p>为这个有理柯西序列对应的实数．则</p>
+<p>\[
+x^2=[(l_n^2)].
+\]</p>
+<p>但</p>
+<p>\[
+0&lt;2-l_n^2&lt;u_n^2-l_n^2
+=(u_n-l_n)(u_n+l_n).
+\]</p>
+<p>而</p>
+<p>\[
+u_n-l_n=\frac1{2^n},\qquad u_n+l_n\le 4,
+\]</p>
+<p>所以</p>
+<p>\[
+u_n^2-l_n^2\le \frac4{2^n}\to0.
+\]</p>
+<p>因此</p>
+<p>\[
+l_n^2\to2.
+\]</p>
+<p>在实数构造中，这意味着序列 \((l_n^2)\) 与常数序列 \((2,2,2,\dots)\) 等价，即</p>
+<p>\[
+[(l_n^2)]=[(2,2,2,\dots)].
+\]</p>
+<p>所以</p>
+<p>\[
+x^2=2.
+\]</p>
+<p>又因为 \(l_n\ge1\)，所以 \(x&gt;0\)．于是这个 \(x\) 就是正数中平方为 \(2\) 的数，记作</p>
+<p>\[
+\sqrt2.
+\]</p>
+<p>另一个解是 \(-\sqrt2\)．</p>
+<hr>
+<h2 id="6-戴德金分割的等价说法"><a href="#6-戴德金分割的等价说法" class="headerlink" title="6. 戴德金分割的等价说法"></a>6. 戴德金分割的等价说法</h2><p>也可以直接定义</p>
+<p>\[
+\sqrt2=\{q\in\mathbb Q:q&lt;0\text{ 或 }q^2&lt;2\}.
+\]</p>
+<p>这是一个有理数的下集：非空、不是全体、向下封闭、没有最大元．它就是实数 \(\sqrt2\) 的戴德金分割．可以证明这个分割自乘后等于</p>
+<p>\[
+\{q\in\mathbb Q:q&lt;2\},
+\]</p>
+<p>即有理数 \(2\) 的分割．所以在这种构造中，\(\sqrt2\) 也是一个等价类式的对象：一个有理数集合．</p>
+<hr>
+<h2 id="7-为什么这样做不会自相矛盾？"><a href="#7-为什么这样做不会自相矛盾？" class="headerlink" title="7. 为什么这样做不会自相矛盾？"></a>7. 为什么这样做不会自相矛盾？</h2><p>核心是：</p>
+<ol>
+<li><strong>等价条件明确</strong>：整数、有理数、实数的“同一个数”都有精确定义．</li>
+<li><strong>运算良定义</strong>：换代表元不改变结果．</li>
+<li><strong>公理可验证</strong>：加法交换结合、乘法交换结合、分配律、序关系等，都能从旧数系逐条证明．</li>
+<li><strong>相对一致性</strong>：如果自然数或集合论 \(\mathrm{ZFC}\) 本身不矛盾，那么这些构造出的整数、有理数、实数也不矛盾．</li>
+</ol>
+<p>不能说我们在系统内“绝对证明”了数学无矛盾，但可以说：新数系不是凭空规定的，而是旧数系的一个模型构造．</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>边长为 \(1\) 的正方形，对角线长度满足</p>
+<p>\[
+d^2=1^2+1^2=2.
+\]</p>
+<p>在自然数中没有这样的 \(d\)，在有理数中也没有．于是：</p>
+<p>\[
+\mathbb N\longrightarrow \mathbb Z\longrightarrow \mathbb Q\longrightarrow \mathbb R
+\]</p>
+<p>每一步都用等价类解旧数系中无解的方程．到了实数，用有理数柯西序列或不断缩小的有理区间</p>
+<p>\[
+[l_n,u_n],\qquad l_n^2&lt;2&lt;u_n^2,\qquad u_n-l_n\to0,
+\]</p>
+<p>定义出</p>
+<p>\[
+x=[(l_n)],
+\]</p>
+<p>并证明</p>
+<p>\[
+x^2=2.
+\]</p>
+<p>这个 \(x\) 就是 \(\sqrt2\)．它不是凭空写下的符号，而是有理数完备化后必然出现的对象．</p>
+<hr>
+<h2 id="任务书原文"><a href="#任务书原文" class="headerlink" title="任务书原文"></a>任务书原文</h2><h3 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h3><p>自然数中的减法、有理数中的极限，并不总能在原来的数系中得到结果．扩充数系既需要引入新的对象，也需要规定哪些对象表示同一个数，以及新运算与原有运算之间的关系．本项目沿</p>
+<p>$$\mathbb{N} \to \mathbb{Z} \to \mathbb{Q} \to \mathbb{R}$$</p>
+<p>建立数系，研究等价关系、运算的良定义和有理数近似过程．形式化证明游戏用于观察定义、已知命题与证明步骤之间的依赖关系；实数采用有理柯西序列的等价类构造．</p>
+<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><h4 id="公理、递归与数学归纳法"><a href="#公理、递归与数学归纳法" class="headerlink" title="公理、递归与数学归纳法"></a>公理、递归与数学归纳法</h4><p>公理是理论中采用的基本假设；定义规定新对象或记号的含义；定理是由公理、定义及已有定理推出的命题；证明是说明这些推导成立的论证．</p>
+<p>自然数采用包含 $0$ 的约定．其基本对象为集合 $\mathbb{N}$、元素 $0$ 和后继函数 $S: \mathbb{N} \to \mathbb{N}$，满足：$0$ 不属于 $S$ 的像；$S(a) = S(b)$ 蕴含 $a = b$；若某性质对 $0$ 成立，且由其对 $n$ 成立可以推出其对 $S(n)$ 成立，则该性质对所有自然数成立．记</p>
+<p>$$1 = S(0), \quad 2 = S(1), \quad 3 = S(2).$$</p>
+<p>可引用递归原理：给定初值和由前一项确定后一项的规则，可以在自然数上唯一地定义相应函数．</p>
+<h4 id="等价关系、商集与良定义"><a href="#等价关系、商集与良定义" class="headerlink" title="等价关系、商集与良定义"></a>等价关系、商集与良定义</h4><p>设 $X$ 为集合．关系 $\sim$ 是等价关系，指它满足</p>
+<p>$$u \sim u,$$<br>$$u \sim v \Rightarrow v \sim u,$$<br>$$(u \sim v, v \sim w) \Rightarrow u \sim w.$$</p>
+<p>元素 $u$ 的等价类是 $[u] = \{v \in X : v \sim u\}$，所有等价类组成商集 $X/{\sim}$．属于同一等价类的元素称为该类的不同代表元．</p>
+<p>若拟以 $[u] \circ [v] = [F(u, v)]$ 定义商集上的运算，则需检查两件事：$F(u, v)$ 仍是允许的对象；若 $u \sim u'$、$v \sim v'$，则 $F(u, v) \sim F(u', v')$．后者称为运算的<strong>良定义</strong>．把旧数系映入新数系的映射若为单射且保持加法、乘法，就可以用新数系中的对应对象表示原来的数．</p>
+<h4 id="可引用的算术结论"><a href="#可引用的算术结论" class="headerlink" title="可引用的算术结论"></a>可引用的算术结论</h4><p>下列结论作为构造过程中的已知命题使用，其完整证明不列入问题．</p>
+<p>(1) 问题2的递归运算满足自然数的交换律、结合律、分配律及加法消去律．这些结论仅用于问题3及其后各题；问题2指定的结合律证明只使用递归定义和归纳法．</p>
+<p>(2) 问题3给出的整数乘法是良定义的，所得整数满足通常的交换律、结合律、分配律和非零因子消去律．整数对 $(a, b)$、$b \neq 0$ 可以约去公因数，并调整为两数互素且 $b &gt; 0$ 的代表元．每个整数均为偶数或奇数．</p>
+<p>(3) 问题4给出的有理数加法、乘法是良定义的，所得有理数具有通常的大小关系、四则运算、绝对值和三角不等式．任给正有理数 $\varepsilon$，存在 $N \in \mathbb{N}$ 使 $2^{-N} &lt; \varepsilon$．</p>
+<h4 id="有理柯西序列"><a href="#有理柯西序列" class="headerlink" title="有理柯西序列"></a>有理柯西序列</h4><p>所有数列从 $n = 0$ 开始．有理数列 $(a_n)$ 称为柯西序列，若</p>
+<p>$$\forall \varepsilon \in \mathbb{Q}_{&gt;0}, \; \exists N \in \mathbb{N}, \; \forall m, n \ge N, \quad |a_m - a_n| &lt; \varepsilon.$$</p>
+<p>这里的 $\varepsilon$ 是正有理数．设 $\mathcal{C}$ 为全部有理柯西序列的集合，在其中规定关系</p>
+<p>$$(a_n) \approx (b_n) \iff \forall \varepsilon \in \mathbb{Q}_{&gt;0}, \; \exists N \in \mathbb{N}, \; \forall n \ge N, \quad |a_n - b_n| &lt; \varepsilon.$$</p>
+<p>可引用以下命题：每个有理柯西序列均有界；两个有理柯西序列的逐项积仍为柯西序列；若 $(a_n) \approx (a'_n)$、$(b_n) \approx (b'_n)$，则 $(a_n b_n) \approx (a'_n b'_n)$．实数尚未构造时，不以”收敛到某个实数”说明数列为何满足这些条件．</p>
+<h3 id="项目问题"><a href="#项目问题" class="headerlink" title="项目问题"></a>项目问题</h3><h4 id="问题1：形式化证明体验"><a href="#问题1：形式化证明体验" class="headerlink" title="问题1：形式化证明体验"></a>问题1：形式化证明体验</h4><p>Natural Number Game 是基于 Lean 的自然数证明游戏，允许在指定的定义和已有命题下逐步完成证明．游戏地址为 <a target="_blank" rel="noopener" href="https://adam.math.hhu.de/#/g/leanprover-community/nng4">https://adam.math.hhu.de/#/g/leanprover-community/nng4</a></p>
+<p>从 Tutorial World 开始，至少完整完成一个 World 中的全部关卡；完成 Tutorial World 即满足这一要求，也可以继续体验后续 World．写明所完成的 World 名称，结合游戏中具体的证明经历，叙述自己的体验，并讨论对数学公理体系的理解，包括公理、定义、定理和证明之间的关系．</p>
+<h4 id="问题2：自然数的运算"><a href="#问题2：自然数的运算" class="headerlink" title="问题2：自然数的运算"></a>问题2：自然数的运算</h4><p><strong>(1)</strong> 对第二个变量递归，给出自然数加法和乘法的定义，并由定义逐步计算 $1 + 2$．</p>
+<p><strong>(2)</strong> 固定 $a, b \in \mathbb{N}$，对 $c$ 使用数学归纳法，证明</p>
+<p>$$a + (b + c) = (a + b) + c.$$</p>
+<p>证明中写明归纳起点、归纳假设及后继步骤所使用的等式．</p>
+<h4 id="问题3：从自然数构造整数"><a href="#问题3：从自然数构造整数" class="headerlink" title="问题3：从自然数构造整数"></a>问题3：从自然数构造整数</h4><p>在 $\mathbb{N}^2$ 上规定</p>
+<p>$$(m, n) \sim (m', n') \iff m + n' = m' + n,$$</p>
+<p>并定义 $\mathbb{Z} = \mathbb{N}^2/{\sim}$．有序对 $(m, n)$ 表示形式上的差；在整数尚未构造时，$m - n$ 不作为已有的自然数运算使用．定义</p>
+<p>$$[(m, n)] + [(p, q)] = [(m + p, n + q)],$$<br>$$[(m, n)] \cdot [(p, q)] = [(mp + nq, mq + np)].$$</p>
+<p><strong>(1)</strong> 证明 $\sim$ 是等价关系．传递性的证明须写明自然数加法消去律的使用位置．</p>
+<p><strong>(2)</strong> 证明所定义的整数加法是良定义的，即同时更换两个加数的代表元不改变结果所在的等价类．</p>
+<p><strong>(3)</strong> 对 $x = [(5, 2)]$、$y = [(1, 4)]$，计算 $x + y$、$xy$．对一般 $x = [(m, n)]$，定义相反数 $-x$，验证 $x + (-x) = [(0, 0)]$，并定义 $x - y$．</p>
+<p><strong>(4)</strong> 定义 $\iota(n) = [(n, 0)]$．证明 $\iota: \mathbb{N} \to \mathbb{Z}$ 是单射，并证明</p>
+<p>$$\iota(a + b) = \iota(a) + \iota(b),$$<br>$$\iota(ab) = \iota(a)\iota(b).$$</p>
+<h4 id="问题4：从整数构造有理数"><a href="#问题4：从整数构造有理数" class="headerlink" title="问题4：从整数构造有理数"></a>问题4：从整数构造有理数</h4><p>在 $P = \{(a, b) : a, b \in \mathbb{Z}, b \neq 0\}$ 上规定</p>
+<p>$$(a, b) \sim (c, d) \iff ad = bc,$$</p>
+<p>$Q = P/{\sim}$．此关系的自反性、对称性可以直接引用．记 $[(a, b)] = a/b$，整数 $a$ 对应 $[(a, 1)]$．</p>
+<p>(1) 证明上述关系的传递性，并说明哪一个非零分母使消去律可以使用．若将 $(0, 0)$ 加入 $P$，说明交叉乘积关系为何不再是等价关系．</p>
+<p>(2) 用整数运算定义 $[(a, b)] + [(c, d)]$ 和 $[(a, b)][(c, d)]$，说明结果分母非零，并计算 $2/3 + 1/4$ 与 $(2/3)(1/4)$．对非零有理数 $[(a, b)]$ 定义倒数，验证它与原数之积为 $1$．</p>
+<p>(3) 证明不存在有理数 $q$ 满足 $q^2 = 2$．证明须包含既约分数的选取，以及”整数平方为偶数蕴含该整数为偶数”的理由．</p>
+<h4 id="问题5：从有理数构造实数"><a href="#问题5：从有理数构造实数" class="headerlink" title="问题5：从有理数构造实数"></a>问题5：从有理数构造实数</h4><p>采用预备知识中定义的 $\mathcal{C}$ 和关系 $\approx$，定义</p>
+<p>$$R = \mathcal{C}/{\approx},$$<br>$$x = [(a_n)].$$</p>
+<p>这里的 $[(a_n)]$ 是一个等价类，不是预先存在的极限．</p>
+<p>(1) 证明 $\approx$ 是等价关系．对有理数 $q, r$，证明常数列 $(q, q, \dots)$ 与 $(r, r, \dots)$ 等价当且仅当 $q = r$．</p>
+<p>(2) 定义 $[(a_n)] + [(b_n)] = [(a_n + b_n)]$．证明 $(a_n + b_n)$ 为柯西序列，再证明这一加法不依赖代表元．两部分证明均须写出对任意正有理数 $\varepsilon$ 的下标选择．</p>
+<p>(3) 写出实数乘法和相反数的逐项定义，并说明常数列的加法、乘法与有理数运算相容．数列 $a_0 = 0$、$a_n = 1$ ($n \ge 1$) 表示哪个实数？说明直接对该数列逐项取倒数的问题，并给出一个表示其倒数的有理柯西序列．</p>
+<h4 id="问题6：构造平方为2的实数"><a href="#问题6：构造平方为2的实数" class="headerlink" title="问题6：构造平方为2的实数"></a>问题6：构造平方为2的实数</h4><p>设 $l_0 = 1$, $u_0 = 2$，$h_n = (l_n + u_n)/2$，并规定</p>
+<p>$$(l_{n+1}, u_{n+1}) = \begin{cases} (h_n, u_n), &amp; \text{若 } h_n^2 &lt; 2, \\ (l_n, h_n), &amp; \text{若 } h_n^2 &gt; 2. \end{cases}$$</p>
+<p>问题4保证 $h_n^2 = 2$ 不会发生．以下论证只使用有理数的运算、次序和柯西条件，不预先使用 $\sqrt{2}$ 的存在、实数单调有界定理或实数闭区间套定理．</p>
+<p>(1) 用精确分数列出 $n = 0, 1, 2, 3$ 时的 $l_n, u_n$，以及 $n = 0, 1, 2$ 时 $h_n^2$ 与 $2$ 的比较．</p>
+<p>(2) 证明对每个 $n \in \mathbb{N}$，均有</p>
+<p>$$1 \le l_n &lt; u_n \le 2,$$<br>$$l_n^2 &lt; 2 &lt; u_n^2,$$<br>$$u_n - l_n = 2^{-n},$$<br>$$\text{且 } [l_{n+1}, u_{n+1}] \subseteq [l_n, u_n]．$$</p>
+<p>区间符号在此仅表示有理数之间的大小范围．</p>
+<p>(3) 证明 $(l_n)$、$(u_n)$ 均为有理柯西序列，并证明二者等价．令 $x = [(l_n)] = [(u_n)]$．</p>
+<p>(4) 证明</p>
+<p>$$0 &lt; 2 - l_n^2 &lt; (u_n - l_n)(u_n + l_n) \le 4 \cdot 2^{-n},$$</p>
+<p>由此证明 $x^2 = 2$，并说明 $x$ 不对应任何有理数的常数列．判断这一例子的完成是否已经证明”每个实数柯西序列均收敛”，并说明理由．</p>
+<hr>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] TAO T. Analysis I[M]. 3rd ed. Singapore: Springer, 2016.</p>
+<p>[2] AMANN H, ESCHER J. Analysis I[M]. Basel: Birkhäuser, 2005.</p>
+<p>[3] LEANPROVER COMMUNITY. Natural Number Game[EB&#x2F;OL]. [2026-09-25]. <a target="_blank" rel="noopener" href="https://adam.math.hhu.de/#/g/leanprover-community/nng4">https://adam.math.hhu.de/#/g/leanprover-community/nng4</a>.</p>
+<hr>
+<p><strong>Note:</strong></p>
+<p>部分内容含 AI 生成，请注意甄别．</p>
+
+  </div>
+
+  
+  <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
+    <div class="terminal-toc__header">
+      <span class="terminal-toc__label">目录</span>
+      <button class="terminal-toc__toggle" id="toc-toggle" aria-label="Toggle TOC">[-]</button>
+    </div>
+    <nav class="terminal-toc__nav" id="toc-nav">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%80%BB%E5%8E%9F%E5%88%99%EF%BC%9A%E6%95%B0%E7%B3%BB%E6%89%A9%E5%BC%A0%E6%98%AF%E4%B8%BA%E4%BA%86%E8%A7%A3%E6%97%A7%E6%95%B0%E7%B3%BB%E4%B8%AD%E6%97%A0%E8%A7%A3%E7%9A%84%E6%96%B9%E7%A8%8B"><span class="toc-text">1. 总原则：数系扩张是为了解旧数系中无解的方程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B4%E6%95%B0%EF%BC%9A%E8%B4%9F%E6%95%B0%E4%BB%8E%E6%9C%89%E5%BA%8F%E5%AF%B9%E6%9D%A5"><span class="toc-text">2. 整数：负数从有序对来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%9C%89%E7%90%86%E6%95%B0%EF%BC%9A%E5%88%86%E6%95%B0%E4%BB%8E%E6%95%B4%E6%95%B0%E5%AF%B9%E6%9D%A5"><span class="toc-text">3. 有理数：分数从整数对来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%9C%89%E7%90%86%E6%95%B0%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B2%A1%E6%9C%89-MATHSTORE97"><span class="toc-text">4. 有理数中为什么没有 \(\sqrt2\)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E6%9F%AF%E8%A5%BF%E5%BA%8F%E5%88%97%E6%9E%84%E9%80%A0%E5%AE%9E%E6%95%B0%EF%BC%8C%E5%B9%B6%E9%80%A0%E5%87%BA-MATHSTORE104"><span class="toc-text">5. 用有理数柯西序列构造实数，并造出 \(\sqrt2\)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%AE%9E%E6%95%B0%E4%BD%9C%E4%B8%BA%E6%9C%89%E7%90%86%E6%9F%AF%E8%A5%BF%E5%BA%8F%E5%88%97%E7%9A%84%E7%AD%89%E4%BB%B7%E7%B1%BB"><span class="toc-text">5.1 实数作为有理柯西序列的等价类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BA%8C%E5%88%86%E6%B3%95%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4"><span class="toc-text">5.2 二分法缩小区间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E5%AE%9A%E4%B9%89-MATHSTORE113-%EF%BC%8C%E8%AF%81%E6%98%8E-MATHSTORE114"><span class="toc-text">5.3 定义 \(x&#x3D;[(l_n)]\)，证明 \(x^2&#x3D;2\)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%88%B4%E5%BE%B7%E9%87%91%E5%88%86%E5%89%B2%E7%9A%84%E7%AD%89%E4%BB%B7%E8%AF%B4%E6%B3%95"><span class="toc-text">6. 戴德金分割的等价说法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%A0%B7%E5%81%9A%E4%B8%8D%E4%BC%9A%E8%87%AA%E7%9B%B8%E7%9F%9B%E7%9B%BE%EF%BC%9F"><span class="toc-text">7. 为什么这样做不会自相矛盾？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E4%B9%A6%E5%8E%9F%E6%96%87"><span class="toc-text">任务书原文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF"><span class="toc-text">项目背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E9%97%AE%E9%A2%98"><span class="toc-text">项目问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text">参考文献</span></a></li></ol>
+    </nav>
+  </aside>
+  
+
+  <div class="terminal-post-footer">
+    <div class="terminal-post-nav">
+      
+      
+        <a class="terminal-post-nav__next" href="/2026/09/20/cavendish/">
+          [引力常量测量、卡文迪许实验，以及实验思想方法的拓展 &gt;]
+        </a>
+      
+    </div>
+
+    
+
+  </div>
+</article>
+
+      </main>
+      
+        <aside class="terminal-sidebar">
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> whoami
+    </div>
+    <div class="terminal-sidebar__content">
+      <p>quan-1145</p>
+      
+        <p>It may have much potential</p>
+      
+    </div>
+  </div>
+
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> ls posts/
+    </div>
+    <div class="terminal-sidebar__content">
+      total 7
+    </div>
+  </div>
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls categories/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/">[archlinux]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/wsl/">[wsl]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">[学习]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">[探究项目]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/">[物理]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">[高等数学]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls tags/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list terminal-list--inline">
+          
+            <li class="terminal-list__item">
+              <a href="/tags/HTML/">#HTML</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/archlinux/">#archlinux</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/css/">#css</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/oh-my-zsh/">#oh-my-zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/powerlevel10k/">#powerlevel10k</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/wsl/">#wsl</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/zsh/">#zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E2%88%9A2%E4%BB%8E%E8%87%AA%E7%84%B6%E6%95%B0%E6%9E%84%E9%80%A0/">#√2从自然数构造</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">#一致性</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E5%AE%9E%E9%AA%8C/">#卡文迪许实验</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%AE%9E%E9%AA%8C%E6%80%9D%E6%83%B3%E6%96%B9%E6%B3%95/">#实验思想方法</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%E6%B5%8B%E9%87%8F/">#引力常量测量</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E6%95%B0%E7%B3%BB%E6%89%A9%E5%B1%95/">#数系扩展</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E5%BA%8F%E5%88%97%E5%92%8C%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4%E6%9E%84%E9%80%A0%E5%B9%B3%E6%96%B9%E4%B8%BA2%E7%9A%84%E6%95%B0/">#用有理数序列和缩小区间构造平方为2的数</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AD%89%E4%BB%B7%E7%B1%BB/">#等价类</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AE%97%E6%9C%AF%E5%AE%9A%E4%B9%89/">#算术定义</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%A6%82%E8%AE%BA/">#计算机科学概论</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%B4%9F%E6%95%B0%E5%88%86%E6%95%B0%E5%BB%BA%E7%AB%8B/">#负数分数建立</a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> env
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-env">
+          
+            
+          
+            
+          
+            
+          
+        </ul>
+      </div>
+    </div>
+  
+</aside>
+
+      
+    </div>
+    <footer class="terminal-footer">
+  <div class="terminal-footer__line">
+    <span class="terminal-user">guest@hexo-blog</span>
+    <span class="terminal-separator">:</span>
+    <span class="terminal-path">~</span>
+    <span class="terminal-prompt-mark">$</span>
+    <span class="terminal-cmd">exit</span>
+  </div>
+  <div class="terminal-footer__content">
+    
+      <p class="terminal-footer__text">
+        &copy; 2026 quan-1145
+      </p>
+    
+    
+      <p class="terminal-footer__text">Powered by Hexo | Terminal Theme</p>
+    
+  </div>
+</footer>
+  </div>
+  <button id="back-to-top" class="terminal-back-to-top" aria-label="Back to top">[▲]</button>
+  
+<div class="terminal-search" id="terminal-search" aria-hidden="true">
+  <div class="terminal-search__dialog">
+    <div class="terminal-search__header">
+      <span class="terminal-prompt-mark">$</span> grep -r "" posts/
+    </div>
+    <div class="terminal-search__input-wrap">
+      <input type="text" class="terminal-search__input" id="search-input" placeholder="type to search..." autocomplete="off" aria-label="Search input">
+    </div>
+    <div class="terminal-search__results" id="search-results">
+      <p class="terminal-search__empty">type keywords to search...</p>
+    </div>
+    <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
+  </div>
+</div>
+<script src="/js/search.js"></script>
+
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>
