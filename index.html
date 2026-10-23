@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
   <title>quan-1145 — Still under construction</title>
@@ -94,22 +95,51 @@
   <div class="terminal-container">
     <div class="terminal-body">
       <main class="terminal-main">
-        <section class="terminal-hero">
-  <pre class="terminal-hero__ascii">
+        
+
+<section class="terminal-hero terminal-hero--ascii" id="ascii-hero" data-ascii-hero
+         aria-label="Animated ASCII art Hello World. Click or drop a video to play it as ASCII characters.">
+  <canvas class="terminal-hero__canvas" data-ascii-canvas aria-hidden="true"></canvas>
+
+  <pre class="terminal-hero__fallback" data-ascii-fallback data-no-typewriter>
  _   _      _ _         __        __         _     _
 | | | | ___| | | ___    \ \      / /__  _ __| | __| |
 | |_| |/ _ \ | |/ _ \    \ \ /\ / / _ \| '__| |/ _` |
 |  _  |  __/ | | (_) |    \ V  V / (_) | |  | | (_| |
 |_| |_|\___|_|_|\___/      \_/\_/ \___/|_|  |_|\__,_|
   </pre>
-  <p class="terminal-hero__line">
-    <span class="terminal-prompt-mark">$</span> echo "Hello, world!"
-  </p>
-  <p class="terminal-hero__output">Hello, world!</p>
-  <p class="terminal-hero__hint">
-    <span class="terminal-prompt-mark">$</span> scroll down to view posts...
-  </p>
+
+  <div class="terminal-hero__overlay" data-no-typewriter>
+    <p class="terminal-hero__line">
+      <span class="terminal-prompt-mark">$</span> echo "Hello, world!"
+    </p>
+    <p class="terminal-hero__hint" hidden>
+      <span class="terminal-prompt-mark">$</span>
+      <span data-ascii-hint-text></span>
+    </p>
+    <p class="terminal-hero__status" data-ascii-status aria-live="polite"></p>
+  </div>
+
+  <div class="terminal-hero__transport" data-ascii-transport hidden>
+    <button data-action="play" type="button" aria-label="Play or pause the ASCII video">[pause]</button>
+    <input data-ascii-seek type="range" min="0" max="1000" value="0" step="1" aria-label="Video position">
+    <span class="terminal-hero__time" data-ascii-time>00:00 / 00:00</span>
+    <button data-action="mute" type="button" aria-label="Toggle sound">[mute]</button>
+    <button data-action="load" type="button" aria-label="Choose another local video">[load]</button>
+    <button data-action="demo" type="button" aria-label="Back to the animated ASCII Hello World">[demo]</button>
+  </div>
+
+  
+  <button class="terminal-hero__a11y" data-action="load" type="button"
+          aria-label="Choose a local video file to play as ASCII"></button>
+
+  <video data-ascii-video hidden muted loop playsinline preload="metadata"></video>
+  <input data-ascii-file type="file" accept="video/*" hidden>
 </section>
+
+<script>window.__ASCII_HERO_OPTIONS__ = {"cols":0,"fps":0,"chars":"classic","colorMode":"accent","fit":"contain","maxCols":0,"maxFps":0,"autoQuality":true,"brightness":0,"contrast":1,"gamma":1};</script>
+<script type="module" src="/js/ascii-hero/index.js"></script>
+
 
 <div class="terminal-page terminal-page--home">
   <div class="terminal-section">
@@ -525,6 +555,7 @@ Windows 版 zsh 下载
 
   
 </div>
+
       </main>
       
         <aside class="terminal-sidebar">
