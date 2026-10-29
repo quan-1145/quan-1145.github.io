@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-cjk-grid="true">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,18 @@
   
 <link rel="stylesheet" href="/css/style.css">
 
-  
-    <script>
-      document.documentElement.setAttribute('data-theme', 'green');
-    </script>
-  
+  <script>
+    // Apply the saved colour scheme before first paint; fall back to the
+    // scheme configured in _config.yml when nothing is stored yet.
+    (function () {
+      var fallback = 'green';
+      var scheme = fallback;
+      try {
+        scheme = localStorage.getItem('terminal-theme') || fallback;
+      } catch (e) { /* private mode */ }
+      document.documentElement.setAttribute('data-theme', scheme);
+    })();
+  </script>
 
   
   
@@ -55,7 +62,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link terminal-menu__link--active" href="/archives">
+            <a class="terminal-menu__link" href="/archives">
               [Archives]
             </a>
           </li>
@@ -67,7 +74,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link" href="/categories">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/categories">
               [Categories]
             </a>
           </li>
@@ -87,6 +94,7 @@
       </ul>
     </nav>
     <div class="terminal-header__actions">
+      <button class="terminal-theme-btn" id="theme-btn" type="button" aria-label="切换配色方案">[theme]</button>
       <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
       <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
     </div>

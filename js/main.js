@@ -368,7 +368,8 @@
     var reduceMotion = window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var skipSelector = 'pre, code, script, style, noscript, textarea, svg, ' +
-      '.katex, .MathJax, mjx-container, .mermaid, [data-no-typewriter]';
+      '.katex, .MathJax, mjx-container, .mermaid, .terminal-comments, ' +
+      '.gt-container, [data-no-typewriter]';
     var mathRe = /\$\$|\$[^$\n]+\$|\\\(|\\\[|\\begin\{/;
 
     var nodes = [];
@@ -435,8 +436,101 @@
     requestAnimationFrame(frame);
   }
 
+  // Colour-scheme switcher: the theme ships eight terminal palettes; the
+  // button cycles through them and remembers the choice for the next visit.
+  function initThemeSwitcher() {
+    var btn = document.getElementById('theme-btn');
+    if (!btn) return;
+
+    var schemes = ['green', 'amber', 'white', 'blue', 'purple', 'red', 'orange', 'teal'];
+    var root = document.documentElement;
+
+    function current() {
+      var name = (root.getAttribute('data-theme') || 'green').toLowerCase();
+      return schemes.indexOf(name) === -1 ? 'green' : name;
+    }
+
+    function paint() {
+      btn.textContent = '[theme]';
+      btn.title = '配色方案：' + current() + '（点击切换）';
+    }
+
+    btn.addEventListener('click', function () {
+      var next = schemes[(schemes.indexOf(current()) + 1) % schemes.length];
+      root.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('terminal-theme', next);
+      } catch (e) { /* private mode */ }
+      paint();
+    });
+
+    paint();
+  }
+
+  // Terminal CJK grid ------------------------------------------------------
+  // Source Code Pro advances 0.6em per Latin cell, while a CJK/fullwidth glyph
+  // is 1em wide — i.e. 1.67 cells, which breaks the column grid as soon as a
+  // line mixes Chinese and Latin. Wrapping every CJK run in <span class="cjk">
+  // makes each wide glyph advance exactly 1.2em = 2 cells (see the .cjk rule
+  // in _base.styl), matching how a terminal lays out East Asian text.
+  // Runs after the deferred KaTeX scripts have rendered (DOMContentLoaded).
+  var CJK_WIDE = /[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE10-\uFE19\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6]/;
+  var CJK_RUN = /[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE10-\uFE19\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6]+/g;
+  var CJK_SKIP = 'script, style, noscript, textarea, input, select, option, svg, ' +
+    'canvas, .katex, .MathJax, mjx-container, #gitalk-container, .gt-container';
+
+  function wrapCjk(root) {
+    if (!root || !document.createTreeWalker) return;
+
+    function isInsideSkipped(node) {
+      var parent = node.parentElement;
+      return !!(parent && parent.closest && parent.closest(CJK_SKIP));
+    }
+
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var nodes = [];
+    var node;
+    while ((node = walker.nextNode())) {
+      if (!node.nodeValue || !CJK_WIDE.test(node.nodeValue)) continue;
+      if (isInsideSkipped(node)) continue;
+      nodes.push(node);
+    }
+
+    nodes.forEach(function (textNode) {
+      var text = textNode.nodeValue;
+      var frag = document.createDocumentFragment();
+      var cursor = 0;
+      var match;
+      CJK_RUN.lastIndex = 0;
+      while ((match = CJK_RUN.exec(text))) {
+        if (match.index > cursor) {
+          frag.appendChild(document.createTextNode(text.slice(cursor, match.index)));
+        }
+        var span = document.createElement('span');
+        span.className = 'cjk';
+        span.textContent = match[0];
+        frag.appendChild(span);
+        cursor = match.index + match[0].length;
+      }
+      if (!cursor) return;
+      if (cursor < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(cursor)));
+      }
+      textNode.parentNode.replaceChild(frag, textNode);
+    });
+  }
+
+  function initCjkGrid() {
+    if (document.documentElement.getAttribute('data-cjk-grid') !== 'true') return;
+    if (!document.body) return;
+    wrapCjk(document.body);
+    // Let theme-owned dynamic content (search results) reuse the same wrap.
+    window.__cjkGridWrap = wrapCjk;
+  }
+
   // Initialize all
   document.addEventListener('DOMContentLoaded', function () {
+    initCjkGrid();
     initLazyload();
     initMenuHover();
     initCursors();
@@ -448,6 +542,7 @@
     initBackToTop();
     initHeaderOffset();
     initToc();
+    initThemeSwitcher();
     initTypewriter();
   });
 })();

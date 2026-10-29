@@ -22,7 +22,7 @@ import { QualityController, detectDeviceTier } from './perf.js';
 import { VideoSource } from './video-source.js';
 import { HelloSource } from './hello-source.js';
 
-const FONT_STACK = '"Ubuntu Mono", "Cascadia Mono", Consolas, Monaco, monospace';
+const FONT_STACK = '"Source Code Pro", "Cascadia Mono", "JetBrains Mono", Consolas, Monaco, monospace';
 const DEFAULT_ACCENT = '#00ff00';
 const DEFAULT_SECONDARY = '#44aaff';
 const HELLO_HINT = '';

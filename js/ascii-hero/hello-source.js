@@ -13,7 +13,7 @@
  * travelling specular sweep, a gentle brightness breath and the blinking caret.
  */
 
-const DEFAULT_FONT = '"Ubuntu Mono", "Cascadia Mono", Consolas, Monaco, monospace';
+const DEFAULT_FONT = '"Source Code Pro", "Cascadia Mono", "JetBrains Mono", Consolas, Monaco, monospace';
 const LINES = ['Hello,', 'World!'];
 const SWEEP_PERIOD = 4.6;   // seconds per highlight sweep
 const BREATHE_PERIOD = 3.2; // seconds per brightness breath

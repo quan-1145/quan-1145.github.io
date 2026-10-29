@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-cjk-grid="true">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,18 @@
   
 <link rel="stylesheet" href="/css/style.css">
 
-  
-    <script>
-      document.documentElement.setAttribute('data-theme', 'green');
-    </script>
-  
+  <script>
+    // Apply the saved colour scheme before first paint; fall back to the
+    // scheme configured in _config.yml when nothing is stored yet.
+    (function () {
+      var fallback = 'green';
+      var scheme = fallback;
+      try {
+        scheme = localStorage.getItem('terminal-theme') || fallback;
+      } catch (e) { /* private mode */ }
+      document.documentElement.setAttribute('data-theme', scheme);
+    })();
+  </script>
 
   
   
@@ -55,7 +62,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link terminal-menu__link--active" href="/archives">
+            <a class="terminal-menu__link" href="/archives">
               [Archives]
             </a>
           </li>
@@ -67,7 +74,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link" href="/categories">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/categories">
               [Categories]
             </a>
           </li>
@@ -87,6 +94,7 @@
       </ul>
     </nav>
     <div class="terminal-header__actions">
+      <button class="terminal-theme-btn" id="theme-btn" type="button" aria-label="切换配色方案">[theme]</button>
       <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
       <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
     </div>
@@ -131,6 +139,12 @@
         </h2>
         <div class="terminal-more-section__content">
           
+            <a class="terminal-more-link" href="/tags/archlinux/">[archlinux]</a>
+          
+            <a class="terminal-more-link" href="/tags/wsl/">[wsl]</a>
+          
+            <a class="terminal-more-link" href="/tags/installation/">[installation]</a>
+          
             <a class="terminal-more-link" href="/tags/%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%E6%B5%8B%E9%87%8F/">[引力常量测量]</a>
           
             <a class="terminal-more-link" href="/tags/%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E5%AE%9E%E9%AA%8C/">[卡文迪许实验]</a>
@@ -151,27 +165,15 @@
           
             <a class="terminal-more-link" href="/tags/%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E5%BA%8F%E5%88%97%E5%92%8C%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4%E6%9E%84%E9%80%A0%E5%B9%B3%E6%96%B9%E4%B8%BA2%E7%9A%84%E6%95%B0/">[用有理数序列和缩小区间构造平方为2的数]</a>
           
+            <a class="terminal-more-link" href="/tags/math/">[math]</a>
+          
+            <a class="terminal-more-link" href="/tags/latex/">[latex]</a>
+          
             <a class="terminal-more-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%A6%82%E8%AE%BA/">[计算机科学概论]</a>
-          
-            <a class="terminal-more-link" href="/tags/archlinux/">[archlinux]</a>
-          
-            <a class="terminal-more-link" href="/tags/wsl/">[wsl]</a>
-          
-            <a class="terminal-more-link" href="/tags/installation/">[installation]</a>
           
             <a class="terminal-more-link" href="/tags/HTML/">[HTML]</a>
           
             <a class="terminal-more-link" href="/tags/css/">[css]</a>
-          
-            <a class="terminal-more-link" href="/tags/zsh/">[zsh]</a>
-          
-            <a class="terminal-more-link" href="/tags/oh-my-zsh/">[oh-my-zsh]</a>
-          
-            <a class="terminal-more-link" href="/tags/powerlevel10k/">[powerlevel10k]</a>
-          
-            <a class="terminal-more-link" href="/tags/math/">[math]</a>
-          
-            <a class="terminal-more-link" href="/tags/latex/">[latex]</a>
           
             <a class="terminal-more-link" href="/tags/SIGSEGV/">[SIGSEGV]</a>
           
@@ -182,6 +184,12 @@
             <a class="terminal-more-link" href="/tags/asan/">[asan]</a>
           
             <a class="terminal-more-link" href="/tags/valgrind/">[valgrind]</a>
+          
+            <a class="terminal-more-link" href="/tags/zsh/">[zsh]</a>
+          
+            <a class="terminal-more-link" href="/tags/oh-my-zsh/">[oh-my-zsh]</a>
+          
+            <a class="terminal-more-link" href="/tags/powerlevel10k/">[powerlevel10k]</a>
           
         </div>
       </section>
@@ -194,27 +202,27 @@
         </h2>
         <div class="terminal-more-section__content">
           
-            <a class="terminal-more-link" href="/categories/%E7%89%A9%E7%90%86/">[物理]</a>
-          
-            <a class="terminal-more-link" href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">[高等数学]</a>
-          
-            <a class="terminal-more-link" href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">[学习]</a>
-          
-            <a class="terminal-more-link" href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">[探究项目]</a>
-          
-            <a class="terminal-more-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
-          
             <a class="terminal-more-link" href="/categories/archlinux/">[archlinux]</a>
           
-            <a class="terminal-more-link" href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
-          
-            <a class="terminal-more-link" href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
-          
-            <a class="terminal-more-link" href="/categories/Test/">[Test]</a>
+            <a class="terminal-more-link" href="/categories/%E7%89%A9%E7%90%86/">[物理]</a>
           
             <a class="terminal-more-link" href="/categories/archlinux/wsl/">[wsl]</a>
           
+            <a class="terminal-more-link" href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">[学习]</a>
+          
+            <a class="terminal-more-link" href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">[高等数学]</a>
+          
+            <a class="terminal-more-link" href="/categories/Test/">[Test]</a>
+          
+            <a class="terminal-more-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
+          
+            <a class="terminal-more-link" href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+          
+            <a class="terminal-more-link" href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">[探究项目]</a>
+          
             <a class="terminal-more-link" href="/categories/IT/">[IT]</a>
+          
+            <a class="terminal-more-link" href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
           
             <a class="terminal-more-link" href="/categories/IT/c/">[c++]</a>
           
@@ -233,10 +241,6 @@
           
         
           
-            <a class="terminal-more-link" href="/about/index.html">[About]</a>
-          
-        
-          
             <a class="terminal-more-link" href="/categories/index.html">[Categories]</a>
           
         
@@ -244,6 +248,10 @@
             <a class="terminal-more-link" href="/tags/index.html">[Tags]</a>
           
         
+          
+        
+          
+            <a class="terminal-more-link" href="/about/index.html">[About]</a>
           
         
       </div>

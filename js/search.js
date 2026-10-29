@@ -138,6 +138,12 @@
 
     html += '</ul>';
     searchResults.innerHTML = html;
+
+    // Search results are rendered after page load; reuse the terminal CJK grid
+    // so Chinese titles/excerpts keep the same two-cell character pitch.
+    if (window.__cjkGridWrap) {
+      window.__cjkGridWrap(searchResults);
+    }
   }
 
   function escapeHtml(str) {

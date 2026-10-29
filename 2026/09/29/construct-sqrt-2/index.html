@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-cjk-grid="true">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,11 +16,18 @@
   
 <link rel="stylesheet" href="/css/style.css">
 
-  
-    <script>
-      document.documentElement.setAttribute('data-theme', 'green');
-    </script>
-  
+  <script>
+    // Apply the saved colour scheme before first paint; fall back to the
+    // scheme configured in _config.yml when nothing is stored yet.
+    (function () {
+      var fallback = 'green';
+      var scheme = fallback;
+      try {
+        scheme = localStorage.getItem('terminal-theme') || fallback;
+      } catch (e) { /* private mode */ }
+      document.documentElement.setAttribute('data-theme', scheme);
+    })();
+  </script>
 
   
   
@@ -55,7 +62,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link terminal-menu__link--active" href="/archives">
+            <a class="terminal-menu__link" href="/archives">
               [Archives]
             </a>
           </li>
@@ -67,7 +74,7 @@
           </li>
         
           <li class="terminal-menu__item">
-            <a class="terminal-menu__link" href="/categories">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/categories">
               [Categories]
             </a>
           </li>
@@ -87,6 +94,7 @@
       </ul>
     </nav>
     <div class="terminal-header__actions">
+      <button class="terminal-theme-btn" id="theme-btn" type="button" aria-label="切换配色方案">[theme]</button>
       <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
       <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
     </div>
@@ -423,6 +431,7 @@ x^2=2.
   </div>
 
   
+  
   <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
     <div class="terminal-toc__header">
       <span class="terminal-toc__label">目录</span>
@@ -432,6 +441,26 @@ x^2=2.
       <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%80%BB%E5%8E%9F%E5%88%99%EF%BC%9A%E6%95%B0%E7%B3%BB%E6%89%A9%E5%BC%A0%E6%98%AF%E4%B8%BA%E4%BA%86%E8%A7%A3%E6%97%A7%E6%95%B0%E7%B3%BB%E4%B8%AD%E6%97%A0%E8%A7%A3%E7%9A%84%E6%96%B9%E7%A8%8B"><span class="toc-text">1. 总原则：数系扩张是为了解旧数系中无解的方程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B4%E6%95%B0%EF%BC%9A%E8%B4%9F%E6%95%B0%E4%BB%8E%E6%9C%89%E5%BA%8F%E5%AF%B9%E6%9D%A5"><span class="toc-text">2. 整数：负数从有序对来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%9C%89%E7%90%86%E6%95%B0%EF%BC%9A%E5%88%86%E6%95%B0%E4%BB%8E%E6%95%B4%E6%95%B0%E5%AF%B9%E6%9D%A5"><span class="toc-text">3. 有理数：分数从整数对来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%9C%89%E7%90%86%E6%95%B0%E4%B8%AD%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B2%A1%E6%9C%89-MATHSTORE97"><span class="toc-text">4. 有理数中为什么没有 \(\sqrt2\)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E6%9F%AF%E8%A5%BF%E5%BA%8F%E5%88%97%E6%9E%84%E9%80%A0%E5%AE%9E%E6%95%B0%EF%BC%8C%E5%B9%B6%E9%80%A0%E5%87%BA-MATHSTORE104"><span class="toc-text">5. 用有理数柯西序列构造实数，并造出 \(\sqrt2\)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%AE%9E%E6%95%B0%E4%BD%9C%E4%B8%BA%E6%9C%89%E7%90%86%E6%9F%AF%E8%A5%BF%E5%BA%8F%E5%88%97%E7%9A%84%E7%AD%89%E4%BB%B7%E7%B1%BB"><span class="toc-text">5.1 实数作为有理柯西序列的等价类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BA%8C%E5%88%86%E6%B3%95%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4"><span class="toc-text">5.2 二分法缩小区间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E5%AE%9A%E4%B9%89-MATHSTORE113-%EF%BC%8C%E8%AF%81%E6%98%8E-MATHSTORE114"><span class="toc-text">5.3 定义 \(x&#x3D;[(l_n)]\)，证明 \(x^2&#x3D;2\)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%88%B4%E5%BE%B7%E9%87%91%E5%88%86%E5%89%B2%E7%9A%84%E7%AD%89%E4%BB%B7%E8%AF%B4%E6%B3%95"><span class="toc-text">6. 戴德金分割的等价说法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%A0%B7%E5%81%9A%E4%B8%8D%E4%BC%9A%E8%87%AA%E7%9B%B8%E7%9F%9B%E7%9B%BE%EF%BC%9F"><span class="toc-text">7. 为什么这样做不会自相矛盾？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E4%B9%A6%E5%8E%9F%E6%96%87"><span class="toc-text">任务书原文</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF"><span class="toc-text">项目背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-text">预备知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E9%97%AE%E9%A2%98"><span class="toc-text">项目问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text">参考文献</span></a></li></ol>
     </nav>
   </aside>
+  
+
+  
+  
+  <section class="terminal-post-license" id="license">
+    <div class="terminal-post-license__header">
+      <span class="terminal-post-license__cmd">
+        <span class="terminal-prompt-mark">$</span> license --show
+      </span>
+      <span class="terminal-post-license__badge">CC-BY 4.0</span>
+    </div>
+    <p class="terminal-post-license__row"><span class="terminal-post-license__key">license  :</span> <span class="terminal-post-license__value"><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener license">CC-BY 4.0</a></span></p>
+    <p class="terminal-post-license__row"><span class="terminal-post-license__key">copyright:</span> <span class="terminal-post-license__value">&copy; 2026 quan-1145</span></p>
+    <p class="terminal-post-license__text">
+      本作品采用知识共享署名 4.0 国际许可协议（CC BY 4.0）进行许可：转载请注明作者与原文链接，不得附加额外限制。
+      
+        <a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hans" target="_blank" rel="noopener license">查看许可协议</a>
+      
+    </p>
+  </section>
   
 
   <div class="terminal-post-footer">
@@ -449,6 +478,82 @@ x^2=2.
     </div>
 
     
+
+<section class="terminal-comments" id="comments">
+  <div class="terminal-comments__header">
+    <span class="terminal-comments__title">
+      <span class="terminal-prompt-mark">$</span> comments --provider=gitalk
+    </span>
+    <span class="terminal-comments__hint">// powered by GitHub Issues</span>
+  </div>
+
+  <div class="terminal-comments__body">
+    
+      <div id="gitalk-container"></div>
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css">
+      <script type="application/json" id="gitalk-config">{"clientID":"Ov23liMIyibMUFaLHzzy","clientSecret":"a032d05b3181390970db2cc7202d2f80a89fb774","repo":"quan-1145.github.io","owner":"quan-1145","admin":["quan-1145"],"language":"zh-CN","perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":false,"proxy":""}</script>
+      <script>
+        (function () {
+          function showNotice(message) {
+            var host = document.getElementById('gitalk-container');
+            if (!host) return;
+            var pre = document.createElement('pre');
+            pre.className = 'terminal-comments__notice';
+            pre.textContent = '[!] ' + message;
+            host.innerHTML = '';
+            host.appendChild(pre);
+          }
+
+          function boot() {
+            if (!window.Gitalk) {
+              showNotice('Gitalk 脚本未能加载：cdn.jsdelivr.net 可能被拦截或不可用，请检查网络，或把 gitalk.min.js 放到本地再引入。');
+              return;
+            }
+            var raw = document.getElementById('gitalk-config');
+            var cfg;
+            try {
+              cfg = JSON.parse(raw && raw.textContent ? raw.textContent : 'null');
+            } catch (err) {
+              cfg = null;
+            }
+            if (!cfg) {
+              showNotice('Gitalk 配置解析失败：请检查主题 _config.yml 的 comment.gitalk 段。');
+              return;
+            }
+            try {
+              var gitalk = new Gitalk({
+                clientID: cfg.clientID,
+                clientSecret: cfg.clientSecret,
+                repo: cfg.repo,
+                owner: cfg.owner,
+                admin: cfg.admin && cfg.admin.length ? cfg.admin : [cfg.owner],
+                id: location.pathname,
+                language: cfg.language || 'zh-CN',
+                perPage: cfg.perPage || 10,
+                pagerDirection: cfg.pagerDirection || 'last',
+                distractionFreeMode: cfg.distractionFreeMode === true,
+                createIssueManually: cfg.createIssueManually === true,
+                proxy: cfg.proxy || undefined
+              });
+              gitalk.render('gitalk-container');
+            } catch (err) {
+              showNotice('Gitalk 初始化失败：' + (err && err.message ? err.message : err));
+            }
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', boot);
+          } else {
+            boot();
+          }
+        })();
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js"></script>
+    
+  </div>
+</section>
+
 
   </div>
 </article>
