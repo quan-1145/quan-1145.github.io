@@ -258,6 +258,52 @@
     toggleVisibility();
   }
 
+  // Keep the --header-height CSS variable in sync with the sticky top bar so the
+  // floating TOC and in-page anchor targets stay clear of it.
+  function syncHeaderHeight() {
+    var header = document.querySelector('.terminal-header');
+    if (!header) return;
+    var height = Math.ceil(header.getBoundingClientRect().height);
+    if (height > 0) {
+      document.documentElement.style.setProperty('--header-height', height + 'px');
+    }
+  }
+
+  // Viewport distance visually covered by the sticky header (plus a small gap).
+  function headerOffset() {
+    var height = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--header-height')
+    );
+    return (isNaN(height) ? 0 : height) + 16;
+  }
+
+  function initHeaderOffset() {
+    syncHeaderHeight();
+
+    var header = document.querySelector('.terminal-header');
+    if (header && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(syncHeaderHeight).observe(header);
+    }
+    window.addEventListener('resize', syncHeaderHeight);
+
+    // Web fonts swap in after DOMContentLoaded and can change the header height.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(syncHeaderHeight);
+    }
+
+    // A deep link is resolved before the header height is known; re-align it now.
+    if (location.hash.length > 1) {
+      var id;
+      try {
+        id = decodeURIComponent(location.hash.slice(1));
+      } catch (e) {
+        id = location.hash.slice(1);
+      }
+      var target = document.getElementById(id);
+      if (target) target.scrollIntoView();
+    }
+  }
+
   // TOC: collapsible + scroll spy
   function initToc() {
     var toc = document.getElementById('terminal-toc');
@@ -295,10 +341,13 @@
     });
 
     function updateActiveToc() {
-      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      // A heading counts as current once it has scrolled up behind the sticky header.
+      // The small tolerance keeps the heading you just jumped to active: the browser
+      // rounds the scroll position and scroll-margin-top to different subpixels.
+      var threshold = headerOffset() + 2;
       var current = null;
       for (var i = 0; i < headings.length; i++) {
-        if (headings[i].offsetTop - 80 <= scrollTop) {
+        if (headings[i].getBoundingClientRect().top <= threshold) {
           current = headings[i];
         } else {
           break;
@@ -397,6 +446,7 @@
     initScanlineToggle();
     initClock();
     initBackToTop();
+    initHeaderOffset();
     initToc();
     initTypewriter();
   });

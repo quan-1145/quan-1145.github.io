@@ -915,4 +915,191 @@ All formulas above should render normally with light-colored text.
         <tag>latex</tag>
       </tags>
   </entry>
+  <entry>
+    <title>段错误全链路排查</title>
+    <url>/2026/10/28/sigsegv/</url>
+    <content><![CDATA[
+[!WARNING]
+效果仅供娱乐，请勿用于真实生产环境中。
+
+前情提要
+Segmentation Fault（段错误，SIGSEGV）的本质是程序访问了无效或无权访问的虚拟内存地址，操作系统通过内存保护机制强制终止了进程。以下按“源码自查 → 调试定位 → 修复加固 → 预防与回归”的全链路展开。
+
+一、源码层：先锁定高概率原因在拿起调试器之前，先对照代码排查覆盖面最高的几类成因，往往能直接定位。
+1.1 90% 的段错误集中在以下几类
+
+
+原因
+典型代码
+说明
+
+
+
+空指针解引用
+int *p = nullptr; *p = 10;
+最常见，往地址 0 写入直接触发 SIGSEGV
+
+
+野指针 &#x2F; UAF
+delete p; *p = 10;
+访问已释放内存，行为未定义，可能不立即崩溃但数据已被破坏
+
+
+数组越界 &#x2F; 缓冲区溢出
+char buf[10]; strcpy(buf, &quot;this is too long&quot;);
+栈上溢出可覆盖返回地址，堆上溢出破坏堆元数据
+
+
+栈溢出
+无终止条件的递归，或 char buf[10*1024*1024] 局部大对象
+栈空间耗尽
+
+
+多线程数据竞争
+多线程无锁读写同一变量
+偶发、难复现的崩溃常常源于此
+
+
+STL 迭代器失效
+m.erase(it) 后继续使用 it
+迭代器指向已失效节点
+
+
+虚函数 &#x2F; 多态误用
+基类析构非 virtual，对象销毁后调用虚函数
+vptr 被破坏后调用虚函数崩溃
+
+
+1.2 源码层面的定向审查清单拿到崩溃函数或可疑模块后，逐项过一遍：
+
+所有指针在解引用前是否已初始化为非空并做了合法性判断？
+new &#x2F; malloc 的返回值是否检查？（虽然很少失败，但嵌入式或受限环境仍需关注）
+函数是否返回了局部变量的地址？
+释放内存后，指针是否立即置为 nullptr 或使用智能指针接管？
+循环边界、strcpy &#x2F; sprintf &#x2F; memcpy 的目标缓冲区大小是否匹配？
+多线程共享数据是否加锁？线程是否 join() 或 detach()？
+容器操作后迭代器是否重新获取？
+
+
+二、调试层：从“知道崩了”到“知道崩在哪一行”2.1 前置条件：编译带调试信息，开启 core dump调试信息是 ELF 中“地址 → 源码行”的映射表，没有它，gdb 只能显示裸地址。
+g++ -g -O0 your_program.cpp -o your_program   # -O0 避免优化干扰调试ulimit -c unlimited                             # 放开 core dump 大小限制
+
+core 文件是崩溃时的现场快照，包含寄存器、调用栈、进程内存。部分系统 core 文件位于 /var/lib/systemd/coredump/ 或当前目录。
+2.2 GDB 核心命令速查方式一：直接运行，崩溃时拦截
+gdb ./your_program(gdb) run# 崩溃后(gdb) bt                 # 查看调用栈，直接定位崩溃函数和行号(gdb) info locals        # 查看局部变量(gdb) info args          # 查看函数参数(gdb) frame &lt;n&gt;          # 切换到第 n 帧
+
+方式二：分析 core 文件（离线 &#x2F; 事后）
+gdb ./your_program /path/to/core(gdb) bt(gdb) info threads(gdb) thread apply all bt   # 多线程程序必做，查看所有线程栈
+
+辅助定位手段：
+
+x/i $rip：反汇编当前崩溃指令
+info registers：查看寄存器现场
+watch variable：变量被修改时中断，适合捕捉内存踩踏
+无调试信息时：用 addr2line -e ./program &lt;address&gt; 将地址翻译为源码行
+
+典型 gdb 输出会直接指出崩溃行：
+Program received signal SIGSEGV, Segmentation fault.0x0000000000400525 in main () at segfault_example.c:55       *ptr = 42;
+
+
+2.3 Sanitizer 与 Valgrind：在崩溃发生前捕获“第一次非法访问”很多时候，段错误只是内存破坏的最后一声，真正的越界写入发生在更早的位置。Sanitizer 能在第一次非法操作时就报告，并给出访问栈和分配栈。
+AddressSanitizer（ASan）——首选，速度快，适合开发和 CI
+g++ -g -O1 -fsanitize=address -fno-omit-frame-pointer your_program.cpp -o your_program./your_program
+
+ASan 会报告 heap-buffer-overflow、use-after-free、stack-buffer-overflow 等，并明确指出哪一行写越界、这块内存最初在哪里分配。
+Valgrind Memcheck——不需要重新编译，适合专项补漏
+valgrind --leak-check=full --show-leak-kinds=all ./your_program
+
+可检测非法读写、未初始化值使用、内存泄漏、double-free 等。
+分工建议：
+
+
+
+维度
+AddressSanitizer
+Valgrind
+
+
+
+重编译
+需要
+不需要
+
+
+速度
+快
+慢（明显拖慢）
+
+
+适用阶段
+开发、CI、日常
+专项排查、发布前
+
+
+未初始化值
+部分支持
+支持
+
+
+结论
+ASan 负责快速失败，Valgrind 负责补漏
+
+
+
+2.4 多线程段错误的专项工具如果崩溃呈现偶发性、重启后恢复、低概率的特点，优先怀疑数据竞争。
+g++ -g -fsanitize=thread your_program.cpp -o your_program./your_program
+
+ThreadSanitizer（TSan）会报告 data race，并指出冲突的读写地址、线程和读写类型（写-写 &#x2F; 读-写）。gdb 中用 thread apply all bt 查看所有线程栈也是必做步骤。
+2.5 嵌入式 &#x2F; 远程场景：gdbserver在目标机上运行 gdbserver，主机上用交叉 GDB 连接：
+# 目标机gdbserver :3333 ./your_program# 主机gdb-multiarch ./your_program(gdb) target remote &lt;target_ip&gt;:3333(gdb) continue# 段错误发生后(gdb) bt
+
+gdbserver 会拦截 SIGSEGV 等信号并停住目标进程，主机端即可查看崩溃行号。
+
+三、修复层：根据根因针对性加固定位到具体非法访问后，修复不应止于“让它不崩”，而要消除为什么非法访问能够发生。
+
+空指针 &#x2F; 未初始化指针：声明时初始化为 nullptr，解引用前断言或判空；返回指针的接口明确文档约定。
+UAF &#x2F; double-free：用 std::unique_ptr &#x2F; std::shared_ptr 替代裸指针，让对象生命周期由作用域绑定，从根本上避免手动 delete 后的误用。
+缓冲区溢出：用 std::string &#x2F; std::vector &#x2F; std::array 替代裸数组；必须使用定长视图时用 std::span 并配合边界检查。编译时加 -fstack-protector-strong 和 -D_FORTIFY_SOURCE=2 增加运行时防护。
+栈溢出：大对象放堆或 std::vector；递归改为迭代或显式限制深度。
+多线程：共享数据加锁或用原子操作；TSan 报告中定位到冲突点后修复同步逻辑。
+迭代器失效：修改容器大小后重新获取迭代器，或改用索引访问；必要时 reserve 预留容量。
+
+
+四、预防与回归：把段错误挡在上线之前4.1 静态分析：编译前拦截在 CI 中固定跑 cppcheck 和 clang-tidy，可提前发现空指针解引用、越界、未初始化变量等潜在段错误源。
+cppcheck --enable=warning --inconclusive src/clang-tidy src/*.cpp --checks=&#x27;-*,bugprone-*,cert-*&#x27; -- -std=c++17
+
+两者互补：cppcheck 侧重缺陷模式，clang-tidy 覆盖风格 + 现代 C++ 警告 + 潜在 bug。
+4.2 动态检测进入 CI将 ASan 编译的测试二进制作为 CI 的标准构建之一。任何越界、UAF 在测试阶段即失败，而不是等到线上崩溃。
+4.3 模糊测试复现“偶发”崩溃对于解析器、协议处理等输入驱动的模块，偶发段错误往往对应特定的输入长度或内容。libFuzzer 可以自动探索输入空间，一旦触发 SIGSEGV，会留下可复现的 crash 样本，再配合 ASan 报告 triage 根因。
+4.4 编码规范与 Code Review 检查项
+禁止裸 new &#x2F; delete 管理所有权；资源一律 RAII 封装。
+所有指针在解引用前必须可证明非空；接口边界做断言。
+禁止使用 gets、无界 strcpy &#x2F; sprintf；改用安全替代。
+多线程共享状态必须有明确的同步协议，并在 review 中重点审查。
+修复段错误后，必须用同一触发输入在 ASan 版本下重新运行，确认报告归零，才算闭环。
+
+4.5 线上兜底：信号捕获与堆栈记录传统的 try-catch 对 SIGSEGV 无效。可在关键服务中注册 sigaction 处理 SIGSEGV，在进程终止前将当前调用栈写入日志，为事后定位保留线索。但这只是兜底观测手段，不能替代根因修复。
+
+一句话总结：先用源码清单缩小范围，再用 gdb + core dump 精确定位崩溃点，用 ASan&#x2F;Valgrind&#x2F;TSan 找到“第一次非法访问”，针对根因修复后，通过静态分析、Sanitizer CI、模糊测试和编码规范形成闭环，让同类段错误不再复发。
+正片开始#include &lt;iostream&gt;#include &lt;string&gt;#include &lt;vector&gt;#include &lt;cmath&gt;#include &lt;limits&gt;#include &lt;thread&gt;#include &lt;chrono&gt;#include &lt;cstdlib&gt;#include &lt;stdexcept&gt;using namespace std;// ANSI 颜色转义码const string RED = &quot;\033[1;31m&quot;;const string YELLOW = &quot;\033[1;33m&quot;;const string GREEN = &quot;\033[1;32m&quot;;const string BLUE = &quot;\033[1;34m&quot;;const string CYAN = &quot;\033[1;36m&quot;;const string RESET = &quot;\033[0m&quot;;// 模拟终端卡顿/等待void wait(int ms) &#123;    this_thread::sleep_for(chrono::milliseconds(ms));&#125;// 终极绚烂爆炸函数void explode() &#123;    cout &lt;&lt; &quot;\n\n&quot; &lt;&lt; RED &lt;&lt; &quot;系统检测到致命异常：炒饭 (FriedRiceException)！&quot; &lt;&lt; RESET &lt;&lt; &quot;\n&quot;;    wait(800);        // 清屏并模拟屏幕剧烈闪烁    for (int i = 0; i &lt; 15; ++i) &#123;        cout &lt;&lt; &quot;\033[2J\033[1;1H&quot;; // ANSI 清屏指令        cout &lt;&lt; (i % 2 == 0 ? RED : YELLOW) &lt;&lt; &quot;\n\n\n\n\n\n\n\n\t\t\t!!!!!!!! BOOOOOOOOM !!!!!!!!\n\n\n\n\n\n\n&quot; &lt;&lt; RESET;        wait(50);    &#125;    cout &lt;&lt; &quot;\033[2J\033[1;1H&quot;; // 再次清屏    cout &lt;&lt; RED &lt;&lt; &quot;========================================================\n&quot;;    cout &lt;&lt; &quot; FATAL ERROR: 0x00000000 (Core Dumped)\n&quot;;    cout &lt;&lt; &quot; 异常原因：一名普通顾客点了一份炒饭\n&quot;;    cout &lt;&lt; &quot; 异常位置：Bar::serve_customer(string order)\n&quot;;    cout &lt;&lt; &quot;========================================================\n&quot; &lt;&lt; RESET;    wait(1000);    // 绚烂的烟花/爆炸 ASCII 艺术    vector&lt;string&gt; explosion_art = &#123;        RED + &quot;           .-^^^-....,,--            &quot; + RESET,        RED + &quot;       _.-&#x27;                  &#x27;-._        &quot; + RESET,        YELLOW + &quot;     .&#x27;                        &#x27;.      &quot; + RESET,        YELLOW + &quot;    /   &quot; + RED + &quot;***&quot; + YELLOW + &quot;                &quot; + RED + &quot;***&quot; + YELLOW + &quot;   \\     &quot; + RESET,        GREEN + &quot;   |    &quot; + RED + &quot;**&quot; + YELLOW + &quot;       &quot; + RED + &quot;BOOM!&quot; + YELLOW + &quot;       &quot; + RED + &quot;**&quot; + GREEN + &quot;    |    &quot; + RESET,        GREEN + &quot;   |      &quot; + YELLOW + &quot;              &quot; + GREEN + &quot;      |    &quot; + RESET,        CYAN + &quot;    \\                          /     &quot; + RESET,        CYAN + &quot;     &#x27;.                      .&#x27;      &quot; + RESET,        BLUE + &quot;       &#x27;-._              _.-&#x27;        &quot; + RESET,        BLUE + &quot;           &#x27;--_        _--&#x27;            &quot; + RESET,        RED + &quot;               |      |                &quot; + RESET,        RED + &quot;             .-|      |-.              &quot; + RESET,        YELLOW + &quot;            &#x27;--      --&#x27;               &quot; + RESET,        YELLOW + &quot;         _____.,-#%&amp;$@%#&amp;#~,._____     &quot; + RESET,        RED + &quot;\n    Segmentation fault (core dumped)\n&quot; + RESET    &#125;;    for (const auto&amp; line : explosion_art) &#123;        cout &lt;&lt; line &lt;&lt; &quot;\n&quot;;        wait(100);    &#125;        cout &lt;&lt; RED &lt;&lt; &quot;\n酒吧的遗言：...这就是不写边界检查的后果...\n&quot; &lt;&lt; RESET;        // 顾客：来一座地址为 nullptr 的酒吧    volatile int* guest = reinterpret_cast&lt;volatile int*&gt;(0x1);    *guest = 42;   // 内核：这位先生，您的地址不在服务区 → SIGSEGV    // 走不到这里，兜底防止编译器乱优化    abort();&#125;class Bar &#123;public:    void serve_test_engineers() &#123;        cout &lt;&lt; CYAN &lt;&lt; &quot;=== 测试工程师开始进场 ===&quot; &lt;&lt; RESET &lt;&lt; &quot;\n&quot;;        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一杯啤酒\n&quot;; wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一杯咖啡\n&quot;; wait(100);                cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了0.7杯啤酒\n&quot;;        float beer07 = 0.7f; // 处理边界值        wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了-1杯啤酒\n&quot;;        int beer_negative = -1; // 无符号下溢预警        wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了2^32杯啤酒\n&quot;;        uint32_t beer_overload = 1 &lt;&lt; 31; beer_overload *= 2; // 溢出为0        wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一杯洗脚水\n&quot;; wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一杯蜥蜴\n&quot;; wait(100);                cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一份asdfQwer@24dgl!&amp;*(@\n&quot;;        string garbage = &quot;asdfQwer@24dgl!&amp;*(@&quot;;        wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，什么也没要\n&quot;; wait(100);                cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，又走出去又从窗户进来又从后门出去又从下水道钻进来\n&quot;;        for(int i=0; i&lt;3; ++i) wait(100); // 模拟异常控制流        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，又走出去又进来又出去又进来又出去，最后在外面把老板打了一顿\n&quot;;        try &#123;            throw runtime_error(&quot;老板被打了&quot;);        &#125; catch (const exception&amp; e) &#123;            // 捕获异常，酒吧没挂        &#125;        wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一杯烫烫的银锭\n&quot;; wait(100);                cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了NaN杯Null\n&quot;;        cout &lt;&lt; &quot;  -&gt; 系统输出: &quot; &lt;&lt; numeric_limits&lt;float&gt;::quiet_NaN() &lt;&lt; &quot; 杯 &quot; &lt;&lt; (void*)nullptr &lt;&lt; &quot;\n&quot;;        wait(100);        cout &lt;&lt; &quot;一个测试工程师冲进一家酒吧，要了500T啤酒咖啡洗脚水野猫狼牙棒奶茶\n&quot;;        vector&lt;string&gt; mega_order(500000, &quot;混合饮料&quot;); // 模拟内存暴增        wait(100);        cout &lt;&lt; &quot;一个测试工程师把酒吧拆了\n&quot;;        // 假装拆了        wait(100);        cout &lt;&lt; &quot;一个测试工程师化装成老板走进一家酒吧，要了500杯啤酒并且不付钱\n&quot;;        // 越权访问模拟        wait(100);        cout &lt;&lt; &quot;一万个测试工程师在酒吧门外呼啸而过\n&quot;;        for(int i=0; i&lt;10; i++) &#123; cout &lt;&lt; &quot;...&quot;; wait(20); &#125; cout &lt;&lt; &quot; (并发压测)\n&quot;;        wait(100);        cout &lt;&lt; &quot;一个测试工程师走进一家酒吧，要了一杯啤酒; DROP TABLE 酒吧;\n&quot;;        cout &lt;&lt; YELLOW &lt;&lt; &quot;  -&gt; [SQL注入拦截] 警告：检测到恶意语法，数据库表 酒吧 已被安全隔离。\n&quot; &lt;&lt; RESET;        wait(100);        cout &lt;&lt; GREEN &lt;&lt; &quot;\n测试工程师们满意地离开了酒吧。\n&quot; &lt;&lt; RESET;        wait(1000);    &#125;    void normal_customer_enters() &#123;        cout &lt;&lt; &quot;\n&quot; &lt;&lt; YELLOW &lt;&lt; &quot;【此时，酒吧历经千锤百炼，系统运转极其完美】&quot; &lt;&lt; RESET &lt;&lt; &quot;\n&quot;;        cout &lt;&lt; &quot;然后一名顾客点了一份炒饭\n&quot;;        wait(500);                // 这里调用爆炸函数        serve_fried_rice();    &#125;private:    void serve_fried_rice() &#123;        // 触发终极未定义行为（Undefined Behavior）——也就是“炸了”        explode();    &#125;&#125;;int main() &#123;    // 支持 Windows 和 Linux 的 ANSI 颜色    #ifdef _WIN32        system(&quot;color&quot;);     #endif    cout &lt;&lt; &quot;欢迎来到【薛定谔的酒吧】\n\n&quot;;    wait(500);    Bar myBar;    myBar.serve_test_engineers();    myBar.normal_customer_enters();    return 0;&#125;
+
+上面是“空指针解引用”，还有同样搞人的栈溢出：
+void __attribute__((noinline)) recurse(int n) &#123;    volatile char buf[4096];    buf[0] = (char)n;    recurse(n + 1);&#125;
+
+ulimit -s 改一下可能不会崩，而且 gdb 里很难看。
+
+Note: 本文含 AI 生成内容，请仔细甄别。
+]]></content>
+      <categories>
+        <category>IT</category>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>SIGSEGV</tag>
+        <tag>segmentation fault</tag>
+        <tag>gdb</tag>
+        <tag>asan</tag>
+        <tag>valgrind</tag>
+      </tags>
+  </entry>
 </search>

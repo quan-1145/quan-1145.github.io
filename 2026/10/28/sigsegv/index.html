@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>段错误全链路排查 | quan-1145 — Welcome to the Construction Site</title>
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link rel="alternate" type="application/atom+xml" title="quan-1145" href="/atom.xml">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    <script>
+      document.documentElement.setAttribute('data-theme', 'green');
+    </script>
+  
+
+  
+  
+    
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
+    
+  
+
+  
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="terminal-header">
+  <div class="terminal-header__inner">
+    <nav class="terminal-nav">
+      <div class="terminal-nav__prompt">
+        <span class="terminal-user">guest@hexo-blog</span>
+        <span class="terminal-separator">:</span>
+        <span class="terminal-path">~</span>
+        <span class="terminal-prompt-mark">$</span>
+      </div>
+      <ul class="terminal-menu">
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/">
+              [Home]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/archives">
+              [Archives]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/tags">
+              [Tags]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/categories">
+              [Categories]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/more">
+              [More]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/about">
+              [About]
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+    <div class="terminal-header__actions">
+      <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
+      <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
+    </div>
+  </div>
+</header>
+  <div class="terminal-container">
+    <div class="terminal-body">
+      <main class="terminal-main">
+        <article class="terminal-page terminal-page--post">
+  <header class="terminal-post-header">
+    
+      <div class="terminal-post-header__prompt">
+        <span class="terminal-prompt-mark">$</span> cat sigsegv.md
+      </div>
+    
+    <h1 class="terminal-post-header__title">段错误全链路排查</h1>
+    <div class="terminal-post-header__meta">
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">date:</span>
+        <span class="terminal-meta__value">2026-10-28</span>
+      </span>
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">updated:</span>
+          <span class="terminal-meta__value">2026-10-29</span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">cat:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/categories/IT/">IT</a>, 
+            
+              <a href="/categories/IT/c/">c++</a>
+            
+          </span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">tags:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/tags/SIGSEGV/">#SIGSEGV</a> 
+            
+              <a href="/tags/segmentation-fault/">#segmentation fault</a> 
+            
+              <a href="/tags/gdb/">#gdb</a> 
+            
+              <a href="/tags/asan/">#asan</a> 
+            
+              <a href="/tags/valgrind/">#valgrind</a>
+            
+          </span>
+        </span>
+      
+    </div>
+  </header>
+
+  <div class="terminal-post-content">
+    <blockquote>
+<p>[!WARNING]</p>
+<p>效果仅供娱乐，请勿用于真实生产环境中。</p>
+</blockquote>
+<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p><a target="_blank" rel="noopener" href="https://imgchr.com/i/pnyejcd"><img src="https://s41.ax1x.com/2026/10/28/pnyejcd.png" alt="pnyejcd.png"></a></p>
+<p>Segmentation Fault（段错误，SIGSEGV）的本质是<strong>程序访问了无效或无权访问的虚拟内存地址</strong>，操作系统通过内存保护机制强制终止了进程。以下按“源码自查 → 调试定位 → 修复加固 → 预防与回归”的全链路展开。</p>
+<hr>
+<h2 id="一、源码层：先锁定高概率原因"><a href="#一、源码层：先锁定高概率原因" class="headerlink" title="一、源码层：先锁定高概率原因"></a>一、源码层：先锁定高概率原因</h2><p>在拿起调试器之前，先对照代码排查覆盖面最高的几类成因，往往能直接定位。</p>
+<h3 id="1-1-90-的段错误集中在以下几类"><a href="#1-1-90-的段错误集中在以下几类" class="headerlink" title="1.1 90% 的段错误集中在以下几类"></a>1.1 90% 的段错误集中在以下几类</h3><table>
+<thead>
+<tr>
+<th>原因</th>
+<th>典型代码</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>空指针解引用</strong></td>
+<td><code>int *p = nullptr; *p = 10;</code></td>
+<td>最常见，往地址 0 写入直接触发 SIGSEGV</td>
+</tr>
+<tr>
+<td><strong>野指针 &#x2F; UAF</strong></td>
+<td><code>delete p; *p = 10;</code></td>
+<td>访问已释放内存，行为未定义，可能不立即崩溃但数据已被破坏</td>
+</tr>
+<tr>
+<td><strong>数组越界 &#x2F; 缓冲区溢出</strong></td>
+<td><code>char buf[10]; strcpy(buf, &quot;this is too long&quot;);</code></td>
+<td>栈上溢出可覆盖返回地址，堆上溢出破坏堆元数据</td>
+</tr>
+<tr>
+<td><strong>栈溢出</strong></td>
+<td>无终止条件的递归，或 <code>char buf[10*1024*1024]</code> 局部大对象</td>
+<td>栈空间耗尽</td>
+</tr>
+<tr>
+<td><strong>多线程数据竞争</strong></td>
+<td>多线程无锁读写同一变量</td>
+<td>偶发、难复现的崩溃常常源于此</td>
+</tr>
+<tr>
+<td><strong>STL 迭代器失效</strong></td>
+<td><code>m.erase(it)</code> 后继续使用 it</td>
+<td>迭代器指向已失效节点</td>
+</tr>
+<tr>
+<td><strong>虚函数 &#x2F; 多态误用</strong></td>
+<td>基类析构非 <code>virtual</code>，对象销毁后调用虚函数</td>
+<td>vptr 被破坏后调用虚函数崩溃</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-源码层面的定向审查清单"><a href="#1-2-源码层面的定向审查清单" class="headerlink" title="1.2 源码层面的定向审查清单"></a>1.2 源码层面的定向审查清单</h3><p>拿到崩溃函数或可疑模块后，逐项过一遍：</p>
+<ul>
+<li>所有指针在<strong>解引用前</strong>是否已初始化为非空并做了合法性判断？</li>
+<li><code>new</code> &#x2F; <code>malloc</code> 的返回值是否检查？（虽然很少失败，但嵌入式或受限环境仍需关注）</li>
+<li>函数是否返回了<strong>局部变量的地址</strong>？</li>
+<li>释放内存后，指针是否立即置为 <code>nullptr</code> 或使用智能指针接管？</li>
+<li>循环边界、<code>strcpy</code> &#x2F; <code>sprintf</code> &#x2F; <code>memcpy</code> 的目标缓冲区大小是否匹配？</li>
+<li>多线程共享数据是否加锁？线程是否 <code>join()</code> 或 <code>detach()</code>？</li>
+<li>容器操作后迭代器是否重新获取？</li>
+</ul>
+<hr>
+<h2 id="二、调试层：从“知道崩了”到“知道崩在哪一行”"><a href="#二、调试层：从“知道崩了”到“知道崩在哪一行”" class="headerlink" title="二、调试层：从“知道崩了”到“知道崩在哪一行”"></a>二、调试层：从“知道崩了”到“知道崩在哪一行”</h2><h3 id="2-1-前置条件：编译带调试信息，开启-core-dump"><a href="#2-1-前置条件：编译带调试信息，开启-core-dump" class="headerlink" title="2.1 前置条件：编译带调试信息，开启 core dump"></a>2.1 前置条件：编译带调试信息，开启 core dump</h3><p>调试信息是 ELF 中“地址 → 源码行”的映射表，没有它，gdb 只能显示裸地址。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ -g -O0 your_program.cpp -o your_program   <span class="comment"># -O0 避免优化干扰调试</span></span><br><span class="line"><span class="built_in">ulimit</span> -c unlimited                             <span class="comment"># 放开 core dump 大小限制</span></span><br></pre></td></tr></table></figure>
+
+<p>core 文件是崩溃时的<strong>现场快照</strong>，包含寄存器、调用栈、进程内存。部分系统 core 文件位于 <code>/var/lib/systemd/coredump/</code> 或当前目录。</p>
+<h3 id="2-2-GDB-核心命令速查"><a href="#2-2-GDB-核心命令速查" class="headerlink" title="2.2 GDB 核心命令速查"></a>2.2 GDB 核心命令速查</h3><p><strong>方式一：直接运行，崩溃时拦截</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gdb ./your_program</span><br><span class="line">(gdb) run</span><br><span class="line"><span class="comment"># 崩溃后</span></span><br><span class="line">(gdb) bt                 <span class="comment"># 查看调用栈，直接定位崩溃函数和行号</span></span><br><span class="line">(gdb) info locals        <span class="comment"># 查看局部变量</span></span><br><span class="line">(gdb) info args          <span class="comment"># 查看函数参数</span></span><br><span class="line">(gdb) frame &lt;n&gt;          <span class="comment"># 切换到第 n 帧</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>方式二：分析 core 文件（离线 &#x2F; 事后）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gdb ./your_program /path/to/core</span><br><span class="line">(gdb) bt</span><br><span class="line">(gdb) info threads</span><br><span class="line">(gdb) thread apply all bt   <span class="comment"># 多线程程序必做，查看所有线程栈</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>辅助定位手段</strong>：</p>
+<ul>
+<li><code>x/i $rip</code>：反汇编当前崩溃指令</li>
+<li><code>info registers</code>：查看寄存器现场</li>
+<li><code>watch variable</code>：变量被修改时中断，适合捕捉内存踩踏</li>
+<li>无调试信息时：用 <code>addr2line -e ./program &lt;address&gt;</code> 将地址翻译为源码行</li>
+</ul>
+<p><strong>典型 gdb 输出</strong>会直接指出崩溃行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Program received signal SIGSEGV, Segmentation fault.</span><br><span class="line">0x0000000000400525 in main () at segfault_example.c:5</span><br><span class="line">5       *ptr = 42;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="2-3-Sanitizer-与-Valgrind：在崩溃发生前捕获“第一次非法访问”"><a href="#2-3-Sanitizer-与-Valgrind：在崩溃发生前捕获“第一次非法访问”" class="headerlink" title="2.3 Sanitizer 与 Valgrind：在崩溃发生前捕获“第一次非法访问”"></a>2.3 Sanitizer 与 Valgrind：在崩溃发生前捕获“第一次非法访问”</h3><p>很多时候，段错误只是内存破坏的<strong>最后一声</strong>，真正的越界写入发生在更早的位置。Sanitizer 能在<strong>第一次非法操作</strong>时就报告，并给出访问栈和分配栈。</p>
+<p><strong>AddressSanitizer（ASan）——首选，速度快，适合开发和 CI</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ -g -O1 -fsanitize=address -fno-omit-frame-pointer your_program.cpp -o your_program</span><br><span class="line">./your_program</span><br></pre></td></tr></table></figure>
+
+<p>ASan 会报告 <code>heap-buffer-overflow</code>、<code>use-after-free</code>、<code>stack-buffer-overflow</code> 等，并明确指出<strong>哪一行写越界、这块内存最初在哪里分配</strong>。</p>
+<p><strong>Valgrind Memcheck——不需要重新编译，适合专项补漏</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">valgrind --leak-check=full --show-leak-kinds=all ./your_program</span><br></pre></td></tr></table></figure>
+
+<p>可检测非法读写、未初始化值使用、内存泄漏、double-free 等。</p>
+<p><strong>分工建议</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>AddressSanitizer</th>
+<th>Valgrind</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>重编译</td>
+<td>需要</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>快</td>
+<td>慢（明显拖慢）</td>
+</tr>
+<tr>
+<td>适用阶段</td>
+<td>开发、CI、日常</td>
+<td>专项排查、发布前</td>
+</tr>
+<tr>
+<td>未初始化值</td>
+<td>部分支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>结论</td>
+<td><strong>ASan 负责快速失败，Valgrind 负责补漏</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="2-4-多线程段错误的专项工具"><a href="#2-4-多线程段错误的专项工具" class="headerlink" title="2.4 多线程段错误的专项工具"></a>2.4 多线程段错误的专项工具</h3><p>如果崩溃呈现<strong>偶发性、重启后恢复、低概率</strong>的特点，优先怀疑数据竞争。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">g++ -g -fsanitize=thread your_program.cpp -o your_program</span><br><span class="line">./your_program</span><br></pre></td></tr></table></figure>
+
+<p>ThreadSanitizer（TSan）会报告 <code>data race</code>，并指出冲突的读写地址、线程和读写类型（写-写 &#x2F; 读-写）。gdb 中用 <code>thread apply all bt</code> 查看所有线程栈也是必做步骤。</p>
+<h3 id="2-5-嵌入式-远程场景：gdbserver"><a href="#2-5-嵌入式-远程场景：gdbserver" class="headerlink" title="2.5 嵌入式 &#x2F; 远程场景：gdbserver"></a>2.5 嵌入式 &#x2F; 远程场景：gdbserver</h3><p>在目标机上运行 <code>gdbserver</code>，主机上用交叉 GDB 连接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 目标机</span></span><br><span class="line">gdbserver :3333 ./your_program</span><br><span class="line"></span><br><span class="line"><span class="comment"># 主机</span></span><br><span class="line">gdb-multiarch ./your_program</span><br><span class="line">(gdb) target remote &lt;target_ip&gt;:3333</span><br><span class="line">(gdb) <span class="built_in">continue</span></span><br><span class="line"><span class="comment"># 段错误发生后</span></span><br><span class="line">(gdb) bt</span><br></pre></td></tr></table></figure>
+
+<p>gdbserver 会拦截 SIGSEGV 等信号并停住目标进程，主机端即可查看崩溃行号。</p>
+<hr>
+<h2 id="三、修复层：根据根因针对性加固"><a href="#三、修复层：根据根因针对性加固" class="headerlink" title="三、修复层：根据根因针对性加固"></a>三、修复层：根据根因针对性加固</h2><p>定位到具体非法访问后，修复不应止于“让它不崩”，而要消除<strong>为什么非法访问能够发生</strong>。</p>
+<ul>
+<li><strong>空指针 &#x2F; 未初始化指针</strong>：声明时初始化为 <code>nullptr</code>，解引用前断言或判空；返回指针的接口明确文档约定。</li>
+<li><strong>UAF &#x2F; double-free</strong>：用 <code>std::unique_ptr</code> &#x2F; <code>std::shared_ptr</code> 替代裸指针，让对象生命周期由作用域绑定，从根本上避免手动 <code>delete</code> 后的误用。</li>
+<li><strong>缓冲区溢出</strong>：用 <code>std::string</code> &#x2F; <code>std::vector</code> &#x2F; <code>std::array</code> 替代裸数组；必须使用定长视图时用 <code>std::span</code> 并配合边界检查。编译时加 <code>-fstack-protector-strong</code> 和 <code>-D_FORTIFY_SOURCE=2</code> 增加运行时防护。</li>
+<li><strong>栈溢出</strong>：大对象放堆或 <code>std::vector</code>；递归改为迭代或显式限制深度。</li>
+<li><strong>多线程</strong>：共享数据加锁或用原子操作；TSan 报告中定位到冲突点后修复同步逻辑。</li>
+<li><strong>迭代器失效</strong>：修改容器大小后重新获取迭代器，或改用索引访问；必要时 <code>reserve</code> 预留容量。</li>
+</ul>
+<hr>
+<h2 id="四、预防与回归：把段错误挡在上线之前"><a href="#四、预防与回归：把段错误挡在上线之前" class="headerlink" title="四、预防与回归：把段错误挡在上线之前"></a>四、预防与回归：把段错误挡在上线之前</h2><h3 id="4-1-静态分析：编译前拦截"><a href="#4-1-静态分析：编译前拦截" class="headerlink" title="4.1 静态分析：编译前拦截"></a>4.1 静态分析：编译前拦截</h3><p>在 CI 中固定跑 <code>cppcheck</code> 和 <code>clang-tidy</code>，可提前发现空指针解引用、越界、未初始化变量等潜在段错误源。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cppcheck --<span class="built_in">enable</span>=warning --inconclusive src/</span><br><span class="line">clang-tidy src/*.cpp --checks=<span class="string">&#x27;-*,bugprone-*,cert-*&#x27;</span> -- -std=c++17</span><br></pre></td></tr></table></figure>
+
+<p>两者互补：cppcheck 侧重缺陷模式，clang-tidy 覆盖风格 + 现代 C++ 警告 + 潜在 bug。</p>
+<h3 id="4-2-动态检测进入-CI"><a href="#4-2-动态检测进入-CI" class="headerlink" title="4.2 动态检测进入 CI"></a>4.2 动态检测进入 CI</h3><p>将 ASan 编译的测试二进制作为 CI 的标准构建之一。任何越界、UAF 在测试阶段即失败，而不是等到线上崩溃。</p>
+<h3 id="4-3-模糊测试复现“偶发”崩溃"><a href="#4-3-模糊测试复现“偶发”崩溃" class="headerlink" title="4.3 模糊测试复现“偶发”崩溃"></a>4.3 模糊测试复现“偶发”崩溃</h3><p>对于解析器、协议处理等输入驱动的模块，偶发段错误往往对应特定的输入长度或内容。libFuzzer 可以自动探索输入空间，一旦触发 SIGSEGV，会留下可复现的 crash 样本，再配合 ASan 报告 triage 根因。</p>
+<h3 id="4-4-编码规范与-Code-Review-检查项"><a href="#4-4-编码规范与-Code-Review-检查项" class="headerlink" title="4.4 编码规范与 Code Review 检查项"></a>4.4 编码规范与 Code Review 检查项</h3><ul>
+<li>禁止裸 <code>new</code> &#x2F; <code>delete</code> 管理所有权；资源一律 RAII 封装。</li>
+<li>所有指针在解引用前必须可证明非空；接口边界做断言。</li>
+<li>禁止使用 <code>gets</code>、无界 <code>strcpy</code> &#x2F; <code>sprintf</code>；改用安全替代。</li>
+<li>多线程共享状态必须有明确的同步协议，并在 review 中重点审查。</li>
+<li>修复段错误后，<strong>必须用同一触发输入在 ASan 版本下重新运行</strong>，确认报告归零，才算闭环。</li>
+</ul>
+<h3 id="4-5-线上兜底：信号捕获与堆栈记录"><a href="#4-5-线上兜底：信号捕获与堆栈记录" class="headerlink" title="4.5 线上兜底：信号捕获与堆栈记录"></a>4.5 线上兜底：信号捕获与堆栈记录</h3><p>传统的 <code>try-catch</code> 对 SIGSEGV 无效。可在关键服务中注册 <code>sigaction</code> 处理 <code>SIGSEGV</code>，在进程终止前将当前调用栈写入日志，为事后定位保留线索。但这只是兜底观测手段，不能替代根因修复。</p>
+<hr>
+<p><strong>一句话总结</strong>：先用源码清单缩小范围，再用 gdb + core dump 精确定位崩溃点，用 ASan&#x2F;Valgrind&#x2F;TSan 找到“第一次非法访问”，针对根因修复后，通过静态分析、Sanitizer CI、模糊测试和编码规范形成闭环，让同类段错误不再复发。</p>
+<h2 id="正片开始"><a href="#正片开始" class="headerlink" title="正片开始"></a>正片开始</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;limits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdexcept&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ANSI 颜色转义码</span></span><br><span class="line"><span class="type">const</span> string RED = <span class="string">&quot;\033[1;31m&quot;</span>;</span><br><span class="line"><span class="type">const</span> string YELLOW = <span class="string">&quot;\033[1;33m&quot;</span>;</span><br><span class="line"><span class="type">const</span> string GREEN = <span class="string">&quot;\033[1;32m&quot;</span>;</span><br><span class="line"><span class="type">const</span> string BLUE = <span class="string">&quot;\033[1;34m&quot;</span>;</span><br><span class="line"><span class="type">const</span> string CYAN = <span class="string">&quot;\033[1;36m&quot;</span>;</span><br><span class="line"><span class="type">const</span> string RESET = <span class="string">&quot;\033[0m&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟终端卡顿/等待</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">wait</span><span class="params">(<span class="type">int</span> ms)</span> </span>&#123;</span><br><span class="line">    this_thread::<span class="built_in">sleep_for</span>(chrono::<span class="built_in">milliseconds</span>(ms));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 终极绚烂爆炸函数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">explode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n\n&quot;</span> &lt;&lt; RED &lt;&lt; <span class="string">&quot;系统检测到致命异常：炒饭 (FriedRiceException)！&quot;</span> &lt;&lt; RESET &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">    <span class="built_in">wait</span>(<span class="number">800</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 清屏并模拟屏幕剧烈闪烁</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">15</span>; ++i) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;\033[2J\033[1;1H&quot;</span>; <span class="comment">// ANSI 清屏指令</span></span><br><span class="line">        cout &lt;&lt; (i % <span class="number">2</span> == <span class="number">0</span> ? RED : YELLOW) &lt;&lt; <span class="string">&quot;\n\n\n\n\n\n\n\n\t\t\t!!!!!!!! BOOOOOOOOM !!!!!!!!\n\n\n\n\n\n\n&quot;</span> &lt;&lt; RESET;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">50</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\033[2J\033[1;1H&quot;</span>; <span class="comment">// 再次清屏</span></span><br><span class="line">    cout &lt;&lt; RED &lt;&lt; <span class="string">&quot;========================================================\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot; FATAL ERROR: 0x00000000 (Core Dumped)\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot; 异常原因：一名普通顾客点了一份炒饭\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot; 异常位置：Bar::serve_customer(string order)\n&quot;</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;========================================================\n&quot;</span> &lt;&lt; RESET;</span><br><span class="line">    <span class="built_in">wait</span>(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绚烂的烟花/爆炸 ASCII 艺术</span></span><br><span class="line">    vector&lt;string&gt; explosion_art = &#123;</span><br><span class="line">        RED + <span class="string">&quot;           .-^^^-....,,--            &quot;</span> + RESET,</span><br><span class="line">        RED + <span class="string">&quot;       _.-&#x27;                  &#x27;-._        &quot;</span> + RESET,</span><br><span class="line">        YELLOW + <span class="string">&quot;     .&#x27;                        &#x27;.      &quot;</span> + RESET,</span><br><span class="line">        YELLOW + <span class="string">&quot;    /   &quot;</span> + RED + <span class="string">&quot;***&quot;</span> + YELLOW + <span class="string">&quot;                &quot;</span> + RED + <span class="string">&quot;***&quot;</span> + YELLOW + <span class="string">&quot;   \\     &quot;</span> + RESET,</span><br><span class="line">        GREEN + <span class="string">&quot;   |    &quot;</span> + RED + <span class="string">&quot;**&quot;</span> + YELLOW + <span class="string">&quot;       &quot;</span> + RED + <span class="string">&quot;BOOM!&quot;</span> + YELLOW + <span class="string">&quot;       &quot;</span> + RED + <span class="string">&quot;**&quot;</span> + GREEN + <span class="string">&quot;    |    &quot;</span> + RESET,</span><br><span class="line">        GREEN + <span class="string">&quot;   |      &quot;</span> + YELLOW + <span class="string">&quot;              &quot;</span> + GREEN + <span class="string">&quot;      |    &quot;</span> + RESET,</span><br><span class="line">        CYAN + <span class="string">&quot;    \\                          /     &quot;</span> + RESET,</span><br><span class="line">        CYAN + <span class="string">&quot;     &#x27;.                      .&#x27;      &quot;</span> + RESET,</span><br><span class="line">        BLUE + <span class="string">&quot;       &#x27;-._              _.-&#x27;        &quot;</span> + RESET,</span><br><span class="line">        BLUE + <span class="string">&quot;           &#x27;--_        _--&#x27;            &quot;</span> + RESET,</span><br><span class="line">        RED + <span class="string">&quot;               |      |                &quot;</span> + RESET,</span><br><span class="line">        RED + <span class="string">&quot;             .-|      |-.              &quot;</span> + RESET,</span><br><span class="line">        YELLOW + <span class="string">&quot;            &#x27;--      --&#x27;               &quot;</span> + RESET,</span><br><span class="line">        YELLOW + <span class="string">&quot;         _____.,-#%&amp;$@%#&amp;#~,._____     &quot;</span> + RESET,</span><br><span class="line">        RED + <span class="string">&quot;\n    Segmentation fault (core dumped)\n&quot;</span> + RESET</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; line : explosion_art) &#123;</span><br><span class="line">        cout &lt;&lt; line &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; RED &lt;&lt; <span class="string">&quot;\n酒吧的遗言：...这就是不写边界检查的后果...\n&quot;</span> &lt;&lt; RESET;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 顾客：来一座地址为 nullptr 的酒吧</span></span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">int</span>* guest = <span class="built_in">reinterpret_cast</span>&lt;<span class="keyword">volatile</span> <span class="type">int</span>*&gt;(<span class="number">0x1</span>);</span><br><span class="line">    *guest = <span class="number">42</span>;   <span class="comment">// 内核：这位先生，您的地址不在服务区 → SIGSEGV</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 走不到这里，兜底防止编译器乱优化</span></span><br><span class="line">    <span class="built_in">abort</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Bar</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">serve_test_engineers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; CYAN &lt;&lt; <span class="string">&quot;=== 测试工程师开始进场 ===&quot;</span> &lt;&lt; RESET &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一杯啤酒\n&quot;</span>; <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一杯咖啡\n&quot;</span>; <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">        </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了0.7杯啤酒\n&quot;</span>;</span><br><span class="line">        <span class="type">float</span> beer07 = <span class="number">0.7f</span>; <span class="comment">// 处理边界值</span></span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了-1杯啤酒\n&quot;</span>;</span><br><span class="line">        <span class="type">int</span> beer_negative = <span class="number">-1</span>; <span class="comment">// 无符号下溢预警</span></span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了2^32杯啤酒\n&quot;</span>;</span><br><span class="line">        <span class="type">uint32_t</span> beer_overload = <span class="number">1</span> &lt;&lt; <span class="number">31</span>; beer_overload *= <span class="number">2</span>; <span class="comment">// 溢出为0</span></span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一杯洗脚水\n&quot;</span>; <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一杯蜥蜴\n&quot;</span>; <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">        </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一份asdfQwer@24dgl!&amp;*(@\n&quot;</span>;</span><br><span class="line">        string garbage = <span class="string">&quot;asdfQwer@24dgl!&amp;*(@&quot;</span>;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，什么也没要\n&quot;</span>; <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">        </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，又走出去又从窗户进来又从后门出去又从下水道钻进来\n&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">3</span>; ++i) <span class="built_in">wait</span>(<span class="number">100</span>); <span class="comment">// 模拟异常控制流</span></span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，又走出去又进来又出去又进来又出去，最后在外面把老板打了一顿\n&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="built_in">runtime_error</span>(<span class="string">&quot;老板被打了&quot;</span>);</span><br><span class="line">        &#125; <span class="built_in">catch</span> (<span class="type">const</span> exception&amp; e) &#123;</span><br><span class="line">            <span class="comment">// 捕获异常，酒吧没挂</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一杯烫烫的银锭\n&quot;</span>; <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line">        </span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了NaN杯Null\n&quot;</span>;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;  -&gt; 系统输出: &quot;</span> &lt;&lt; numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">quiet_NaN</span>() &lt;&lt; <span class="string">&quot; 杯 &quot;</span> &lt;&lt; (<span class="type">void</span>*)<span class="literal">nullptr</span> &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师冲进一家酒吧，要了500T啤酒咖啡洗脚水野猫狼牙棒奶茶\n&quot;</span>;</span><br><span class="line">        <span class="function">vector&lt;string&gt; <span class="title">mega_order</span><span class="params">(<span class="number">500000</span>, <span class="string">&quot;混合饮料&quot;</span>)</span></span>; <span class="comment">// 模拟内存暴增</span></span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师把酒吧拆了\n&quot;</span>;</span><br><span class="line">        <span class="comment">// 假装拆了</span></span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师化装成老板走进一家酒吧，要了500杯啤酒并且不付钱\n&quot;</span>;</span><br><span class="line">        <span class="comment">// 越权访问模拟</span></span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一万个测试工程师在酒吧门外呼啸而过\n&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123; cout &lt;&lt; <span class="string">&quot;...&quot;</span>; <span class="built_in">wait</span>(<span class="number">20</span>); &#125; cout &lt;&lt; <span class="string">&quot; (并发压测)\n&quot;</span>;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;一个测试工程师走进一家酒吧，要了一杯啤酒; DROP TABLE 酒吧;\n&quot;</span>;</span><br><span class="line">        cout &lt;&lt; YELLOW &lt;&lt; <span class="string">&quot;  -&gt; [SQL注入拦截] 警告：检测到恶意语法，数据库表 酒吧 已被安全隔离。\n&quot;</span> &lt;&lt; RESET;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        cout &lt;&lt; GREEN &lt;&lt; <span class="string">&quot;\n测试工程师们满意地离开了酒吧。\n&quot;</span> &lt;&lt; RESET;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">normal_customer_enters</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;\n&quot;</span> &lt;&lt; YELLOW &lt;&lt; <span class="string">&quot;【此时，酒吧历经千锤百炼，系统运转极其完美】&quot;</span> &lt;&lt; RESET &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;然后一名顾客点了一份炒饭\n&quot;</span>;</span><br><span class="line">        <span class="built_in">wait</span>(<span class="number">500</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 这里调用爆炸函数</span></span><br><span class="line">        <span class="built_in">serve_fried_rice</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">serve_fried_rice</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 触发终极未定义行为（Undefined Behavior）——也就是“炸了”</span></span><br><span class="line">        <span class="built_in">explode</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 支持 Windows 和 Linux 的 ANSI 颜色</span></span><br><span class="line">    <span class="meta">#<span class="keyword">ifdef</span> _WIN32</span></span><br><span class="line">        <span class="built_in">system</span>(<span class="string">&quot;color&quot;</span>); </span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;欢迎来到【薛定谔的酒吧】\n\n&quot;</span>;</span><br><span class="line">    <span class="built_in">wait</span>(<span class="number">500</span>);</span><br><span class="line"></span><br><span class="line">    Bar myBar;</span><br><span class="line">    myBar.<span class="built_in">serve_test_engineers</span>();</span><br><span class="line">    myBar.<span class="built_in">normal_customer_enters</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上面是“空指针解引用”，还有同样搞人的栈溢出：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __attribute__((noinline)) <span class="built_in">recurse</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">char</span> buf[<span class="number">4096</span>];</span><br><span class="line">    buf[<span class="number">0</span>] = (<span class="type">char</span>)n;</span><br><span class="line">    <span class="built_in">recurse</span>(n + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ulimit -s</code> 改一下可能不会崩，而且 gdb 里很难看。</p>
+<hr>
+<p><strong>Note</strong>: 本文含 AI 生成内容，请仔细甄别。</p>
+
+  </div>
+
+  
+  <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
+    <div class="terminal-toc__header">
+      <span class="terminal-toc__label">目录</span>
+      <button class="terminal-toc__toggle" id="toc-toggle" aria-label="Toggle TOC">[-]</button>
+    </div>
+    <nav class="terminal-toc__nav" id="toc-nav">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E6%83%85%E6%8F%90%E8%A6%81"><span class="toc-text">前情提要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%BA%90%E7%A0%81%E5%B1%82%EF%BC%9A%E5%85%88%E9%94%81%E5%AE%9A%E9%AB%98%E6%A6%82%E7%8E%87%E5%8E%9F%E5%9B%A0"><span class="toc-text">一、源码层：先锁定高概率原因</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-90-%E7%9A%84%E6%AE%B5%E9%94%99%E8%AF%AF%E9%9B%86%E4%B8%AD%E5%9C%A8%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%B1%BB"><span class="toc-text">1.1 90% 的段错误集中在以下几类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%BA%90%E7%A0%81%E5%B1%82%E9%9D%A2%E7%9A%84%E5%AE%9A%E5%90%91%E5%AE%A1%E6%9F%A5%E6%B8%85%E5%8D%95"><span class="toc-text">1.2 源码层面的定向审查清单</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%B0%83%E8%AF%95%E5%B1%82%EF%BC%9A%E4%BB%8E%E2%80%9C%E7%9F%A5%E9%81%93%E5%B4%A9%E4%BA%86%E2%80%9D%E5%88%B0%E2%80%9C%E7%9F%A5%E9%81%93%E5%B4%A9%E5%9C%A8%E5%93%AA%E4%B8%80%E8%A1%8C%E2%80%9D"><span class="toc-text">二、调试层：从“知道崩了”到“知道崩在哪一行”</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%89%8D%E7%BD%AE%E6%9D%A1%E4%BB%B6%EF%BC%9A%E7%BC%96%E8%AF%91%E5%B8%A6%E8%B0%83%E8%AF%95%E4%BF%A1%E6%81%AF%EF%BC%8C%E5%BC%80%E5%90%AF-core-dump"><span class="toc-text">2.1 前置条件：编译带调试信息，开启 core dump</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-GDB-%E6%A0%B8%E5%BF%83%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5"><span class="toc-text">2.2 GDB 核心命令速查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Sanitizer-%E4%B8%8E-Valgrind%EF%BC%9A%E5%9C%A8%E5%B4%A9%E6%BA%83%E5%8F%91%E7%94%9F%E5%89%8D%E6%8D%95%E8%8E%B7%E2%80%9C%E7%AC%AC%E4%B8%80%E6%AC%A1%E9%9D%9E%E6%B3%95%E8%AE%BF%E9%97%AE%E2%80%9D"><span class="toc-text">2.3 Sanitizer 与 Valgrind：在崩溃发生前捕获“第一次非法访问”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%AE%B5%E9%94%99%E8%AF%AF%E7%9A%84%E4%B8%93%E9%A1%B9%E5%B7%A5%E5%85%B7"><span class="toc-text">2.4 多线程段错误的专项工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E5%B5%8C%E5%85%A5%E5%BC%8F-%E8%BF%9C%E7%A8%8B%E5%9C%BA%E6%99%AF%EF%BC%9Agdbserver"><span class="toc-text">2.5 嵌入式 &#x2F; 远程场景：gdbserver</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BF%AE%E5%A4%8D%E5%B1%82%EF%BC%9A%E6%A0%B9%E6%8D%AE%E6%A0%B9%E5%9B%A0%E9%92%88%E5%AF%B9%E6%80%A7%E5%8A%A0%E5%9B%BA"><span class="toc-text">三、修复层：根据根因针对性加固</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E9%A2%84%E9%98%B2%E4%B8%8E%E5%9B%9E%E5%BD%92%EF%BC%9A%E6%8A%8A%E6%AE%B5%E9%94%99%E8%AF%AF%E6%8C%A1%E5%9C%A8%E4%B8%8A%E7%BA%BF%E4%B9%8B%E5%89%8D"><span class="toc-text">四、预防与回归：把段错误挡在上线之前</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90%EF%BC%9A%E7%BC%96%E8%AF%91%E5%89%8D%E6%8B%A6%E6%88%AA"><span class="toc-text">4.1 静态分析：编译前拦截</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%8A%A8%E6%80%81%E6%A3%80%E6%B5%8B%E8%BF%9B%E5%85%A5-CI"><span class="toc-text">4.2 动态检测进入 CI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%A4%8D%E7%8E%B0%E2%80%9C%E5%81%B6%E5%8F%91%E2%80%9D%E5%B4%A9%E6%BA%83"><span class="toc-text">4.3 模糊测试复现“偶发”崩溃</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83%E4%B8%8E-Code-Review-%E6%A3%80%E6%9F%A5%E9%A1%B9"><span class="toc-text">4.4 编码规范与 Code Review 检查项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E7%BA%BF%E4%B8%8A%E5%85%9C%E5%BA%95%EF%BC%9A%E4%BF%A1%E5%8F%B7%E6%8D%95%E8%8E%B7%E4%B8%8E%E5%A0%86%E6%A0%88%E8%AE%B0%E5%BD%95"><span class="toc-text">4.5 线上兜底：信号捕获与堆栈记录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E7%89%87%E5%BC%80%E5%A7%8B"><span class="toc-text">正片开始</span></a></li></ol>
+    </nav>
+  </aside>
+  
+
+  <div class="terminal-post-footer">
+    <div class="terminal-post-nav">
+      
+      
+        <a class="terminal-post-nav__next" href="/2026/09/29/construct-sqrt-2/">
+          [从自然数构造√2 &gt;]
+        </a>
+      
+    </div>
+
+    
+
+  </div>
+</article>
+
+      </main>
+      
+        <aside class="terminal-sidebar">
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> whoami
+    </div>
+    <div class="terminal-sidebar__content">
+      <p>quan-1145</p>
+      
+        <p>Endure more, strive further, pioneer new frontiers, and give our all</p>
+      
+    </div>
+  </div>
+
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> ls posts/
+    </div>
+    <div class="terminal-sidebar__content">
+      total 8
+    </div>
+  </div>
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls categories/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/IT/">[IT]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/">[archlinux]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/IT/c/">[c++]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/wsl/">[wsl]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">[学习]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">[探究项目]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/">[物理]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">[高等数学]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls tags/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list terminal-list--inline">
+          
+            <li class="terminal-list__item">
+              <a href="/tags/HTML/">#HTML</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/SIGSEGV/">#SIGSEGV</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/archlinux/">#archlinux</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/asan/">#asan</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/css/">#css</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/gdb/">#gdb</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/oh-my-zsh/">#oh-my-zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/powerlevel10k/">#powerlevel10k</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/segmentation-fault/">#segmentation fault</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/valgrind/">#valgrind</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/wsl/">#wsl</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/zsh/">#zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E2%88%9A2%E4%BB%8E%E8%87%AA%E7%84%B6%E6%95%B0%E6%9E%84%E9%80%A0/">#√2从自然数构造</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">#一致性</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E5%AE%9E%E9%AA%8C/">#卡文迪许实验</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%AE%9E%E9%AA%8C%E6%80%9D%E6%83%B3%E6%96%B9%E6%B3%95/">#实验思想方法</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%E6%B5%8B%E9%87%8F/">#引力常量测量</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E6%95%B0%E7%B3%BB%E6%89%A9%E5%B1%95/">#数系扩展</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E5%BA%8F%E5%88%97%E5%92%8C%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4%E6%9E%84%E9%80%A0%E5%B9%B3%E6%96%B9%E4%B8%BA2%E7%9A%84%E6%95%B0/">#用有理数序列和缩小区间构造平方为2的数</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AD%89%E4%BB%B7%E7%B1%BB/">#等价类</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AE%97%E6%9C%AF%E5%AE%9A%E4%B9%89/">#算术定义</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%A6%82%E8%AE%BA/">#计算机科学概论</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%B4%9F%E6%95%B0%E5%88%86%E6%95%B0%E5%BB%BA%E7%AB%8B/">#负数分数建立</a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> env
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-env">
+          
+            
+          
+            
+          
+            
+          
+        </ul>
+      </div>
+    </div>
+  
+</aside>
+
+      
+    </div>
+    <footer class="terminal-footer">
+  <div class="terminal-footer__line">
+    <span class="terminal-user">guest@hexo-blog</span>
+    <span class="terminal-separator">:</span>
+    <span class="terminal-path">~</span>
+    <span class="terminal-prompt-mark">$</span>
+    <span class="terminal-cmd">exit</span>
+  </div>
+  <div class="terminal-footer__content">
+    
+      <p class="terminal-footer__text">
+        &copy; 2026 quan-1145
+      </p>
+    
+    
+      <p class="terminal-footer__text">Powered by Hexo | Terminal Theme</p>
+    
+  </div>
+</footer>
+  </div>
+  <button id="back-to-top" class="terminal-back-to-top" aria-label="Back to top">[▲]</button>
+  
+<div class="terminal-search" id="terminal-search" aria-hidden="true">
+  <div class="terminal-search__dialog">
+    <div class="terminal-search__header">
+      <span class="terminal-prompt-mark">$</span> grep -r "" posts/
+    </div>
+    <div class="terminal-search__input-wrap">
+      <input type="text" class="terminal-search__input" id="search-input" placeholder="type to search..." autocomplete="off" aria-label="Search input">
+    </div>
+    <div class="terminal-search__results" id="search-results">
+      <p class="terminal-search__empty">type keywords to search...</p>
+    </div>
+    <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
+  </div>
+</div>
+<script src="/js/search.js"></script>
+
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>

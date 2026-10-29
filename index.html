@@ -152,6 +152,70 @@
   <header class="terminal-post-item__header">
     
       <div class="terminal-post-item__prompt">
+        <span class="terminal-prompt-mark">$</span> cat sigsegv.md
+      </div>
+    
+    <h2 class="terminal-post-item__title">
+      <a href="/2026/10/28/sigsegv/">段错误全链路排查</a>
+    </h2>
+  </header>
+  <div class="terminal-post-item__meta">
+    <span class="terminal-meta__item">
+      <span class="terminal-meta__label">date:</span>
+      <span class="terminal-meta__value">2026-10-28</span>
+    </span>
+    
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">cat:</span>
+        <span class="terminal-meta__value">
+          
+            <a href="/categories/IT/">IT</a>, 
+          
+            <a href="/categories/IT/c/">c++</a>
+          
+        </span>
+      </span>
+    
+    
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">tags:</span>
+        <span class="terminal-meta__value">
+          
+            <a href="/tags/SIGSEGV/">#SIGSEGV</a> 
+          
+            <a href="/tags/segmentation-fault/">#segmentation fault</a> 
+          
+            <a href="/tags/gdb/">#gdb</a> 
+          
+            <a href="/tags/asan/">#asan</a> 
+          
+            <a href="/tags/valgrind/">#valgrind</a>
+          
+        </span>
+      </span>
+    
+  </div>
+  <div class="terminal-post-item__excerpt">
+    
+      <p>
+[!WARNING]
+效果仅供娱乐，请勿用于真实生产环境中。
+
+前情提要
+Segmentation Fault（段错误，SIGSEGV）的本质是程序访问了无效或无权访问的虚拟内存地址，操作系统通过内存保护机制强制终止了进程。以下按“源码自查 → 调试定位 → 修复加固 → 预防与回归”的全链路展开。
+
+一、源码层：先锁定高概率原因在拿起调试器之前，先对照代码排查覆盖面最高的几类成因，往往能...</p>
+    
+  </div>
+  <div class="terminal-post-item__footer">
+    <a class="terminal-post-item__read-more" href="/2026/10/28/sigsegv/">[read more]</a>
+  </div>
+</article>
+      
+        <article class="terminal-post-item">
+  <header class="terminal-post-item__header">
+    
+      <div class="terminal-post-item__prompt">
         <span class="terminal-prompt-mark">$</span> cat construct-sqrt-2.md
       </div>
     
@@ -576,7 +640,7 @@ Windows 版 zsh 下载
       <span class="terminal-prompt-mark">$</span> ls posts/
     </div>
     <div class="terminal-sidebar__content">
-      total 7
+      total 8
     </div>
   </div>
 
@@ -589,12 +653,22 @@ Windows 版 zsh 下载
         <ul class="terminal-list">
           
             <li class="terminal-list__item">
+              <a href="/categories/IT/">[IT]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
               <a href="/categories/Test/">[Test]</a>
               <span class="terminal-count">(1)</span>
             </li>
           
             <li class="terminal-list__item">
               <a href="/categories/archlinux/">[archlinux]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/IT/c/">[c++]</a>
               <span class="terminal-count">(1)</span>
             </li>
           
@@ -656,11 +730,23 @@ Windows 版 zsh 下载
             </li>
           
             <li class="terminal-list__item">
+              <a href="/tags/SIGSEGV/">#SIGSEGV</a>
+            </li>
+          
+            <li class="terminal-list__item">
               <a href="/tags/archlinux/">#archlinux</a>
             </li>
           
             <li class="terminal-list__item">
+              <a href="/tags/asan/">#asan</a>
+            </li>
+          
+            <li class="terminal-list__item">
               <a href="/tags/css/">#css</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/gdb/">#gdb</a>
             </li>
           
             <li class="terminal-list__item">
@@ -681,6 +767,14 @@ Windows 版 zsh 下载
           
             <li class="terminal-list__item">
               <a href="/tags/powerlevel10k/">#powerlevel10k</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/segmentation-fault/">#segmentation fault</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/valgrind/">#valgrind</a>
             </li>
           
             <li class="terminal-list__item">
