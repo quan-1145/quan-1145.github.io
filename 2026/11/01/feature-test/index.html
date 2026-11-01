@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-cjk-grid="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>功能测试：Mermaid、公式与代码 | quan-1145 — Welcome to the Construction Site</title>
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link rel="alternate" type="application/atom+xml" title="quan-1145" href="/atom.xml">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <script>
+    // Apply the saved colour scheme before first paint; fall back to the
+    // scheme configured in _config.yml when nothing is stored yet.
+    (function () {
+      var fallback = 'green';
+      var scheme = fallback;
+      try {
+        scheme = localStorage.getItem('terminal-theme') || fallback;
+      } catch (e) { /* private mode */ }
+      document.documentElement.setAttribute('data-theme', scheme);
+    })();
+  </script>
+
+  
+  
+    
+      <link rel="stylesheet" href="/assets/katex/katex.min.css">
+      <script defer src="/assets/katex/katex.min.js"></script>
+      <script defer src="/assets/katex/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}], throwOnError:false});"></script>
+    
+  
+
+  
+  
+  
+    <script defer src="/assets/mermaid/mermaid.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (!window.mermaid) return;
+        var diagramTheme = 'dark';
+        var diagramFont = 'Source Code Pro';
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: diagramTheme,
+          securityLevel: 'loose',
+          fontFamily: diagramFont,
+          flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+          sequence: { useMaxWidth: true },
+          themeVariables: {
+            fontFamily: diagramFont,
+            fontSize: '16px'
+          }
+        });
+      });
+    </script>
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <header class="terminal-header">
+  <div class="terminal-header__inner">
+    <nav class="terminal-nav">
+      <div class="terminal-nav__prompt">
+        <span class="terminal-user">guest@hexo-blog</span>
+        <span class="terminal-separator">:</span>
+        <span class="terminal-path">~</span>
+        <span class="terminal-prompt-mark">$</span>
+      </div>
+      <ul class="terminal-menu">
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/">
+              [Home]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link terminal-menu__link--active" href="/archives">
+              [Archives]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/tags">
+              [Tags]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/categories">
+              [Categories]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/more">
+              [More]
+            </a>
+          </li>
+        
+          <li class="terminal-menu__item">
+            <a class="terminal-menu__link" href="/about">
+              [About]
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+    <div class="terminal-header__actions">
+      <button class="terminal-theme-btn" id="theme-btn" type="button" aria-label="切换配色方案">[theme]</button>
+      <button class="terminal-search-btn" id="search-btn" aria-label="Search">[Search]</button>
+      <div class="terminal-clock" id="terminal-clock">[00:00:00]</div>
+    </div>
+  </div>
+</header>
+  <div class="terminal-container">
+    <div class="terminal-body">
+      <main class="terminal-main">
+        <article class="terminal-page terminal-page--post">
+  <header class="terminal-post-header">
+    
+      <div class="terminal-post-header__prompt">
+        <span class="terminal-prompt-mark">$</span> cat feature-test.md
+      </div>
+    
+    <h1 class="terminal-post-header__title">功能测试：Mermaid、公式与代码</h1>
+    <div class="terminal-post-header__meta">
+      <span class="terminal-meta__item">
+        <span class="terminal-meta__label">date:</span>
+        <span class="terminal-meta__value">2026-11-01</span>
+      </span>
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">updated:</span>
+          <span class="terminal-meta__value">2026-11-01</span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">cat:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/categories/%E6%B5%8B%E8%AF%95/">测试</a>
+            
+          </span>
+        </span>
+      
+      
+        <span class="terminal-meta__item">
+          <span class="terminal-meta__label">tags:</span>
+          <span class="terminal-meta__value">
+            
+              <a href="/tags/mermaid/">#mermaid</a> 
+            
+              <a href="/tags/math/">#math</a> 
+            
+              <a href="/tags/terminal/">#terminal</a>
+            
+          </span>
+        </span>
+      
+    </div>
+  </header>
+
+  <div class="terminal-post-content">
+    <p>这是一篇功能测试文章，用来验证主题的 Mermaid 图表、KaTeX 公式、代码块与中英混排对齐。</p>
+<h2 id="Mermaid-流程图"><a href="#Mermaid-流程图" class="headerlink" title="Mermaid 流程图"></a>Mermaid 流程图</h2><p><div class="mermaid">graph TD
+  A[浏览器] --&gt;|访问| B(Hexo 静态页)
+  B --&gt; C{是否支持 Mermaid}
+  C --&gt;|是| D[渲染 SVG 图表]
+  C --&gt;|否| E[显示原始文本]</div></p>
+<h2 id="Mermaid-时序图"><a href="#Mermaid-时序图" class="headerlink" title="Mermaid 时序图"></a>Mermaid 时序图</h2><p><div class="mermaid">sequenceDiagram
+  participant U as 用户
+  participant H as Hexo
+  U-&gt;&gt;H: hexo generate
+  H--&gt;&gt;U: public/ 静态文件</div></p>
+<h2 id="公式（行间公式居中）"><a href="#公式（行间公式居中）" class="headerlink" title="公式（行间公式居中）"></a>公式（行间公式居中）</h2><p>行内公式：$e^{i\pi}+1=0$ 与 $\sqrt{x^2+y^2}$。</p>
+<p>行间公式：</p>
+<p>$$
+\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}
+$$</p>
+<p>$$
+A = \begin{pmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \end{pmatrix}
+$$</p>
+<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">hello</span>(<span class="params">name</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`你好，<span class="subst">$&#123;name&#125;</span>`</span>); <span class="comment">// 中文注释</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><table>
+<thead>
+<tr>
+<th>功能</th>
+<th>状态</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mermaid</td>
+<td>测试中</td>
+<td>客户端渲染</td>
+</tr>
+<tr>
+<td>KaTeX</td>
+<td>正常</td>
+<td>行内 &#x2F; 行间</td>
+</tr>
+</tbody></table>
+
+  </div>
+
+  
+  
+  <aside class="terminal-toc" id="terminal-toc" data-collapsed="false">
+    <div class="terminal-toc__header">
+      <span class="terminal-toc__label">目录</span>
+      <button class="terminal-toc__toggle" id="toc-toggle" aria-label="Toggle TOC">[-]</button>
+    </div>
+    <nav class="terminal-toc__nav" id="toc-nav">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Mermaid-%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text">Mermaid 流程图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mermaid-%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="toc-text">Mermaid 时序图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AC%E5%BC%8F%EF%BC%88%E8%A1%8C%E9%97%B4%E5%85%AC%E5%BC%8F%E5%B1%85%E4%B8%AD%EF%BC%89"><span class="toc-text">公式（行间公式居中）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%9D%97"><span class="toc-text">代码块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%A8%E6%A0%BC"><span class="toc-text">表格</span></a></li></ol>
+    </nav>
+  </aside>
+  
+
+  
+  
+  <section class="terminal-post-license" id="license">
+    <div class="terminal-post-license__header">
+      <span class="terminal-post-license__cmd">
+        <span class="terminal-prompt-mark">$</span> license --show
+      </span>
+      <span class="terminal-post-license__badge">CC-BY 4.0</span>
+    </div>
+    <p class="terminal-post-license__row"><span class="terminal-post-license__key">license  :</span> <span class="terminal-post-license__value"><a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener license">CC-BY 4.0</a></span></p>
+    <p class="terminal-post-license__row"><span class="terminal-post-license__key">copyright:</span> <span class="terminal-post-license__value">&copy; 2026 quan-1145</span></p>
+    <p class="terminal-post-license__text">
+      本作品采用知识共享署名 4.0 国际许可协议（CC BY 4.0）进行许可：转载请注明作者与原文链接，不得附加额外限制。
+      
+        <a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hans" target="_blank" rel="noopener license">查看许可协议</a>
+      
+    </p>
+  </section>
+  
+
+  <div class="terminal-post-footer">
+    <div class="terminal-post-nav">
+      
+      
+        <a class="terminal-post-nav__next" href="/2026/10/28/sigsegv/">
+          [段错误全链路排查 &gt;]
+        </a>
+      
+    </div>
+
+    
+
+<section class="terminal-comments" id="comments">
+  <div class="terminal-comments__header">
+    <span class="terminal-comments__title">
+      <span class="terminal-prompt-mark">$</span> comments --provider=gitalk
+    </span>
+    <span class="terminal-comments__hint">// powered by GitHub Issues</span>
+  </div>
+
+  <div class="terminal-comments__body">
+    
+      <div id="gitalk-container"></div>
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css">
+      <script type="application/json" id="gitalk-config">{"clientID":"Ov23liMIyibMUFaLHzzy","clientSecret":"a032d05b3181390970db2cc7202d2f80a89fb774","repo":"quan-1145.github.io","owner":"quan-1145","admin":["quan-1145"],"language":"zh-CN","perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":false,"proxy":""}</script>
+      <script>
+        (function () {
+          function showNotice(message) {
+            var host = document.getElementById('gitalk-container');
+            if (!host) return;
+            var pre = document.createElement('pre');
+            pre.className = 'terminal-comments__notice';
+            pre.textContent = '[!] ' + message;
+            host.innerHTML = '';
+            host.appendChild(pre);
+          }
+
+          function boot() {
+            if (!window.Gitalk) {
+              showNotice('Gitalk 脚本未能加载：cdn.jsdelivr.net 可能被拦截或不可用，请检查网络，或把 gitalk.min.js 放到本地再引入。');
+              return;
+            }
+            var raw = document.getElementById('gitalk-config');
+            var cfg;
+            try {
+              cfg = JSON.parse(raw && raw.textContent ? raw.textContent : 'null');
+            } catch (err) {
+              cfg = null;
+            }
+            if (!cfg) {
+              showNotice('Gitalk 配置解析失败：请检查主题 _config.yml 的 comment.gitalk 段。');
+              return;
+            }
+            try {
+              var gitalk = new Gitalk({
+                clientID: cfg.clientID,
+                clientSecret: cfg.clientSecret,
+                repo: cfg.repo,
+                owner: cfg.owner,
+                admin: cfg.admin && cfg.admin.length ? cfg.admin : [cfg.owner],
+                id: location.pathname,
+                language: cfg.language || 'zh-CN',
+                perPage: cfg.perPage || 10,
+                pagerDirection: cfg.pagerDirection || 'last',
+                distractionFreeMode: cfg.distractionFreeMode === true,
+                createIssueManually: cfg.createIssueManually === true,
+                proxy: cfg.proxy || undefined
+              });
+              gitalk.render('gitalk-container');
+            } catch (err) {
+              showNotice('Gitalk 初始化失败：' + (err && err.message ? err.message : err));
+            }
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', boot);
+          } else {
+            boot();
+          }
+        })();
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js"></script>
+    
+  </div>
+</section>
+
+
+  </div>
+</article>
+
+      </main>
+      
+        <aside class="terminal-sidebar">
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> whoami
+    </div>
+    <div class="terminal-sidebar__content">
+      <p>quan-1145</p>
+      
+        <p>Endure more, strive further, pioneer new frontiers, and give our all</p>
+      
+    </div>
+  </div>
+
+  <div class="terminal-sidebar__section">
+    <div class="terminal-sidebar__header">
+      <span class="terminal-prompt-mark">$</span> ls posts/
+    </div>
+    <div class="terminal-sidebar__content">
+      total 9
+    </div>
+  </div>
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls categories/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list">
+          
+            <li class="terminal-list__item">
+              <a href="/categories/IT/">[IT]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/Test/">[Test]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/">[archlinux]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/IT/c/">[c++]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/archlinux/wsl/">[wsl]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/%E5%AD%A6%E4%B9%A0/">[学习]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/%E6%8E%A2%E7%A9%B6%E9%A1%B9%E7%9B%AE/">[探究项目]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E6%B5%8B%E8%AF%95/">[测试]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%89%A9%E7%90%86/">[物理]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BB%88%E7%AB%AF%E7%BE%8E%E5%8C%96/">[终端美化]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E7%BD%91%E9%A1%B5%E7%BB%84%E4%BB%B6/">[网页组件]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">[计算机基础]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/categories/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/">[高等数学]</a>
+              <span class="terminal-count">(1)</span>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> ls tags/
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-list terminal-list--inline">
+          
+            <li class="terminal-list__item">
+              <a href="/tags/HTML/">#HTML</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/SIGSEGV/">#SIGSEGV</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/archlinux/">#archlinux</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/asan/">#asan</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/css/">#css</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/gdb/">#gdb</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/installation/">#installation</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/latex/">#latex</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/math/">#math</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/mermaid/">#mermaid</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/oh-my-zsh/">#oh-my-zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/powerlevel10k/">#powerlevel10k</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/segmentation-fault/">#segmentation fault</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/terminal/">#terminal</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/valgrind/">#valgrind</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/wsl/">#wsl</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/zsh/">#zsh</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E2%88%9A2%E4%BB%8E%E8%87%AA%E7%84%B6%E6%95%B0%E6%9E%84%E9%80%A0/">#√2从自然数构造</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">#一致性</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%8D%A1%E6%96%87%E8%BF%AA%E8%AE%B8%E5%AE%9E%E9%AA%8C/">#卡文迪许实验</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%AE%9E%E9%AA%8C%E6%80%9D%E6%83%B3%E6%96%B9%E6%B3%95/">#实验思想方法</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E5%BC%95%E5%8A%9B%E5%B8%B8%E9%87%8F%E6%B5%8B%E9%87%8F/">#引力常量测量</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E6%95%B0%E7%B3%BB%E6%89%A9%E5%B1%95/">#数系扩展</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%94%A8%E6%9C%89%E7%90%86%E6%95%B0%E5%BA%8F%E5%88%97%E5%92%8C%E7%BC%A9%E5%B0%8F%E5%8C%BA%E9%97%B4%E6%9E%84%E9%80%A0%E5%B9%B3%E6%96%B9%E4%B8%BA2%E7%9A%84%E6%95%B0/">#用有理数序列和缩小区间构造平方为2的数</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AD%89%E4%BB%B7%E7%B1%BB/">#等价类</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E7%AE%97%E6%9C%AF%E5%AE%9A%E4%B9%89/">#算术定义</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%A6%82%E8%AE%BA/">#计算机科学概论</a>
+            </li>
+          
+            <li class="terminal-list__item">
+              <a href="/tags/%E8%B4%9F%E6%95%B0%E5%88%86%E6%95%B0%E5%BB%BA%E7%AB%8B/">#负数分数建立</a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+  
+
+  
+    <div class="terminal-sidebar__section">
+      <div class="terminal-sidebar__header">
+        <span class="terminal-prompt-mark">$</span> env
+      </div>
+      <div class="terminal-sidebar__content">
+        <ul class="terminal-env">
+          
+            
+          
+            
+          
+            
+          
+        </ul>
+      </div>
+    </div>
+  
+</aside>
+
+      
+    </div>
+    <footer class="terminal-footer">
+  <div class="terminal-footer__line">
+    <span class="terminal-user">guest@hexo-blog</span>
+    <span class="terminal-separator">:</span>
+    <span class="terminal-path">~</span>
+    <span class="terminal-prompt-mark">$</span>
+    <span class="terminal-cmd">exit</span>
+  </div>
+  <div class="terminal-footer__content">
+    
+      <p class="terminal-footer__text">
+        &copy; 2026 quan-1145
+      </p>
+    
+    
+      <p class="terminal-footer__text">Powered by Hexo | Terminal Theme</p>
+    
+  </div>
+</footer>
+  </div>
+  <button id="back-to-top" class="terminal-back-to-top" aria-label="Back to top">[▲]</button>
+  
+<div class="terminal-search" id="terminal-search" aria-hidden="true">
+  <div class="terminal-search__dialog">
+    <div class="terminal-search__header">
+      <span class="terminal-prompt-mark">$</span> grep -r "" posts/
+    </div>
+    <div class="terminal-search__input-wrap">
+      <input type="text" class="terminal-search__input" id="search-input" placeholder="type to search..." autocomplete="off" aria-label="Search input">
+    </div>
+    <div class="terminal-search__results" id="search-results">
+      <p class="terminal-search__empty">type keywords to search...</p>
+    </div>
+    <button class="terminal-search__close" id="search-close" aria-label="Close search">[Esc]</button>
+  </div>
+</div>
+<script src="/js/search.js"></script>
+
+  
+<script src="/js/main.js"></script>
+
+</body>
+</html>

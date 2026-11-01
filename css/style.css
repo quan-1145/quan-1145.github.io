@@ -206,7 +206,7 @@ html {
   scroll-margin-top: calc(var(--header-height) + 16px);
 }
 body {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 1rem;
   line-height: 1.8;
   font-variant-ligatures: none;
@@ -252,7 +252,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-weight: 700;
   font-size: 1rem;
   line-height: 1.8;
@@ -289,14 +289,19 @@ li {
   margin-bottom: 4px;
 }
 .cjk {
-  font-size: 1.1em;
-  letter-spacing: 0.0909em;
-  line-height: 0;
+  display: inline-block;
+  width: 1.2em;
+  font-size: 1em;
+  line-height: 1em;
+  text-align: center;
+  vertical-align: baseline;
+  letter-spacing: 0;
+  overflow: visible;
 }
 code,
 kbd,
 samp {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 1em;
   line-height: inherit;
   letter-spacing: 0;
@@ -307,7 +312,7 @@ samp {
   box-shadow: inset 0 0 0 1px var(--code-border);
 }
 pre {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 1rem;
   line-height: 1.8;
   background: var(--code-bg);
@@ -370,7 +375,7 @@ input,
 textarea,
 button,
 select {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 1rem;
   line-height: 1.8;
   color: var(--text-primary);
@@ -410,8 +415,8 @@ button:hover {
 }
 .katex-display {
   margin: 18px 0;
-  padding: 0 0 0 2ch;
-  text-align: left;
+  padding: 0;
+  text-align: center;
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -773,7 +778,7 @@ button:hover {
   background: rgba(10,10,10,0.6);
   border: 1px solid var(--accent);
   color: var(--accent);
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.8rem;
 }
 .terminal-hero--ascii .terminal-hero__status {
@@ -808,7 +813,7 @@ button:hover {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.8rem;
   line-height: 1.4;
   cursor: pointer;
@@ -949,7 +954,7 @@ button:hover {
   font-size: 1rem;
 }
 .terminal-clock {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.95rem;
   line-height: 1.8;
   color: var(--text-dim);
@@ -962,7 +967,7 @@ button:hover {
   gap: 8px;
 }
 .terminal-search-btn {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.9rem;
   line-height: 1.8;
   color: var(--text-dim);
@@ -975,7 +980,7 @@ button:hover {
   color: var(--accent);
 }
 .terminal-theme-btn {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.9rem;
   line-height: 1.8;
   color: var(--text-dim);
@@ -1112,7 +1117,7 @@ button:hover {
   right: 28px;
   bottom: 28px;
   z-index: 99;
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.9rem;
   color: var(--text-dim);
   background: none;
@@ -1466,14 +1471,14 @@ button:hover {
 }
 .terminal-post-content .katex-display {
   margin: 18px 0 !important;
-  padding-left: 2ch;
-  text-align: left !important;
+  padding: 0;
+  text-align: center !important;
   overflow-x: auto;
   overflow-y: hidden;
 }
 .terminal-post-content .katex-display > .katex {
   display: block !important;
-  text-align: left !important;
+  text-align: center !important;
 }
 .terminal-post-nav {
   display: flex;
@@ -1722,7 +1727,7 @@ button:hover {
   border: 1px solid var(--border);
   border-left: 3px solid var(--warning);
   color: var(--text-secondary);
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.9rem;
   line-height: 1.8;
   white-space: pre-wrap;
@@ -1738,11 +1743,11 @@ button:hover {
 .terminal-comments__body .gt-container {
   background: transparent !important;
   color: var(--text-primary) !important;
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace !important;
+  font-family: 'Source Code Pro', monospace !important;
   font-size: 1rem !important;
 }
 .terminal-comments__body .gt-container * {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace !important;
+  font-family: 'Source Code Pro', monospace !important;
 }
 .terminal-comments__body .gt-meta {
   border-bottom: 1px dashed var(--border) !important;
@@ -1901,6 +1906,16 @@ button:hover {
   border: 1px solid var(--border);
   overflow-x: auto;
 }
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+.mermaid[data-processed] {
+  padding: 8px;
+}
+.mermaid text {
+  fill: var(--text-primary);
+}
 .MathJax,
 mjx-container,
 .katex {
@@ -1961,7 +1976,7 @@ mjx-container[display="false"] {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   color: var(--text-primary);
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 1rem;
   padding: 8px 18px;
   outline: none;
@@ -2027,7 +2042,7 @@ mjx-container[display="false"] {
   background: none;
   border: none;
   color: var(--text-dim);
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.85rem;
   cursor: pointer;
   padding: 4px;
@@ -2061,7 +2076,7 @@ mjx-container[display="false"] {
   align-items: center;
   padding: 4px 8px;
   border-bottom: 1px solid var(--border);
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   color: var(--text-dim);
   flex-shrink: 0;
 }
@@ -2076,7 +2091,7 @@ mjx-container[display="false"] {
   border: none;
   color: var(--text-dim);
   cursor: pointer;
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.85rem;
   padding: 0;
 }
@@ -2175,7 +2190,7 @@ figure.highlight .code pre {
   position: absolute;
   top: 0.35em;
   right: 80px;
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   font-size: 0.75rem;
   line-height: 1.4;
   color: var(--accent-2);
@@ -2191,7 +2206,7 @@ figure.highlight .code pre {
   padding: 2px 8px;
   font-size: 0.72rem;
   line-height: 1.4;
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
   color: var(--text-dim);
   background: var(--bg-secondary);
   border: 1px solid var(--border);
@@ -2208,7 +2223,7 @@ figure.highlight:hover .terminal-copy-btn,
   border-color: var(--accent);
 }
 code {
-  font-family: 'Source Code Pro', 'Cascadia Mono', 'JetBrains Mono', Consolas, 'SFMono-Regular', Menlo, 'DejaVu Sans Mono', 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', 'Hiragino Sans GB', 'Source Han Sans SC', sans-serif, monospace;
+  font-family: 'Source Code Pro', monospace;
 }
 .highlight {
   background: var(--code-bg);

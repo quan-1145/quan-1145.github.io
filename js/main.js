@@ -367,9 +367,11 @@
   function initTypewriter() {
     var reduceMotion = window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // CJK cells are already laid out on the grid; typing them would scramble
+    // thousands of single-character nodes, so they stay as they are.
     var skipSelector = 'pre, code, script, style, noscript, textarea, svg, ' +
       '.katex, .MathJax, mjx-container, .mermaid, .terminal-comments, ' +
-      '.gt-container, [data-no-typewriter]';
+      '.gt-container, .cjk, wbr, [data-no-typewriter]';
     var mathRe = /\$\$|\$[^$\n]+\$|\\\(|\\\[|\\begin\{/;
 
     var nodes = [];
@@ -470,14 +472,17 @@
   // Terminal CJK grid ------------------------------------------------------
   // Source Code Pro advances 0.6em per Latin cell, while a CJK/fullwidth glyph
   // is 1em wide — i.e. 1.67 cells, which breaks the column grid as soon as a
-  // line mixes Chinese and Latin. Wrapping every CJK run in <span class="cjk">
-  // makes each wide glyph advance exactly 1.2em = 2 cells (see the .cjk rule
-  // in _base.styl), matching how a terminal lays out East Asian text.
+  // line mixes Chinese and Latin. Every CJK glyph is wrapped in its own
+  // <span class="cjk"> (an inline-block exactly 1.2em wide, see _base.styl),
+  // with <wbr> between glyphs to keep the normal CJK line-break behaviour.
+  // The advance is fixed by layout, so the browser-chosen CJK font's metrics,
+  // hinting or synthetic bold can no longer shift the grid.
   // Runs after the deferred KaTeX scripts have rendered (DOMContentLoaded).
   var CJK_WIDE = /[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE10-\uFE19\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6]/;
   var CJK_RUN = /[\u1100-\u115F\u2E80-\uA4CF\uAC00-\uD7A3\uF900-\uFAFF\uFE10-\uFE19\uFE30-\uFE6F\uFF00-\uFF60\uFFE0-\uFFE6]+/g;
   var CJK_SKIP = 'script, style, noscript, textarea, input, select, option, svg, ' +
-    'canvas, .katex, .MathJax, mjx-container, #gitalk-container, .gt-container';
+    'canvas, .katex, .MathJax, mjx-container, .mermaid, .terminal-toc, ' +
+    '#gitalk-container, .gt-container, [data-cjk-skip]';
 
   function wrapCjk(root) {
     if (!root || !document.createTreeWalker) return;
@@ -506,11 +511,15 @@
         if (match.index > cursor) {
           frag.appendChild(document.createTextNode(text.slice(cursor, match.index)));
         }
-        var span = document.createElement('span');
-        span.className = 'cjk';
-        span.textContent = match[0];
-        frag.appendChild(span);
-        cursor = match.index + match[0].length;
+        var run = match[0];
+        for (var i = 0; i < run.length; i++) {
+          var span = document.createElement('span');
+          span.className = 'cjk';
+          span.textContent = run.charAt(i);
+          frag.appendChild(span);
+          if (i < run.length - 1) frag.appendChild(document.createElement('wbr'));
+        }
+        cursor = match.index + run.length;
       }
       if (!cursor) return;
       if (cursor < text.length) {
